@@ -37,6 +37,41 @@ The application employs a dark-first design with deep blue-gray backgrounds, acc
 - **Security**: Employs input validation with Zod, SQL injection prevention (Drizzle ORM), XSS protection, CORS configuration, and rate limiting. `isSuperAdmin` middleware secures admin-only endpoints.
 - **Development Guidelines**: Adheres to TypeScript for type safety, functional components with hooks, async/await, and comprehensive error handling. Testing includes end-to-end (Playwright), component, and API endpoint testing.
 
+## Design System
+
+The application includes a comprehensive design system located in `design-system/`:
+
+### Documentation Files
+- `README.md` - Overview and quick start guide
+- `DESIGN_TOKENS.md` - Complete token definitions (colors, spacing, shadows)
+- `COMPONENT_PATTERNS.md` - Component usage examples and patterns
+- `CSS_ARCHITECTURE.md` - CSS file structure and organization guide
+- `DESIGN_CHANGE_WORKFLOW.md` - Step-by-step guide for implementing design changes and prompting workflows
+- `FIGMA_DESIGN_TOKENS.json` - Figma-ready token export (copy-paste into Figma Tokens plugin)
+- `PROMPT_DATABASE_ARCHITECTURE.md` - Complete frontend-backend-database flow with Mermaid.js sequence diagrams
+- `DATA_OBJECT_REFERENCE.md` - Quick-reference guide for all prompt-related data objects
+- `design-tokens.css` - Extended CSS custom properties
+
+### Key Design Principles
+- **Dark-first design** with deep blue-gray backgrounds
+- **Glass-morphism effects** for toasts, dropdowns, and navigation
+- **Gradient accents** for section branding (Library, Community, Tools, Marketplace)
+- **Consistent tokens** using CSS custom properties
+
+### Core Token Categories
+- Semantic colors (`--primary`, `--secondary`, `--destructive`, `--success`, `--warning`)
+- Surface colors (`--card`, `--popover`, `--sidebar`)
+- Shadow scale (`--shadow-xs` through `--shadow-2xl`)
+- Typography (`--font-sans`, `--font-serif`, `--font-mono`)
+
+### Design Change Workflow
+For implementing design changes effectively:
+1. **Token Changes** - Update CSS variables in `index.css` → automatically propagates to all components
+2. **Component Changes** - Update specific components in `client/src/components/ui/`
+3. **New Features** - Use token-based classes from existing design tokens
+
+See `BRAND_GUIDELINES.md` for detailed visual specifications and `DESIGN_CHANGE_WORKFLOW.md` for implementation guidance.
+
 ## External Dependencies
 - **Replit Auth**: For user authentication.
 - **Replit AI Integrations (GPT-5)**: For AI-powered prompt refinement and metadata generation.
