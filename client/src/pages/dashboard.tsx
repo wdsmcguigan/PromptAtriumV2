@@ -21,7 +21,6 @@ import { PromptModal } from "@/components/PromptModal";
 import { QuickActions } from "@/components/QuickActions";
 import { BulkImportModal } from "@/components/BulkImportModal";
 import { StatsCard } from "@/components/StatsCard";
-import { CollectionItem } from "@/components/CollectionItem";
 import { MarketplaceListingCard } from "@/components/MarketplaceListingCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -76,7 +75,6 @@ export default function Dashboard() {
 
   // Initialize collapsible state from localStorage for the specific user
   const [isStatsCollapsed, setIsStatsCollapsed] = useState(false);
-  const [isCollectionsCollapsed, setIsCollectionsCollapsed] = useState(false);
   const [isActivityCollapsed, setIsActivityCollapsed] = useState(false);
   const [isRecentPromptsCollapsed, setIsRecentPromptsCollapsed] = useState(false);
   const [isBookmarkedPromptsCollapsed, setIsBookmarkedPromptsCollapsed] = useState(false);
@@ -91,7 +89,6 @@ export default function Dashboard() {
   const [isBookmarkedPromptsVisible, setIsBookmarkedPromptsVisible] = useState(true);
   const [isMarketplaceVisible, setIsMarketplaceVisible] = useState(true);
   const [isCommunityHighlightsVisible, setIsCommunityHighlightsVisible] = useState(true);
-  const [isCollectionsVisible, setIsCollectionsVisible] = useState(true);
   const [isActivityVisible, setIsActivityVisible] = useState(true);
 
   // Load collapsed states from localStorage once user is available
@@ -100,11 +97,6 @@ export default function Dashboard() {
       const statsStored = localStorage.getItem(`statsCollapsed_${user.id}`);
       if (statsStored !== null) {
         setIsStatsCollapsed(statsStored === 'true');
-      }
-
-      const collectionsStored = localStorage.getItem(`collectionsCollapsed_${user.id}`);
-      if (collectionsStored !== null) {
-        setIsCollectionsCollapsed(collectionsStored === 'true');
       }
 
       const activityStored = localStorage.getItem(`activityCollapsed_${user.id}`);
@@ -168,11 +160,6 @@ export default function Dashboard() {
         setIsCommunityHighlightsVisible(communityHighlightsVisible === 'true');
       }
 
-      const collectionsVisible = localStorage.getItem(`collectionsVisible_${user.id}`);
-      if (collectionsVisible !== null) {
-        setIsCollectionsVisible(collectionsVisible === 'true');
-      }
-
       const activityVisible = localStorage.getItem(`activityVisible_${user.id}`);
       if (activityVisible !== null) {
         setIsActivityVisible(activityVisible === 'true');
@@ -186,12 +173,6 @@ export default function Dashboard() {
       localStorage.setItem(`statsCollapsed_${user.id}`, isStatsCollapsed.toString());
     }
   }, [isStatsCollapsed, user?.id]);
-
-  useEffect(() => {
-    if (user?.id) {
-      localStorage.setItem(`collectionsCollapsed_${user.id}`, isCollectionsCollapsed.toString());
-    }
-  }, [isCollectionsCollapsed, user?.id]);
 
   useEffect(() => {
     if (user?.id) {
@@ -265,12 +246,6 @@ export default function Dashboard() {
       localStorage.setItem(`communityHighlightsVisible_${user.id}`, isCommunityHighlightsVisible.toString());
     }
   }, [isCommunityHighlightsVisible, user?.id]);
-
-  useEffect(() => {
-    if (user?.id) {
-      localStorage.setItem(`collectionsVisible_${user.id}`, isCollectionsVisible.toString());
-    }
-  }, [isCollectionsVisible, user?.id]);
 
   useEffect(() => {
     if (user?.id) {
@@ -658,15 +633,6 @@ export default function Dashboard() {
                   </DropdownMenuCheckboxItem>
 
                   <DropdownMenuCheckboxItem
-                    checked={isCollectionsVisible}
-                    onCheckedChange={setIsCollectionsVisible}
-                    className="cursor-pointer"
-                  >
-                    <Eye className={`h-4 w-4 mr-2 ${isCollectionsVisible ? '' : 'opacity-50'}`} />
-                    My Collections
-                  </DropdownMenuCheckboxItem>
-
-                  <DropdownMenuCheckboxItem
                     checked={isActivityVisible}
                     onCheckedChange={setIsActivityVisible}
                     className="cursor-pointer"
@@ -831,57 +797,8 @@ export default function Dashboard() {
         </Collapsible>
         )}
 
-        {/* Collections and Activity Cards for Mobile/Tablet - Show above recent prompts */}
+        {/* Activity Cards for Mobile/Tablet - Show above recent prompts */}
         <div className="block lg:hidden space-y-4 mb-6">
-          {/* My Collections - Collapsible on mobile/tablet */}
-          {isCollectionsVisible && (
-            <Collapsible
-              open={!isCollectionsCollapsed}
-              onOpenChange={(open) => setIsCollectionsCollapsed(!open)}
-              className="mb-6"
-            >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">My Collections</h2>
-              <div className="flex items-center gap-2">
-                <Link href="/library?section=collections">
-                  <Button variant="link" className="text-primary hover:underline p-0 text-sm" data-testid="link-view-all-collections-mobile">
-                    View all
-                  </Button>
-                </Link>
-                <CollapsibleTrigger asChild>
-                  <Button variant="ghost" size="sm" data-testid="button-toggle-collections">
-                    {isCollectionsCollapsed ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronUp className="h-4 w-4" />
-                    )}
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-            </div>
-            <CollapsibleContent>
-              <Card data-testid="card-collections-mobile">
-                <CardHeader className="pb-2 pt-3 px-3 md:pb-3 md:pt-6 md:px-6">
-                  <CardTitle className="sr-only">Collections Content</CardTitle>
-                </CardHeader>
-                <CardContent className="px-3 pb-3 md:px-6 md:pb-6">
-                  {collections.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2 md:flex md:flex-col md:space-y-3">
-                      {collections.slice(0, 10).map((collection) => (
-                        <CollectionItem key={collection.id} collection={collection} />
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground text-center py-3 md:py-4">
-                      No collections yet. Create one to organize your prompts.
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            </CollapsibleContent>
-          </Collapsible>
-          )}
-
           {/* Community Activity - Collapsible on mobile/tablet */}
           {isActivityVisible && (
             <Collapsible
@@ -1223,53 +1140,6 @@ export default function Dashboard() {
                       onStartProject={handleStartProject}
                       onImportPrompts={handleImportPrompts}
                     />
-                  </CardContent>
-                </Card>
-              </CollapsibleContent>
-            </Collapsible>
-            )}
-
-            {/* My Collections - Hidden on mobile/tablet, shown on desktop */}
-            {isCollectionsVisible && (
-              <Collapsible
-                open={!isCollectionsCollapsed}
-                onOpenChange={(open) => setIsCollectionsCollapsed(!open)}
-                className="hidden lg:block mb-6"
-              >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">My Collections</h2>
-                <div className="flex items-center gap-2">
-                  <Link href="/library?section=collections">
-                    <Button variant="link" className="text-primary hover:underline p-0" data-testid="link-view-all-collections">
-                      View all
-                    </Button>
-                  </Link>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" data-testid="button-toggle-collections">
-                      {isCollectionsCollapsed ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronUp className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </CollapsibleTrigger>
-                </div>
-              </div>
-              <CollapsibleContent>
-                <Card data-testid="card-collections">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="sr-only">Collections Content</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {collections.length > 0 ? (
-                      collections.slice(0, 10).map((collection) => (
-                        <CollectionItem key={collection.id} collection={collection} />
-                      ))
-                    ) : (
-                      <p className="text-sm text-muted-foreground text-center py-4">
-                        No collections yet. Create one to organize your prompts.
-                      </p>
-                    )}
                   </CardContent>
                 </Card>
               </CollapsibleContent>

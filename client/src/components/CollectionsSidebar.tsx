@@ -85,7 +85,7 @@ export function CollectionsSidebar({ isOpen, onToggle, onCreateCollection }: Col
       <aside
         className={cn(
           "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-background/95 border-r border-border/50 z-30 transition-all duration-300 ease-in-out flex flex-col",
-          isOpen ? "w-64" : "w-0"
+          isOpen ? "w-48" : "w-0"
         )}
         data-testid="collections-sidebar"
         role="navigation"

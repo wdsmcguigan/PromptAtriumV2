@@ -959,17 +959,19 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
         )}
       </header>
 
-      {/* Collections Sidebar */}
-      <CollectionsSidebar
-        isOpen={collectionsSidebarOpen}
-        onToggle={() => setCollectionsSidebarOpen(!collectionsSidebarOpen)}
-        onCreateCollection={() => setCreateCollectionModalOpen(true)}
-      />
+      {/* Collections Sidebar - Hidden on mobile */}
+      <div className="hidden md:block">
+        <CollectionsSidebar
+          isOpen={collectionsSidebarOpen}
+          onToggle={() => setCollectionsSidebarOpen(!collectionsSidebarOpen)}
+          onCreateCollection={() => setCreateCollectionModalOpen(true)}
+        />
+      </div>
 
       {/* Main Content */}
       <main 
-        className={`pt-16 relative z-10 transition-all duration-300 ease-in-out ${
-          collectionsSidebarOpen ? 'ml-64' : 'ml-0'
+        className={`pt-16 relative z-10 transition-all duration-300 ease-in-out overflow-x-hidden ${
+          collectionsSidebarOpen && window.innerWidth >= 768 ? 'ml-64' : 'ml-0'
         }`}
       >
         {children}
