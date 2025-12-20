@@ -8,7 +8,10 @@ export function useAuth() {
     queryFn: getQueryFn<User | null>({ on401: "returnNull" }),
     retry: false,
     staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return {

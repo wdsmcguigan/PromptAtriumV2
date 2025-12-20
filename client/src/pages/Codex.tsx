@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -246,6 +247,9 @@ export default function Codex() {
   const [saveType, setSaveType] = useState<"preset" | "wildcard">("preset");
   const [saveName, setSaveName] = useState("");
   const [editingItem, setEditingItem] = useState<CodexAssembledString | null>(null);
+  
+  // Get current user for fetching user lists
+  const { user: currentUser } = useAuth();
 
   // Refs for smooth dragging without re-renders
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -418,16 +422,16 @@ export default function Codex() {
   // Use all sorted terms directly without pagination
   const terms = sortedTerms;
 
-  // Fetch user's lists
+  // Fetch user's lists (uses currentUser from useAuth hook)
   const { data: userLists = [] } = useQuery({
-    queryKey: ["/api/codex/lists", "user"],
+    queryKey: ["/api/codex/lists", "user", currentUser?.id],
     queryFn: async () => {
-      const user = await fetch("/api/auth/user").then(r => r.json());
-      if (!user?.id) return [];
-      const response = await fetch(`/api/codex/lists?userId=${user.id}`);
+      if (!currentUser?.id) return [];
+      const response = await fetch(`/api/codex/lists?userId=${currentUser.id}`);
       if (!response.ok) throw new Error("Failed to fetch user lists");
       return response.json();
     },
+    enabled: !!currentUser?.id,
   });
 
   // Fetch public lists

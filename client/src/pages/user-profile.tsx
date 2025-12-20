@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { PromptCard } from "@/components/PromptCard";
 import type { User, Prompt } from "@shared/schema";
 import {
@@ -119,10 +120,8 @@ export default function UserProfile() {
     enabled: !!profile?.id,
   });
 
-  // Get current user
-  const { data: currentUser } = useQuery<User>({
-    queryKey: ["/api/auth/user"],
-  });
+  // Get current user via the auth hook (handles 401 properly)
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     if (followStatus) {
