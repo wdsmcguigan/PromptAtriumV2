@@ -4,28 +4,28 @@
 
 :root {
   --background: hsl(220, 15%, 8%);
-  --foreground: hsl(220, 15%, 95%);
+  --foreground: hsl(220, 10%, 98%);
   --card: hsl(220, 15%, 12%);
-  --card-foreground: hsl(220, 15%, 95%);
+  --card-foreground: hsl(220, 10%, 98%);
   --popover: hsl(220, 15%, 12%);
-  --popover-foreground: hsl(220, 15%, 95%);
-  --primary: hsl(221, 83%, 53%);
-  --primary-foreground: hsl(0, 0%, 98%);
+  --popover-foreground: hsl(220, 10%, 98%);
+  --primary: hsl(217, 100%, 54%);
+  --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(220, 14%, 16%);
-  --secondary-foreground: hsl(220, 15%, 75%);
+  --secondary-foreground: hsl(220, 15%, 85%);
   --muted: hsl(220, 14%, 14%);
-  --muted-foreground: hsl(220, 14%, 60%);
+  --muted-foreground: hsl(220, 10%, 72%);
   --accent: hsl(220, 14%, 16%);
-  --accent-foreground: hsl(220, 15%, 75%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --success: hsl(142, 71%, 45%);
-  --success-foreground: hsl(0, 0%, 98%);
+  --accent-foreground: hsl(220, 15%, 85%);
+  --destructive: hsl(0, 100%, 50%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --success: hsl(142, 76%, 36%);
+  --success-foreground: hsl(0, 0%, 100%);
   --warning: hsl(38, 92%, 50%);
   --warning-foreground: hsl(0, 0%, 8%);
-  --border: hsl(220, 13%, 20%);
+  --border: hsl(220, 13%, 28%);
   --input: hsl(220, 13%, 20%);
-  --ring: hsl(221, 83%, 53%);
+  --ring: hsl(217, 100%, 54%);
   --chart-1: hsl(221, 83%, 53%);
   --chart-2: hsl(159, 100%, 36%);
   --chart-3: hsl(42, 93%, 56%);
@@ -59,28 +59,28 @@
 
 .dark {
   --background: hsl(220, 15%, 8%);
-  --foreground: hsl(220, 15%, 95%);
+  --foreground: hsl(220, 10%, 98%);
   --card: hsl(220, 15%, 12%);
-  --card-foreground: hsl(220, 15%, 95%);
+  --card-foreground: hsl(220, 10%, 98%);
   --popover: hsl(220, 15%, 12%);
-  --popover-foreground: hsl(220, 15%, 95%);
-  --primary: hsl(221, 83%, 53%);
-  --primary-foreground: hsl(0, 0%, 98%);
+  --popover-foreground: hsl(220, 10%, 98%);
+  --primary: hsl(217, 100%, 54%);
+  --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(220, 14%, 16%);
-  --secondary-foreground: hsl(220, 15%, 75%);
+  --secondary-foreground: hsl(220, 15%, 85%);
   --muted: hsl(220, 14%, 14%);
-  --muted-foreground: hsl(220, 14%, 60%);
+  --muted-foreground: hsl(220, 10%, 72%);
   --accent: hsl(220, 14%, 16%);
-  --accent-foreground: hsl(220, 15%, 75%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --success: hsl(142, 71%, 45%);
-  --success-foreground: hsl(0, 0%, 98%);
+  --accent-foreground: hsl(220, 15%, 85%);
+  --destructive: hsl(0, 100%, 50%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --success: hsl(142, 76%, 36%);
+  --success-foreground: hsl(0, 0%, 100%);
   --warning: hsl(38, 92%, 50%);
   --warning-foreground: hsl(0, 0%, 8%);
-  --border: hsl(220, 13%, 20%);
+  --border: hsl(220, 13%, 28%);
   --input: hsl(220, 13%, 20%);
-  --ring: hsl(221, 83%, 53%);
+  --ring: hsl(217, 100%, 54%);
   --chart-1: hsl(221, 83%, 53%);
   --chart-2: hsl(159, 100%, 36%);
   --chart-3: hsl(42, 93%, 56%);
@@ -150,7 +150,7 @@
 
 /* Navigation gradient styles */
 .nav-gradient-library {
-  background: linear-gradient(135deg, #028ec6 0%, #9175ff 30%, #9175ff 70%, #028ec6 100%);
+  background: linear-gradient(135deg, #0066ff 0%, #8b6bff 30%, #8b6bff 70%, #0066ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -159,7 +159,7 @@
 }
 
 .nav-gradient-community {
-  background: linear-gradient(135deg, #ffc800 0%, #ff7300 30%, #ff7300 70%, #ffc802 100%);
+  background: linear-gradient(135deg, #ffa500 0%, #ff6600 30%, #ff6600 70%, #ffa500 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -168,7 +168,7 @@
 }
 
 .nav-gradient-tools {
-  background: linear-gradient(135deg, #8466d6 0%, #128fc4 30%, #128fc4 70%, #8466d6 100%);
+  background: linear-gradient(135deg, #8b6bff 0%, #00bfff 30%, #00bfff 70%, #8b6bff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -196,7 +196,7 @@
 }
 
 .button-gradient-library {
-  background: linear-gradient(135deg, #028ec6 0%, #6851c8 30%, #6851c8 70%, #028ec6 100%);
+  background: linear-gradient(135deg, #0066ff 0%, #6851c8 30%, #6851c8 70%, #0066ff 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 0px solid rgba(255, 255, 255, 0.2);
@@ -206,12 +206,12 @@
 }
 
 .button-gradient-library:hover {
-  background: linear-gradient(135deg, #028ec6 0%, #6851c8 30%, #6851c8 70%, #028ec6 100%);
+  background: linear-gradient(135deg, #0066ff 0%, #6851c8 30%, #6851c8 70%, #0066ff 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   color: white !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 0px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 0px rgba(0, 102, 255, 0.4);
 }
 
 .button-gradient-library:hover * {
@@ -219,7 +219,7 @@
 }
 
 .button-gradient-community {
-  background: linear-gradient(135deg, rgba(255, 200, 0, 0.8) 0%, rgba(255, 115, 0, 0.8) 50%, rgba(255, 200, 2, 0.8) 100%);
+  background: linear-gradient(135deg, #ffa500 0%, #ff6600 50%, #ffa500 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 0px solid rgba(255, 255, 255, 0.2);
@@ -229,12 +229,12 @@
 }
 
 .button-gradient-community:hover {
-  background: linear-gradient(135deg, rgba(255, 200, 0, 0.9) 0%, rgba(255, 115, 0, 0.9) 50%, rgba(255, 200, 2, 0.9) 100%);
+  background: linear-gradient(135deg, #ffb800 0%, #ff7700 50%, #ffb800 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   color: white !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 0px rgba(255, 154, 158, 0.3);
+  box-shadow: 0 4px 0px rgba(255, 165, 0, 0.5);
 }
 
 .button-gradient-community:hover * {
@@ -242,7 +242,7 @@
 }
 
 .button-gradient-tools {
-  background: linear-gradient(135deg, #8466d6 0%, #128fc4 50%, #8466d6 100%);
+  background: linear-gradient(135deg, #8b6bff 0%, #00bfff 50%, #8b6bff 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 0px solid rgba(255, 255, 255, 0.2);
@@ -252,12 +252,12 @@
 }
 
 .button-gradient-tools:hover {
-  background: linear-gradient(135deg, #8466d6 0%, #128fc4 50%, #8466d6 100%);
+  background: linear-gradient(135deg, #9a7fff 0%, #00d4ff 50%, #9a7fff 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   color: white !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 0px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 0px rgba(139, 107, 255, 0.4);
 }
 
 .button-gradient-tools:hover * {
@@ -265,7 +265,7 @@
 }
 
 .button-gradient-marketplace {
-  background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #10b981 100%);
+  background: linear-gradient(135deg, #00d97d 0%, #0066ff 50%, #00d97d 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 0px solid rgba(255, 255, 255, 0.2);
@@ -275,12 +275,12 @@
 }
 
 .button-gradient-marketplace:hover {
-  background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #10b981 100%);
+  background: linear-gradient(135deg, #00e699 0%, #0077ff 50%, #00e699 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   color: white !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 0px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 0px rgba(0, 217, 125, 0.4);
 }
 
 .button-gradient-marketplace:hover * {
