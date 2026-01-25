@@ -630,30 +630,18 @@ export function PromptImporter({ onPromptSaved }: PromptImporterProps) {
                       {result.items.map((item, i) => (
                         <div 
                           key={i} 
-                          className={`p-3 rounded-lg border ${
+                          className={`p-3 rounded-lg border relative ${
                             savedItems.has(i) ? 'bg-green-500/10 border-green-500/30' : 'bg-card border-border'
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="text-sm flex-1 font-mono text-xs whitespace-pre-wrap bg-muted p-3 rounded border border-border/50">
-                              {(() => {
-                                try {
-                                  const parsed = typeof item.prompt === 'string' ? JSON.parse(item.prompt) : item.prompt;
-                                  return (
-                                    <pre className="overflow-x-auto text-xs custom-scrollbar">
-                                      {JSON.stringify(parsed, null, 2)}
-                                    </pre>
-                                  );
-                                } catch (e) {
-                                  return typeof item.prompt === 'object' ? JSON.stringify(item.prompt, null, 2) : item.prompt;
-                                }
-                              })()}
-                            </div>
+                          {/* Save button positioned at top right, always visible */}
+                          <div className="absolute top-2 right-2 z-10">
                             <Button
                               size="sm"
                               variant={savedItems.has(i) ? "ghost" : "default"}
                               onClick={() => savePromptMutation.mutate({ item, index: i })}
                               disabled={savePromptMutation.isPending || savedItems.has(i)}
+                              className="shadow-md"
                             >
                               {savedItems.has(i) ? (
                                 <Check className="h-3 w-3 text-green-500" />
@@ -661,6 +649,21 @@ export function PromptImporter({ onPromptSaved }: PromptImporterProps) {
                                 "Save"
                               )}
                             </Button>
+                          </div>
+                          {/* Prompt content with padding for button */}
+                          <div className="text-sm font-mono text-xs bg-muted p-3 pr-16 rounded border border-border/50 max-h-[200px] overflow-auto">
+                            {(() => {
+                              try {
+                                const parsed = typeof item.prompt === 'string' ? JSON.parse(item.prompt) : item.prompt;
+                                return (
+                                  <pre className="text-xs whitespace-pre-wrap break-words">
+                                    {JSON.stringify(parsed, null, 2)}
+                                  </pre>
+                                );
+                              } catch (e) {
+                                return <span className="whitespace-pre-wrap break-words">{typeof item.prompt === 'object' ? JSON.stringify(item.prompt, null, 2) : item.prompt}</span>;
+                              }
+                            })()}
                           </div>
                           <div className="flex flex-wrap gap-1 mt-2">
                             {item.promptType && (
