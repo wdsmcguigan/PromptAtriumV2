@@ -376,12 +376,12 @@ export function PromptImporter({ onPromptSaved }: PromptImporterProps) {
                   </div>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-indigo-400/60" />
+                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-indigo-400/60 z-10" />
                       <Input
                         value={scoutKeywords}
                         onChange={(e) => setScoutKeywords(e.target.value)}
                         placeholder="e.g., cyberpunk portrait, ethereal landscape..."
-                        className="pl-9 bg-background/80 border-indigo-500/30 text-foreground placeholder:text-muted-foreground/60"
+                        className="pl-9 !bg-[#1a1a2e] !text-white border-indigo-500/30 placeholder:text-gray-400"
                       />
                     </div>
                     <Button
