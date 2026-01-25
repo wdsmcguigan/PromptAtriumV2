@@ -1906,8 +1906,8 @@ export function PromptCard({
 
         {/* Additional Prompt Information */}
         <div className="mt-2 md:mt-4 space-y-2 md:space-y-3" data-testid={`additional-info-${prompt.id}`}>
-          {/* Row 1: User, Types, Styles, Categories, Tags */}
-          <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 text-xs" data-testid={`info-row-1-${prompt.id}`}>
+          {/* Row 1: User, Types, Styles, Categories (Tags moved to separate row when collapsed) */}
+          <div className={`grid ${isCollapsed ? 'grid-cols-4' : 'grid-cols-3 lg:grid-cols-5'} gap-2 md:gap-3 text-xs`} data-testid={`info-row-1-${prompt.id}`}>
             {/* User who created/shared */}
             <div>
               {!isCollapsed && <span className="font-medium text-muted-foreground">Creator:</span>}
@@ -2013,22 +2013,22 @@ export function PromptCard({
               </div>
             )}
 
-            {/* Tags */}
-            {((!isCollapsed) || (prompt.tags && prompt.tags.length > 0)) && (
+            {/* Tags - only in expanded view within the grid */}
+            {!isCollapsed && (
               <div>
-                {!isCollapsed && <span className="font-medium text-muted-foreground">Tags:</span>}
-                <div className={!isCollapsed ? "flex flex-wrap gap-1 mt-1" : "flex flex-wrap gap-1"}>
+                <span className="font-medium text-muted-foreground">Tags:</span>
+                <div className="flex flex-wrap gap-1 mt-1">
                   {prompt.tags && prompt.tags.length > 0 ? (
                     prompt.tags.slice(0, 3).map((tag, index) => (
-                      <Badge key={index} variant="default" className="text-xs">
-                        {tag}
+                      <Badge key={index} variant="outline" className="text-xs bg-slate-800/50 text-slate-300 border-slate-600/50">
+                        #{tag}
                       </Badge>
                     ))
                   ) : (
-                    !isCollapsed && <span className="text-muted-foreground text-xs">None</span>
+                    <span className="text-muted-foreground text-xs">None</span>
                   )}
                   {prompt.tags && prompt.tags.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs opacity-60">
                       +{prompt.tags.length - 3}
                     </Badge>
                   )}
@@ -2036,6 +2036,26 @@ export function PromptCard({
               </div>
             )}
           </div>
+
+          {/* Tags Row - Only when collapsed */}
+          {isCollapsed && prompt.tags && prompt.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-1" data-testid={`tags-row-collapsed-${prompt.id}`}>
+              {prompt.tags.slice(0, 4).map((tag, index) => (
+                <Badge 
+                  key={index} 
+                  variant="outline" 
+                  className="text-xs py-0.5 px-2 bg-slate-800/50 text-slate-400 border-slate-600/40 font-normal"
+                >
+                  #{tag}
+                </Badge>
+              ))}
+              {prompt.tags.length > 4 && (
+                <Badge variant="secondary" className="text-xs py-0.5 px-2 opacity-50 font-normal">
+                  +{prompt.tags.length - 4}
+                </Badge>
+              )}
+            </div>
+          )}
 
           {/* Row 2: Intended Generator, Recommended Models, Technical Parameters, Variables */}
           <AnimatePresence>
