@@ -31,8 +31,9 @@ export const searchTrendingPrompts = async (topic: string): Promise<ScoutResult>
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  // Use gemini-2.0-flash which supports Google Search grounding
-  const modelId = 'gemini-2.0-flash';
+  // Using Gemini 3.0 Pro for superior reasoning and reduced hallucination on Search tasks
+  // This matches the exact model used in PromptScout reference implementation
+  const modelId = 'gemini-3-pro-preview';
 
   const searchPrompt = `
     You are a specialized Data Archivist. Your mandate is to find REAL, VERIFIABLE AI prompts for "${topic}" using Google Search.
@@ -52,7 +53,7 @@ export const searchTrendingPrompts = async (topic: string): Promise<ScoutResult>
     Goal: Find up to 10 HIGH-QUALITY, verifiable results. It is better to return 5 real links than 10 broken ones.
 
     Output Schema:
-    - title: Short descriptive title (3-8 words).
+    - title: Short descriptive title.
     - promptText: The raw prompt.
     - platform: Source platform.
     - sourceUrl: The verifiable link.
@@ -69,6 +70,8 @@ export const searchTrendingPrompts = async (topic: string): Promise<ScoutResult>
       contents: searchPrompt,
       config: {
         tools: [{ googleSearch: {} }],
+        // Pro model handles complex extraction better with a slightly non-zero temp
+        // but kept low to prevent creative writing.
         temperature: 0.1,
         responseMimeType: "application/json",
         responseSchema: {
