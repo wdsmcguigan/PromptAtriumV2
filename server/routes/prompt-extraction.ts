@@ -14,6 +14,8 @@ interface ExtractedItem {
   promptStyle: string;
   intendedModel: string;
   slideIndex?: number;
+  sourceUrl?: string;
+  platform?: string;
 }
 
 interface ExtractionResult {
@@ -226,24 +228,37 @@ router.post('/scout', isAuthenticated, async (req: any, res) => {
       });
     }
 
+    // Call scout with clean keywords - types/styles will be applied after
+    const result = await searchTrendingPrompts(keywords.trim());
+    
+    // Fetch available types and styles for post-processing classification
     const [availableTypes, availableStyles] = await Promise.all([
       storage.getPromptTypes({ isActive: true }),
       storage.getPromptStyles({ isActive: true })
     ]);
-
-    const typeList = availableTypes.map(t => t.name).join(", ");
-    const styleList = availableStyles.map(s => s.name).join(", ");
-
-    const enhancedKeywords = `${keywords.trim()} (classify using types: ${typeList} and styles: ${styleList})`;
-    const result = await searchTrendingPrompts(enhancedKeywords);
+    
+    // Helper to find matching type/style from database or use original
+    const matchType = (scoutType: string) => {
+      const lower = (scoutType || '').toLowerCase();
+      const found = availableTypes.find(t => t.name.toLowerCase() === lower);
+      return found ? found.name : (scoutType || 'Image');
+    };
+    
+    const matchStyle = (scoutStyle: string) => {
+      const lower = (scoutStyle || '').toLowerCase();
+      const found = availableStyles.find(s => s.name.toLowerCase() === lower);
+      return found ? found.name : (scoutStyle || 'Unknown');
+    };
 
     const items: ExtractedItem[] = result.parsedPrompts.map(p => ({
       prompt: p.promptText,
       name: p.title || 'Scouted Prompt',
       tags: p.tags || [],
-      promptType: p.promptType || 'Image',
-      promptStyle: p.promptStyle || 'Unknown',
+      promptType: matchType(p.promptType),
+      promptStyle: matchStyle(p.promptStyle),
       intendedModel: p.intendedModel || 'Unknown',
+      sourceUrl: p.sourceUrl,
+      platform: p.platform,
     }));
 
     return res.json({
