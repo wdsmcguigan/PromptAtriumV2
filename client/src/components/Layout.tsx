@@ -32,7 +32,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { User, Collection, UserCommunity } from "@shared/schema";
 
-import { AppSidebar } from "@/components/AppSidebar";
+import { AppSidebar, SIDEBAR_BACKGROUND } from "@/components/AppSidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -293,8 +293,8 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
         </div>
       </div>
 
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-gray-900/70 backdrop-blur-sm boder-transparent border-cyan-500/30 z-50 transition-all duration-300 boder-transparent">
+      {/* Header - background controlled by SIDEBAR_BACKGROUND in AppSidebar.tsx */}
+      <header className={`fixed top-0 left-0 right-0 ${SIDEBAR_BACKGROUND} border-cyan-500/30 z-50 transition-all duration-300`}>
         <div className="container mx-auto px-1 sm:px-1 md:px-1 py-1 flex items-center justify-between">
           <AppSidebar 
             location={location}

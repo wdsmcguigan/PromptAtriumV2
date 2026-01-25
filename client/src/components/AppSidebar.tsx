@@ -35,6 +35,17 @@ interface AppSidebarProps {
   toast: any;
 }
 
+// ============================================================
+// SIDEBAR STYLING - Edit this constant to change the header/nav background
+// ============================================================
+export const SIDEBAR_BACKGROUND = "bg-gray-900/70 backdrop-blur-sm";
+// Examples:
+// "bg-slate-900" - solid dark slate
+// "bg-indigo-900/80 backdrop-blur-sm" - indigo tint with blur
+// "bg-black/90 backdrop-blur-md" - near black with blur
+// "bg-gradient-to-r from-gray-900 to-slate-900" - gradient
+// ============================================================
+
 export function AppSidebar({
   location,
   user,
