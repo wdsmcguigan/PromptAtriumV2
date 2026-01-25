@@ -310,11 +310,19 @@ export function PromptImporter({ onPromptSaved }: PromptImporterProps) {
         return "Imported Prompt";
       };
 
+      // Generate a brief description (not the full prompt content)
+      const generateDescription = (): string => {
+        if (socialContext?.title) return socialContext.title;
+        if (socialContext?.text) return socialContext.text.slice(0, 200);
+        if (item.promptType) return `${item.promptType} prompt imported from ${socialContext?.platform || 'upload'}`;
+        return `Imported from ${socialContext?.platform || 'file upload'}`;
+      };
+
       // Build the final prompt data
       const promptData = {
         name: generatePromptName(item.prompt),
         promptContent: typeof item.prompt === 'string' ? item.prompt : JSON.stringify(item.prompt, null, 2),
-        description: typeof item.prompt === 'string' ? item.prompt : "Imported structured prompt",
+        description: generateDescription(),
         category: item.promptType || "General",
         promptType: item.promptType,
         promptStyle: item.promptStyle,
@@ -322,6 +330,7 @@ export function PromptImporter({ onPromptSaved }: PromptImporterProps) {
         sourceUrl: url || undefined,
         intendedGenerator: item.intendedModel,
         exampleImagesUrl: imageUrls,
+        author: socialContext?.author || undefined,
         isPublic: false,
         status: "draft",
         additionalMetadata: {
