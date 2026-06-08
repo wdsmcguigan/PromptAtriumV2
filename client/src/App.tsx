@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
+import { MARKETPLACE_ENABLED } from "@/config/features";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -109,14 +110,21 @@ function Router() {
           {() => isAuthenticated ? <Layout><PromptMinerPage /></Layout> : <PromptMinerPage />}
         </Route>
         <Route path="/marketplace">
-          {() => isAuthenticated ? <Layout><Marketplace /></Layout> : <Marketplace />}
+          {() => !MARKETPLACE_ENABLED ? <Redirect to="/" /> : isAuthenticated ? <Layout><Marketplace /></Layout> : <Marketplace />}
         </Route>
         <Route path="/marketplace/listing/:id">
-          {() => isAuthenticated ? <Layout><ListingDetail /></Layout> : <ListingDetail />}
+          {() => !MARKETPLACE_ENABLED ? <Redirect to="/" /> : isAuthenticated ? <Layout><ListingDetail /></Layout> : <ListingDetail />}
         </Route>
         <Route path="/marketplace/help">
-          {() => isAuthenticated ? <Layout><MarketplaceDocs /></Layout> : <MarketplaceDocs />}
+          {() => !MARKETPLACE_ENABLED ? <Redirect to="/" /> : isAuthenticated ? <Layout><MarketplaceDocs /></Layout> : <MarketplaceDocs />}
         </Route>
+        {/* When marketplace is disabled, redirect these auth-only marketplace URLs to home
+            for ALL users (including unauthenticated) so they never fall through to 404.
+            Re-enabling is a single flag flip — these guards become inert. */}
+        {!MARKETPLACE_ENABLED && <Route path="/credits"><Redirect to="/" /></Route>}
+        {!MARKETPLACE_ENABLED && <Route path="/seller/dashboard"><Redirect to="/" /></Route>}
+        {!MARKETPLACE_ENABLED && <Route path="/admin/disputes"><Redirect to="/" /></Route>}
+        {!MARKETPLACE_ENABLED && <Route path="/purchases"><Redirect to="/" /></Route>}
         <Route path="/prompting-guides">
           {() => isAuthenticated ? <Layout><PromptingGuides /></Layout> : <PromptingGuides />}
         </Route>

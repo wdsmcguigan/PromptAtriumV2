@@ -25,6 +25,7 @@ import { PromptImageCarousel } from "./PromptImageCarousel";
 import { AddExampleImagesDialog } from "./AddExampleImagesDialog";
 import { AddToCollectionDialog } from "./AddToCollectionDialog";
 import { ImageLightbox } from "./ImageLightbox";
+import { MARKETPLACE_ENABLED } from "@/config/features";
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -1488,7 +1489,7 @@ export function PromptCard({
                     </Button>
 
                     {/* List for Sale Button - Dollar sign icon - Only show in library, not on community page */}
-                    {!isCommunityPage && (
+                    {MARKETPLACE_ENABLED && !isCommunityPage && (
                       <Button
                         size="sm"
                         variant="ghost"

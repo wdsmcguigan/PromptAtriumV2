@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
+import { MARKETPLACE_ENABLED } from "@/config/features";
 import { queryClient, prefetchCommonData, apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -353,7 +354,7 @@ export default function Dashboard() {
   // Fetch featured marketplace listings
   const { data: featuredListings = [] } = useQuery<MarketplaceListing[]>({
     queryKey: ["/api/marketplace/featured?limit=4"],
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && MARKETPLACE_ENABLED,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false,
   });
@@ -615,14 +616,16 @@ export default function Dashboard() {
                     Bookmarked Prompts
                   </DropdownMenuCheckboxItem>
 
-                  <DropdownMenuCheckboxItem
-                    checked={isMarketplaceVisible}
-                    onCheckedChange={setIsMarketplaceVisible}
-                    className="cursor-pointer"
-                  >
-                    <Eye className={`h-4 w-4 mr-2 ${isMarketplaceVisible ? '' : 'opacity-50'}`} />
-                    Featured Marketplace
-                  </DropdownMenuCheckboxItem>
+                  {MARKETPLACE_ENABLED && (
+                    <DropdownMenuCheckboxItem
+                      checked={isMarketplaceVisible}
+                      onCheckedChange={setIsMarketplaceVisible}
+                      className="cursor-pointer"
+                    >
+                      <Eye className={`h-4 w-4 mr-2 ${isMarketplaceVisible ? '' : 'opacity-50'}`} />
+                      Featured Marketplace
+                    </DropdownMenuCheckboxItem>
+                  )}
 
                   <DropdownMenuCheckboxItem
                     checked={isCommunityHighlightsVisible}
@@ -980,7 +983,7 @@ export default function Dashboard() {
             )}
 
             {/* Featured Marketplace Listings */}
-            {isMarketplaceVisible && featuredListings.length > 0 && (
+            {MARKETPLACE_ENABLED && isMarketplaceVisible && featuredListings.length > 0 && (
               <Collapsible
                 open={!isMarketplaceCollapsed}
                 onOpenChange={(open) => setIsMarketplaceCollapsed(!open)}

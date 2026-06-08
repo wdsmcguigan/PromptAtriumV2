@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { MARKETPLACE_ENABLED } from "@/config/features";
 
 interface SidebarNavProps {
   location: string;
@@ -84,13 +85,15 @@ export function SidebarNav({ location }: SidebarNavProps) {
           onClick={() => setLocation("/community")}
           variants={itemVariants}
         />
-        <NavItem
-          label="Marketplace"
-          icon={<DollarSign className="h-4 w-4" />}
-          active={location === "/marketplace"}
-          onClick={() => setLocation("/marketplace")}
-          variants={itemVariants}
-        />
+        {MARKETPLACE_ENABLED && (
+          <NavItem
+            label="Marketplace"
+            icon={<DollarSign className="h-4 w-4" />}
+            active={location === "/marketplace"}
+            onClick={() => setLocation("/marketplace")}
+            variants={itemVariants}
+          />
+        )}
       </div>
 
       {/* Divider */}

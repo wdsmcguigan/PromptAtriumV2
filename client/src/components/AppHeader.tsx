@@ -23,6 +23,7 @@ import {
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { User, UserCommunity } from "@shared/schema";
+import { MARKETPLACE_ENABLED } from "@/config/features";
 
 interface AppHeaderProps {
   location: string;
@@ -120,18 +121,20 @@ export function AppHeader({
             My Library
           </Link>
         </div>
-        <div 
-          ref={setLinkRef('/marketplace')}
-          onMouseEnter={(e) => positionTo(e.currentTarget as HTMLElement, '/marketplace')}
-        >
-          <Link 
-            href="/marketplace" 
-            className={isActiveRoute("/marketplace") ? "nav-gradient-marketplace px-4 py-2 rounded-md bg-purple-400/10 border border-transparent inline-block whitespace-nowrap" : "text-gray-300 px-4 py-2 rounded-md transition-all duration-200 inline-block hover:bg-purple-400/00 whitespace-nowrap"} 
-            data-testid="nav-marketplace"
+        {MARKETPLACE_ENABLED && (
+          <div 
+            ref={setLinkRef('/marketplace')}
+            onMouseEnter={(e) => positionTo(e.currentTarget as HTMLElement, '/marketplace')}
           >
-            Marketplace
-          </Link>
-        </div>
+            <Link 
+              href="/marketplace" 
+              className={isActiveRoute("/marketplace") ? "nav-gradient-marketplace px-4 py-2 rounded-md bg-purple-400/10 border border-transparent inline-block whitespace-nowrap" : "text-gray-300 px-4 py-2 rounded-md transition-all duration-200 inline-block hover:bg-purple-400/00 whitespace-nowrap"} 
+              data-testid="nav-marketplace"
+            >
+              Marketplace
+            </Link>
+          </div>
+        )}
         <div 
           ref={setLinkRef('/community')}
           onMouseEnter={(e) => positionTo(e.currentTarget as HTMLElement, '/community')}

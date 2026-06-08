@@ -7,6 +7,7 @@ import { NavTabDropdown } from "./NavTabDropdown";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import type { User, UserCommunity } from "@shared/schema";
+import { MARKETPLACE_ENABLED } from "@/config/features";
 
 export function MobilePageNav() {
   const { user, isAuthenticated } = useAuth();
@@ -164,23 +165,25 @@ export function MobilePageNav() {
           )}
 
           {/* Marketplace Button */}
-          <div className="flex-1">
-            <Button 
-              ref={marketplaceButtonRef}
-              variant="outline"
-              className={`w-full relative group px-1 py-2 h-auto border-transparent select-none ${isMarketplacePage ? 'button-gradient-marketplace hover:color-white' : 'bg-gray-900/70 hover:bg-white/5'}`}
-              data-testid="button-marketplace"
-              {...marketplaceLongPress}
-            >
-              <div className="flex flex-col items-center gap-0.5">
-                <ShoppingBag className={`h-4 w-4 text-white transition-all ${!isMarketplacePage ? 'group-hover:scale-110 group-hover:brightness-150' : ''}`} />
-                <span className={`text-[9px] ${!isMarketplacePage ? 'nav-gradient-marketplace' : ''}`}>Market</span>
-              </div>
-              {isMarketplacePage && (
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
-              )}
-            </Button>
-          </div>
+          {MARKETPLACE_ENABLED && (
+            <div className="flex-1">
+              <Button 
+                ref={marketplaceButtonRef}
+                variant="outline"
+                className={`w-full relative group px-1 py-2 h-auto border-transparent select-none ${isMarketplacePage ? 'button-gradient-marketplace hover:color-white' : 'bg-gray-900/70 hover:bg-white/5'}`}
+                data-testid="button-marketplace"
+                {...marketplaceLongPress}
+              >
+                <div className="flex flex-col items-center gap-0.5">
+                  <ShoppingBag className={`h-4 w-4 text-white transition-all ${!isMarketplacePage ? 'group-hover:scale-110 group-hover:brightness-150' : ''}`} />
+                  <span className={`text-[9px] ${!isMarketplacePage ? 'nav-gradient-marketplace' : ''}`}>Market</span>
+                </div>
+                {isMarketplacePage && (
+                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -203,12 +206,14 @@ export function MobilePageNav() {
         onClose={() => setOpenDropdown(null)}
         buttonRef={communityButtonRef}
       />
-      <NavTabDropdown
-        page="marketplace"
-        isOpen={openDropdown === 'marketplace'}
-        onClose={() => setOpenDropdown(null)}
-        buttonRef={marketplaceButtonRef}
-      />
+      {MARKETPLACE_ENABLED && (
+        <NavTabDropdown
+          page="marketplace"
+          isOpen={openDropdown === 'marketplace'}
+          onClose={() => setOpenDropdown(null)}
+          buttonRef={marketplaceButtonRef}
+        />
+      )}
     </>
   );
 }
