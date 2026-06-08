@@ -18,6 +18,7 @@ import { MultiSelectFilters } from "@/components/MultiSelectFilters";
 import type { MultiSelectFilters as MultiSelectFiltersType, EnabledFilters } from "@/components/MultiSelectFilters";
 import { PromptModal } from "@/components/PromptModal";
 import { BulkEditToolbar } from "@/components/BulkEditToolbar";
+import { MobileTabDropdown, type MobileTabItem } from "@/components/MobileTabDropdown";
 import { BulkEditModal } from "@/components/BulkEditModal";
 import { BulkImportModal } from "@/components/BulkImportModal";
 import { CommunityVisibilitySelector } from "@/components/CommunityVisibilitySelector";
@@ -38,6 +39,14 @@ const collectionSchema = z.object({
 });
 
 type CollectionFormData = z.infer<typeof collectionSchema>;
+
+const LIBRARY_TABS: MobileTabItem[] = [
+  { value: "prompts", label: "My Prompts" },
+  { value: "bookmarked", label: "Bookmarks" },
+  { value: "collections", label: "Collections" },
+  { value: "archive", label: "Archived" },
+  { value: "activity", label: "My Activity" },
+];
 
 export default function Library() {
   const { user, isLoading, isAuthenticated } = useAuth();
@@ -75,6 +84,12 @@ export default function Library() {
   const tabFromQuery = queryParams.get('tab');
   const savedTab = localStorage.getItem('library-active-tab');
   const [activeTab, setActiveTab] = useState<string>(tabFromQuery || savedTab || "prompts");
+
+  const handleLibraryTabChange = (value: string) => {
+    setActiveTab(value);
+    localStorage.setItem('library-active-tab', value);
+    setLocation(`/library?tab=${value}`);
+  };
   
   // Fetch user activities  
   const { data: userActivities = [] } = useQuery<any[]>({
@@ -88,7 +103,7 @@ export default function Library() {
     const tab = params.get('tab');
     const action = params.get('action');
     
-    if (tab && ['prompts', 'bookmarked', 'collections', 'archive'].includes(tab)) {
+    if (tab && LIBRARY_TABS.some((t) => t.value === tab)) {
       setActiveTab(tab);
     }
     
@@ -834,13 +849,9 @@ export default function Library() {
       <div className="container mx-auto px-2 py-2 sm:px-3 sm:py-3 md:px-6 md:py-8 pb-24 lg:pb-8">
         
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => {
-          setActiveTab(value);
-          localStorage.setItem('library-active-tab', value);
-          // Update URL with the new tab
-          setLocation(`/library?tab=${value}`);
-        }} className="space-y-3 md:space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+        <Tabs value={activeTab} onValueChange={handleLibraryTabChange} className="space-y-3 md:space-y-6">
+          {/* Desktop: top tab bar. On mobile, tabs are accessed via the dropdown headers below. */}
+          <TabsList className="hidden lg:grid w-full grid-cols-5">
             <TabsTrigger value="prompts" className="text-xs md:text-sm" data-testid="tab-my-prompts">
               My Prompts
             </TabsTrigger>
@@ -915,6 +926,7 @@ export default function Library() {
             isBulkMode={isBulkMode}
             isLoading={bulkOperationMutation.isPending}
             onAddToCollection={handleAddToCollection}
+            tabNav={{ tabs: LIBRARY_TABS, value: activeTab, onChange: handleLibraryTabChange }}
           />
 
             {/* Content Grid */}
@@ -984,6 +996,7 @@ export default function Library() {
               onToggleBulkMode={handleToggleBulkMode}
               isBulkMode={isBulkMode}
               isLoading={bulkOperationMutation.isPending}
+              tabNav={{ tabs: LIBRARY_TABS, value: activeTab, onChange: handleLibraryTabChange }}
             />
 
             {/* Content Grid */}
@@ -1099,7 +1112,17 @@ export default function Library() {
 
               {/* Collections Header with Actions */}
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Collections</h2>
+                {/* Mobile: tab switcher dropdown */}
+                <div className="lg:hidden">
+                  <MobileTabDropdown
+                    tabs={LIBRARY_TABS}
+                    value={activeTab}
+                    onValueChange={handleLibraryTabChange}
+                    data-testid="button-library-tab-dropdown-collections"
+                  />
+                </div>
+                {/* Desktop: static heading */}
+                <h2 className="hidden lg:block text-xl font-semibold">Collections</h2>
                 <Dialog open={createCollectionModalOpen} onOpenChange={setCreateCollectionModalOpen}>
                   <DialogTrigger asChild>
                     <Button className="flex items-center gap-2" data-testid="button-create-collection">
@@ -1370,6 +1393,7 @@ export default function Library() {
               onToggleBulkMode={handleToggleBulkMode}
               isBulkMode={isBulkMode}
               isLoading={bulkOperationMutation.isPending}
+              tabNav={{ tabs: LIBRARY_TABS, value: activeTab, onChange: handleLibraryTabChange }}
             />
 
             {/* Content Grid */}
@@ -1407,6 +1431,15 @@ export default function Library() {
 
           {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
+            {/* Mobile: tab switcher dropdown */}
+            <div className="lg:hidden">
+              <MobileTabDropdown
+                tabs={LIBRARY_TABS}
+                value={activeTab}
+                onValueChange={handleLibraryTabChange}
+                data-testid="button-library-tab-dropdown-activity"
+              />
+            </div>
             <Card>
               <CardHeader>
                 <CardTitle>My Activity</CardTitle>

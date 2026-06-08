@@ -23,10 +23,17 @@ import { PromptModal } from "@/components/PromptModal";
 import { MultiSelectFilters } from "@/components/MultiSelectFilters";
 import type { MultiSelectFilters as MultiSelectFiltersType, EnabledFilters } from "@/components/MultiSelectFilters";
 import { CommunityContextTabs } from "@/components/CommunityContextTabs";
+import { MobileTabDropdown, type MobileTabItem } from "@/components/MobileTabDropdown";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import type { Prompt, User, Collection, Community, UserCommunity } from "@shared/schema";
 import { ShineBorder } from "@/components/ui/shine-border";
+
+const COMMUNITY_TABS: MobileTabItem[] = [
+  { value: "prompts", label: "Prompts" },
+  { value: "collections", label: "Collections" },
+  { value: "followed", label: "Following" },
+];
 
 export default function Community() {
   const { isLoading, isAuthenticated, user } = useAuth();
@@ -92,6 +99,26 @@ export default function Community() {
   const savedPromptsSubTab = localStorage.getItem('community-prompts-sub-tab');
   const initialSubTab = subTabFromUrl || savedPromptsSubTab || "featured";
   const [promptsSubTab, setPromptsSubTab] = useState(initialSubTab);
+
+  const handleCommunityTabChange = (value: string) => {
+    setActiveTab(value);
+    localStorage.setItem('community-active-tab', value);
+    // Update URL with the new tab
+    const params = new URLSearchParams(location.includes('?') ? location.split('?')[1] : '');
+    params.set('tab', value);
+    // Keep sub parameter if on prompts tab
+    if (value === 'prompts' && promptsSubTab) {
+      params.set('sub', promptsSubTab);
+    } else {
+      params.delete('sub');
+    }
+    // Preserve communityId if set
+    if (selectedCommunityId) {
+      params.set('communityId', selectedCommunityId);
+    }
+    setLocation(`/community?${params.toString()}`);
+  };
+
   const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
   const [followingCollapsed, setFollowingCollapsed] = useState(true);
 
@@ -643,25 +670,17 @@ export default function Community() {
       />
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={(value) => {
-        setActiveTab(value);
-        localStorage.setItem('community-active-tab', value);
-        // Update URL with the new tab
-        const params = new URLSearchParams(location.includes('?') ? location.split('?')[1] : '');
-        params.set('tab', value);
-        // Keep sub parameter if on prompts tab
-        if (value === 'prompts' && promptsSubTab) {
-          params.set('sub', promptsSubTab);
-        } else {
-          params.delete('sub');
-        }
-        // Preserve communityId if set
-        if (selectedCommunityId) {
-          params.set('communityId', selectedCommunityId);
-        }
-        setLocation(`/community?${params.toString()}`);
-      }} className="space-y-1 md:space-y-2">
-        <TabsList className="grid grid-cols-3 mb-4">
+      <Tabs value={activeTab} onValueChange={handleCommunityTabChange} className="space-y-1 md:space-y-2">
+        {/* Mobile: tab switcher dropdown */}
+        <div className="lg:hidden mb-4">
+          <MobileTabDropdown
+            tabs={COMMUNITY_TABS}
+            value={activeTab}
+            onValueChange={handleCommunityTabChange}
+            data-testid="button-community-tab-dropdown"
+          />
+        </div>
+        <TabsList className="hidden lg:grid grid-cols-3 mb-4">
           <TabsTrigger value="prompts" className="text-xs md:text-sm" data-testid="tab-prompts">
             <BookOpen className="h-4 w-4 mr-1 md:mr-2" />
             <span className="hidden sm:inline">Prompts</span>

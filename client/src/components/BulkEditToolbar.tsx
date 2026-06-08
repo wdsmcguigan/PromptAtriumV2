@@ -27,6 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MobileTabDropdown, type MobileTabItem } from "@/components/MobileTabDropdown";
 import type { BulkOperationType } from "@shared/schema";
 
 interface BulkEditToolbarProps {
@@ -39,6 +40,12 @@ interface BulkEditToolbarProps {
   isBulkMode: boolean;
   isLoading?: boolean;
   onAddToCollection?: () => void;
+  title?: string;
+  tabNav?: {
+    tabs: MobileTabItem[];
+    value: string;
+    onChange: (value: string) => void;
+  };
 }
 
 export function BulkEditToolbar({
@@ -50,7 +57,9 @@ export function BulkEditToolbar({
   onToggleBulkMode,
   isBulkMode,
   isLoading = false,
-  onAddToCollection
+  onAddToCollection,
+  title = "Prompts",
+  tabNav
 }: BulkEditToolbarProps) {
   const hasSelection = selectedCount > 0;
   const isAllSelected = selectedCount === totalCount && totalCount > 0;
@@ -58,10 +67,30 @@ export function BulkEditToolbar({
   if (!isBulkMode) {
     return (
       <div className="flex items-center justify-between p-4 border-b bg-muted/30">
-        <div className="flex items-center gap-2">
-          <h2 className="font-semibold text-lg">Prompts</h2>
-          <Badge variant="secondary">{totalCount}</Badge>
-        </div>
+        {tabNav ? (
+          <>
+            {/* Mobile: tab switcher dropdown */}
+            <div className="lg:hidden">
+              <MobileTabDropdown
+                tabs={tabNav.tabs}
+                value={tabNav.value}
+                onValueChange={tabNav.onChange}
+                count={totalCount}
+                data-testid="button-library-tab-dropdown"
+              />
+            </div>
+            {/* Desktop: static heading */}
+            <div className="hidden lg:flex items-center gap-2">
+              <h2 className="font-semibold text-lg">{title}</h2>
+              <Badge variant="secondary">{totalCount}</Badge>
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-lg">{title}</h2>
+            <Badge variant="secondary">{totalCount}</Badge>
+          </div>
+        )}
         <Button
           onClick={onToggleBulkMode}
           variant="outline"
