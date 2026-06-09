@@ -18,13 +18,9 @@ import {
   Wand2, 
   Download, 
   FileText, 
-  Users,
-  PanelLeft,
-  PanelLeftClose
+  Users
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import type { User, UserCommunity } from "@shared/schema";
 import { useMarketplaceEnabled } from "@/config/features";
 
@@ -69,40 +65,49 @@ export function AppHeader({
 
   const typedUser = user as User;
 
+  const Logo = (
+    <div className="relative mr-2">
+      <div className="absolute inset-0 bg-orange-100/20 rounded-lg blur-lg"></div>
+      <div className="w-10 h-10">
+        <div className="absolute inset-[3px] bg-transparent rounded-[16px] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 to-purple-900/20"></div>
+          <img 
+            src="/ATRIUM2 090725.png" 
+            alt="PromptAtrium Logo" 
+            className="w-8 h-8 object-contain relative z-10"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex items-center space-x-2 md:space-x-4">
-      {user && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 flex-shrink-0 text-gray-300 hover:text-cyan-400 hover:bg-white/5"
-          onClick={onToggleSidebar}
-          data-testid="button-toggle-sidebar"
-          aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          {sidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
-        </Button>
-      )}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Link href="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-opacity">
-          <div className="relative mr-2">
-            <div className="absolute inset-0 bg-orange-100/20 rounded-lg blur-lg"></div>
-            <div className="w-10 h-10">
-              <div className="absolute inset-[3px] bg-transparent rounded-[16px] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 to-purple-900/20"></div>
-                <img 
-                  src="/ATRIUM2 090725.png" 
-                  alt="PromptAtrium Logo" 
-                  className="w-8 h-8 object-contain relative z-10"
-                />
-              </div>
-            </div>
-          </div>
-          <h1 className="text-xl font-bold bg-gradient-to-b from-orange-400 to-purple-200 to-orange-400 bg-clip-text text-transparent">PromptAtrium</h1>
-        </Link>
+        <div className="flex items-center space-x-2 md:space-x-3">
+          {user ? (
+            <button
+              type="button"
+              onClick={onToggleSidebar}
+              className="flex items-center group hover:opacity-80 transition-opacity rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+              data-testid="button-toggle-sidebar"
+              aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+              title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+            >
+              {Logo}
+            </button>
+          ) : (
+            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+              {Logo}
+            </Link>
+          )}
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            <h1 className="text-xl font-bold bg-gradient-to-b from-orange-400 to-purple-200 to-orange-400 bg-clip-text text-transparent">PromptAtrium</h1>
+          </Link>
+        </div>
       </motion.div>
 
       <nav 
