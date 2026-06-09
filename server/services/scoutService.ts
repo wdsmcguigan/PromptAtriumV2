@@ -31,9 +31,8 @@ export const searchTrendingPrompts = async (topic: string): Promise<ScoutResult>
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  // Using Gemini 3.0 Pro for superior reasoning and reduced hallucination on Search tasks
-  // This matches the exact model used in PromptScout reference implementation
-  const modelId = 'gemini-3-pro-preview';
+  // Using Gemini 2.5 Pro for superior reasoning and reduced hallucination on Search tasks
+  const modelId = 'gemini-2.5-pro';
 
   const searchPrompt = `
     You are a specialized Data Archivist. Your mandate is to find REAL, VERIFIABLE AI prompts for "${topic}" using Google Search.
