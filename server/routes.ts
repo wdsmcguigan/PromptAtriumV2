@@ -168,35 +168,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Google Drive OAuth routes
   app.get('/api/auth/google', (req, res) => {
-    const state = req.query.returnUrl || '/';
-    const authUrl = getAuthUrl(state as string);
+    // Generate a random CSRF nonce and store it in the session; do not reflect
+    // caller-supplied URLs into the OAuth state parameter.
+    const nonce = require('crypto').randomBytes(16).toString('hex');
+    (req.session as any).googleOAuthNonce = nonce;
+    const authUrl = getAuthUrl(nonce);
     res.redirect(authUrl);
   });
 
   app.get('/api/auth/google/callback', async (req, res) => {
     const { code, state } = req.query;
-    
+
     if (!code) {
       return res.redirect('/?error=google_auth_failed');
     }
-    
+
+    // Validate the CSRF nonce returned by Google matches what we stored.
+    const expectedNonce = (req.session as any).googleOAuthNonce;
+    if (!expectedNonce || state !== expectedNonce) {
+      return res.redirect('/?error=google_auth_failed');
+    }
+    delete (req.session as any).googleOAuthNonce;
+
     try {
       const tokens = await getTokens(code as string);
-      
-      // Store tokens in session
+
+      // Store tokens in session only — never expose them in the page response.
       (req.session as any).googleTokens = tokens;
-      
-      // Redirect to the return URL or close the popup
-      const returnUrl = state || '/';
+
+      // Use window.location.origin in the inline script so the target origin
+      // for postMessage always matches the real browser-visible origin
+      // (correct protocol even behind HTTPS-terminating proxies).
       res.send(`
         <html>
           <body>
             <script>
               if (window.opener) {
-                window.opener.postMessage({ type: 'google-auth-success', tokens: ${JSON.stringify(tokens)} }, '*');
+                window.opener.postMessage({ type: 'google-auth-success' }, window.location.origin);
                 window.close();
               } else {
-                window.location.href = '${returnUrl}';
+                window.location.href = '/';
               }
             </script>
           </body>
@@ -206,6 +217,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error exchanging code for tokens:', error);
       res.redirect('/?error=google_auth_failed');
     }
+  });
+
+  // Retrieve Google Drive tokens stored in the session (called by the client
+  // after the OAuth popup signals success).
+  app.get('/api/google-drive/tokens', isAuthenticated, (req: any, res) => {
+    const tokens = (req.session as any).googleTokens;
+    if (!tokens) {
+      return res.status(404).json({ message: "No Google Drive tokens found" });
+    }
+    res.json(tokens);
   });
 
   // Google Drive API routes

@@ -46,13 +46,24 @@ export async function connectGoogleDrive(): Promise<GoogleTokens> {
       return;
     }
     
-    // Listen for auth success message
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data.type === 'google-auth-success') {
+    // Listen for auth success message — only trust messages from our own origin
+    // and only when they come from the popup window we opened.
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.source !== authWindow) return;
+      if (event.data?.type === 'google-auth-success') {
         window.removeEventListener('message', handleMessage);
-        const tokens = event.data.tokens;
-        storeGoogleTokens(tokens);
-        resolve(tokens);
+        clearInterval(checkClosed);
+        try {
+          // Fetch tokens from the session (they are never sent over postMessage).
+          const response = await fetch('/api/google-drive/tokens', { credentials: 'include' });
+          if (!response.ok) throw new Error('Failed to retrieve Google tokens');
+          const tokens: GoogleTokens = await response.json();
+          storeGoogleTokens(tokens);
+          resolve(tokens);
+        } catch (err) {
+          reject(err);
+        }
       }
     };
     
