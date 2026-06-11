@@ -17,7 +17,7 @@ interface NavTabDropdownProps {
   page: 'library' | 'tools' | 'community' | 'marketplace';
   isOpen: boolean;
   onClose: () => void;
-  buttonRef: React.RefObject<HTMLElement>;
+  buttonRef: React.RefObject<HTMLElement | null>;
 }
 
 const PAGE_CONFIGS = {

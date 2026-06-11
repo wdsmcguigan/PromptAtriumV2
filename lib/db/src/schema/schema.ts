@@ -19,7 +19,7 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-// Session storage table for Replit Auth
+// Session storage table (express-session via connect-pg-simple)
 export const sessions = pgTable(
   "sessions",
   {
@@ -30,7 +30,7 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// User storage table for Replit Auth
+// User storage table
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),

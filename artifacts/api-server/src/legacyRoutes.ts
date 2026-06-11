@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { marketplaceGuard, isMarketplaceEnabled, invalidateMarketplaceCache } from "./config/features";
 import { insertPromptSchema, insertProjectSchema, insertCollectionSchema, insertPromptRatingSchema, insertCommunitySchema, insertUserCommunitySchema, insertUserSchema, bulkOperationSchema, bulkOperationResultSchema, insertCategorySchema, insertPromptTypeSchema, insertPromptStyleSchema, insertPromptStyleRuleTemplateSchema, insertIntendedGeneratorSchema, insertRecommendedModelSchema, insertMarketplaceListingSchema, insertSellerProfileSchema, insertMarketplaceOrderSchema, insertDigitalLicenseSchema, marketplaceOrders, digitalLicenses, marketplaceListings, sellerProfiles, insertMarketplaceDisputeSchema, insertDisputeMessageSchema, type UserRole, type CommunityRole } from "@workspace/db";
 import Stripe from "stripe";
@@ -372,7 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating profile:", error);
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid profile data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid profile data", errors: error.issues });
       }
       res.status(500).json({ message: "Failed to update profile" });
     }
@@ -1180,7 +1180,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(prompt);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid prompt data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid prompt data", errors: error.issues });
       }
       console.error("Error creating prompt:", error);
       res.status(500).json({ message: "Failed to create prompt" });
@@ -1265,8 +1265,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(response);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("Validation errors:", error.errors);
-        return res.status(400).json({ message: "Invalid prompt data", errors: error.errors });
+        console.error("Validation errors:", error.issues);
+        return res.status(400).json({ message: "Invalid prompt data", errors: error.issues });
       }
       console.error("Error creating saved prompt:", error);
       res.status(500).json({ message: "Failed to save prompt" });
@@ -1321,8 +1321,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(response);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("Validation errors:", error.errors);
-        return res.status(400).json({ message: "Invalid prompt data", errors: error.errors });
+        console.error("Validation errors:", error.issues);
+        return res.status(400).json({ message: "Invalid prompt data", errors: error.issues });
       }
       console.error("Error updating prompt:", error);
       res.status(500).json({ message: "Failed to update prompt" });
@@ -1356,7 +1356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updatedPrompt);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid prompt data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid prompt data", errors: error.issues });
       }
       console.error("Error updating prompt:", error);
       res.status(500).json({ message: "Failed to update prompt" });
@@ -1572,7 +1572,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } catch (error) {
             results.failed++;
             const errorMessage = error instanceof z.ZodError 
-              ? error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
+              ? error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
               : error instanceof Error 
                 ? error.message 
                 : "Unknown error";
@@ -1787,7 +1787,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
           message: "Invalid bulk operation data", 
-          errors: error.errors 
+          errors: error.issues 
         });
       }
       res.status(500).json({ message: "Failed to process bulk operation" });
@@ -2305,7 +2305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(rating);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid rating data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid rating data", errors: error.issues });
       }
       console.error("Error rating prompt:", error);
       res.status(500).json({ message: "Failed to rate prompt" });
@@ -2468,7 +2468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(project);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid project data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid project data", errors: error.issues });
       }
       console.error("Error creating project:", error);
       res.status(500).json({ message: "Failed to create project" });
@@ -2626,7 +2626,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(collection);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid collection data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid collection data", errors: error.issues });
       }
       console.error("Error creating collection:", error);
       res.status(500).json({ message: "Failed to create collection" });
@@ -2669,7 +2669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updatedCollection);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid collection data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid collection data", errors: error.issues });
       }
       console.error("Error updating collection:", error);
       res.status(500).json({ message: "Failed to update collection" });
@@ -2744,7 +2744,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(category);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid category data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid category data", errors: error.issues });
       }
       console.error("Error creating category:", error);
       res.status(500).json({ message: "Failed to create category" });
@@ -2777,7 +2777,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(promptType);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid prompt type data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid prompt type data", errors: error.issues });
       }
       console.error("Error creating prompt type:", error);
       res.status(500).json({ message: "Failed to create prompt type" });
@@ -2810,7 +2810,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(template);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid template data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid template data", errors: error.issues });
       }
       console.error("Error creating prompt style rule template:", error);
       res.status(500).json({ message: "Failed to create prompt style rule template" });
@@ -2843,7 +2843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(promptStyle);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid prompt style data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid prompt style data", errors: error.issues });
       }
       console.error("Error creating prompt style:", error);
       res.status(500).json({ message: "Failed to create prompt style" });
@@ -2876,7 +2876,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(generator);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid intended generator data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid intended generator data", errors: error.issues });
       }
       console.error("Error creating intended generator:", error);
       res.status(500).json({ message: "Failed to create intended generator" });
@@ -2909,7 +2909,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(model);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid recommended model data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid recommended model data", errors: error.issues });
       }
       console.error("Error creating recommended model:", error);
       res.status(500).json({ message: "Failed to create recommended model" });
@@ -3216,7 +3216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (error instanceof z.ZodError) {
           return res.status(400).json({ 
             message: "Validation error",
-            errors: error.errors 
+            errors: error.issues 
           });
         }
         throw error;
@@ -5907,7 +5907,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(community);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid community data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid community data", errors: error.issues });
       }
       console.error("Error creating private community:", error);
       res.status(500).json({ message: "Failed to create private community" });
@@ -5922,7 +5922,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(community);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid community data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid community data", errors: error.issues });
       }
       console.error("Error creating community:", error);
       res.status(500).json({ message: "Failed to create community" });
@@ -5936,7 +5936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(community);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid community data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid community data", errors: error.issues });
       }
       console.error("Error updating community:", error);
       res.status(500).json({ message: "Failed to update community" });
@@ -6550,7 +6550,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Deactivate invite
   app.delete('/api/communities/:communityId/invites/:inviteId', requireCommunityAdminRole('communityId'), async (req, res) => {
     try {
-      const { inviteId } = req.params;
+      const inviteId = String(req.params.inviteId);
       await storage.deactivateInvite(inviteId);
       res.json({ message: "Invite deactivated successfully" });
     } catch (error) {
@@ -6591,7 +6591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(subCommunity);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid sub-community data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid sub-community data", errors: error.issues });
       }
       console.error("Error creating sub-community:", error);
       res.status(500).json({ message: "Failed to create sub-community" });
@@ -6648,7 +6648,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updated);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid update data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid update data", errors: error.issues });
       }
       console.error("Error updating sub-community:", error);
       res.status(500).json({ message: "Failed to update sub-community" });

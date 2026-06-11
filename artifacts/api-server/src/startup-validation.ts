@@ -12,8 +12,8 @@ export function validateEnvironment(): ValidationResult {
   const requiredVars = [
     'DATABASE_URL',
     'SESSION_SECRET',
-    'REPLIT_DOMAINS',
-    'REPL_ID'
+    'OIDC_CLIENT_ID',
+    'OIDC_CLIENT_SECRET'
   ];
 
   // Check required variables
@@ -21,6 +21,12 @@ export function validateEnvironment(): ValidationResult {
     if (!process.env[varName]) {
       errors.push(`Missing required environment variable: ${varName}`);
     }
+  }
+
+  // APP_URL is required in production: OAuth callbacks and Open Graph URLs
+  // can't be derived from localhost defaults there.
+  if (process.env.NODE_ENV === 'production' && !process.env.APP_URL) {
+    errors.push('Missing required environment variable: APP_URL (required in production)');
   }
 
   // Check session secret strength
@@ -59,7 +65,7 @@ export function validateEnvironment(): ValidationResult {
 
   // Google OAuth Redirect URI
   if (process.env.NODE_ENV === 'production' && !process.env.GOOGLE_REDIRECT_URI) {
-    warnings.push('GOOGLE_REDIRECT_URI not set. Using default based on REPLIT_DOMAINS.');
+    warnings.push('GOOGLE_REDIRECT_URI not set. Using default based on APP_URL.');
   }
 
   return {
@@ -111,11 +117,12 @@ DATABASE_URL=postgresql://user:password@localhost:5432/promptatrium
 # Session secret (minimum 32 characters, use: openssl rand -hex 32)
 SESSION_SECRET=
 
-# Replit domains (comma-separated if multiple)
-REPLIT_DOMAINS=your-app.replit.app
+# OIDC client credentials (e.g. a Google OAuth client — see AUTH_SETUP.md)
+OIDC_CLIENT_ID=
+OIDC_CLIENT_SECRET=
 
-# Replit instance ID
-REPL_ID=
+# Public URL of the app (required in production; OAuth callback is APP_URL/api/callback)
+APP_URL=https://your-domain.com
 
 # === OBJECT STORAGE ===
 
@@ -156,13 +163,10 @@ CUSTOM_VISION_API_KEY=
 # Node environment (development/production)
 NODE_ENV=development
 
-# Development domain (for local development)
-REPLIT_DEV_DOMAIN=localhost:5000
-
 # === OPTIONAL SETTINGS ===
 
-# OIDC issuer URL (defaults to https://replit.com/oidc)
-ISSUER_URL=https://replit.com/oidc
+# OIDC issuer URL (defaults to https://accounts.google.com)
+OIDC_ISSUER_URL=https://accounts.google.com
 `;
 }
 

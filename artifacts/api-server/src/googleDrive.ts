@@ -1,14 +1,12 @@
 import { google } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import { Request, Response } from 'express';
+import { getAppUrl } from './auth';
 
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
 
-// Use environment variable for redirect URI with fallback for backward compatibility
-const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || 
-  (process.env.NODE_ENV === 'production' 
-    ? `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}/api/auth/google/callback`
-    : `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/google/callback`);
+const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI ||
+  `${getAppUrl()}/api/auth/google/callback`;
 
 // Create OAuth2 client
 export function createOAuthClient(): OAuth2Client {

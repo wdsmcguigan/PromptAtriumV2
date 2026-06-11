@@ -28,7 +28,7 @@ interface AppHeaderProps {
   location: string;
   user: User | null;
   userCommunityMemberships: UserCommunity[];
-  navRef: React.RefObject<HTMLDivElement>;
+  navRef: React.RefObject<HTMLDivElement | null>;
   linkRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
   underline: { left: number; width: number; opacity: number; gradient: string };
   isActiveRoute: (path: string) => boolean;

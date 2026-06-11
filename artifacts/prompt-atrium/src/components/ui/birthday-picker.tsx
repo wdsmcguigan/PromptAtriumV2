@@ -181,18 +181,12 @@ function BirthdayPicker({
               day_hidden: "invisible",
             }}
             components={{
-              IconLeft: () => (
-                <ChevronLeft 
-                  className="h-4 w-4" 
-                  onClick={goToPreviousMonth}
-                />
-              ),
-              IconRight: () => (
-                <ChevronRight 
-                  className="h-4 w-4" 
-                  onClick={goToNextMonth}
-                />
-              ),
+              Chevron: ({ orientation }) =>
+                orientation === "left" ? (
+                  <ChevronLeft className="h-4 w-4" onClick={goToPreviousMonth} />
+                ) : (
+                  <ChevronRight className="h-4 w-4" onClick={goToNextMonth} />
+                ),
             }}
           />
         </div>

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import OpenAI from 'openai';
-import { isAuthenticated } from '../replitAuth';
+import { isAuthenticated } from '../auth';
 import { searchTrendingPrompts } from '../services/scoutService';
 import { storage } from '../storage';
 
@@ -50,17 +50,13 @@ router.post('/extract', isAuthenticated, async (req: any, res) => {
       });
     }
 
-    const apiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
-    const baseURL = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
-    
+    const apiKey = process.env.OPENAI_API_KEY;
+
     if (!apiKey) {
       return res.status(500).json({ error: 'OpenAI API key not configured' });
     }
 
-    const openai = new OpenAI({ 
-      apiKey,
-      baseURL: baseURL || undefined
-    });
+    const openai = new OpenAI({ apiKey });
 
     let contextDescription = "";
     if (socialContext) {

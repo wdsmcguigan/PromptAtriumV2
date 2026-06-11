@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { isAuthenticated } from '../replitAuth';
+import { isAuthenticated } from '../auth';
 import { strictApiLimiter } from '../rateLimit';
 
 const router = Router();

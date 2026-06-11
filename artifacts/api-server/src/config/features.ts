@@ -44,7 +44,8 @@ export async function isMarketplaceEnabled(): Promise<boolean> {
     const settings = await storage.getPlatformSettings([MARKETPLACE_ENABLED_KEY]);
     const raw = settings[MARKETPLACE_ENABLED_KEY];
     if (raw !== undefined && raw !== null) {
-      enabled = raw === true || raw === "true";
+      // The setting may be stored as a boolean or the string "true"
+      enabled = String(raw) === "true";
     }
   } catch (error) {
     console.error("Failed to read marketplace_enabled platform setting:", error);

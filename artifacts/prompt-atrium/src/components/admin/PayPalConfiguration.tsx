@@ -203,7 +203,7 @@ export default function PayPalConfiguration() {
                     <AlertTitle>Client Secret Required</AlertTitle>
                     <AlertDescription>
                       The PayPal Client Secret must be added as an environment variable for security.
-                      Add PAYPAL_CLIENT_SECRET to your Replit Secrets.
+                      Add PAYPAL_CLIENT_SECRET to your environment secrets.
                     </AlertDescription>
                   </Alert>
                 )}

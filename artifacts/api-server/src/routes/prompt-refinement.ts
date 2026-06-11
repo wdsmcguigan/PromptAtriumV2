@@ -6,10 +6,18 @@ import { z } from 'zod/v4';
 const router = Router();
 
 // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-const openai = new OpenAI({
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
-});
+// Lazy client: constructing at module level crashes the whole server at boot
+// when OPENAI_API_KEY is missing; this way only the refinement routes fail.
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured');
+    }
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _openai;
+}
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -133,7 +141,7 @@ ${messages.slice(-20).map(m => `${m.role}: ${m.content.slice(0, 500)}`).join('\n
 
 Return ONLY valid JSON, no other text:`;
 
-    const response = await openai.chat.completions.create({
+    const response = await getOpenAI().chat.completions.create({
       model: 'gpt-5', // the newest OpenAI model is "gpt-5" which was released August 7, 2025
       messages: [{ role: 'user', content: analysisPrompt }],
       response_format: { type: 'json_object' },
@@ -213,7 +221,7 @@ router.post('/chat', isAuthenticated, async (req: AuthenticatedRequest, res: Res
       ...messages,
     ];
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-5', // the newest OpenAI model is "gpt-5" which was released August 7, 2025
       messages: chatMessages,
       max_completion_tokens: 2000,
@@ -271,7 +279,7 @@ router.get('/conversations', isAuthenticated, async (req: AuthenticatedRequest, 
 router.get('/conversations/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = getUserId(req);
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     const conversation = await storage.getRefinementConversation(id);
     if (!conversation || conversation.userId !== userId) {
@@ -293,7 +301,7 @@ router.get('/conversations/:id', isAuthenticated, async (req: AuthenticatedReque
 router.delete('/conversations/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = getUserId(req);
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     const conversation = await storage.getRefinementConversation(id);
     if (!conversation || conversation.userId !== userId) {

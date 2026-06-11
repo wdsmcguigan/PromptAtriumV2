@@ -140,7 +140,7 @@ export default function TestAuth() {
             <h4 className="font-semibold mb-2 text-yellow-900">PayPal Configuration:</h4>
             <ol className="list-decimal list-inside space-y-1 text-sm text-yellow-800">
               <li>As Test Seller, go to Admin → PayPal Config</li>
-              <li>Add your PayPal Client ID and Secret as Replit Secrets</li>
+              <li>Add your PayPal Client ID and Secret as environment secrets</li>
               <li>Configure webhook URL in PayPal Developer Dashboard</li>
               <li>Enable PayPal payouts in the admin panel</li>
             </ol>

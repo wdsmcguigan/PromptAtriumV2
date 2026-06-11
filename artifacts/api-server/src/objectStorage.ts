@@ -9,26 +9,20 @@ import {
   setObjectAclPolicy,
 } from "./objectAcl";
 
-const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
+// Standard GCS credentials: an inline service-account key via
+// GOOGLE_SERVICE_ACCOUNT_KEY, or Application Default Credentials
+// (GOOGLE_APPLICATION_CREDENTIALS file path / workload identity).
+function createStorageClient(): Storage {
+  const inlineKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+  if (inlineKey) {
+    const credentials = JSON.parse(inlineKey);
+    return new Storage({ credentials, projectId: credentials.project_id });
+  }
+  return new Storage();
+}
 
 // The object storage client is used to interact with the object storage service.
-export const objectStorageClient = new Storage({
-  credentials: {
-    audience: "replit",
-    subject_token_type: "access_token",
-    token_url: `${REPLIT_SIDECAR_ENDPOINT}/token`,
-    type: "external_account",
-    credential_source: {
-      url: `${REPLIT_SIDECAR_ENDPOINT}/credential`,
-      format: {
-        type: "json",
-        subject_token_field_name: "access_token",
-      },
-    },
-    universe_domain: "googleapis.com",
-  },
-  projectId: "",
-});
+export const objectStorageClient = createStorageClient();
 
 export class ObjectNotFoundError extends Error {
   constructor() {
@@ -146,44 +140,30 @@ export class ObjectStorageService {
     const { bucketName, objectName } = parseObjectPath(fullPath);
 
     try {
-      // Try to sign URL for PUT method with TTL
-      return await signObjectURL({
-        bucketName,
-        objectName,
-        method: "PUT",
-        ttlSec: 900,
+      // Sign the upload URL directly with the GCS client (v4, 15 min TTL)
+      const bucket = objectStorageClient.bucket(bucketName);
+      const file = bucket.file(objectName);
+
+      const [url] = await file.getSignedUrl({
+        version: 'v4',
+        action: 'write',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        contentType: 'application/octet-stream',
       });
-    } catch (sidecarError) {
-      // If signing fails, try alternative approach
-      console.error("Failed to sign URL via sidecar, trying direct approach:", sidecarError);
-      
-      try {
-        // Generate a signed URL directly using the storage client
-        const bucket = objectStorageClient.bucket(bucketName);
-        const file = bucket.file(objectName);
-        
-        const [url] = await file.getSignedUrl({
-          version: 'v4',
-          action: 'write',
-          expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-          contentType: 'application/octet-stream',
-        });
-        
-        return url;
-      } catch (directError) {
-        console.error("Failed to sign URL directly:", directError);
-        
-        // As a last resort in development, return a direct upload endpoint
-        // This will only work in development environment
-        if (process.env.NODE_ENV === 'development') {
-          console.warn("Using development fallback for upload URL");
-          // Return a development-only endpoint that will handle the upload
-          return `/api/dev-upload/generic/${objectId}`;
-        }
-        
-        // In production, throw the original error
-        throw sidecarError;
+
+      return url;
+    } catch (signError) {
+      console.error("Failed to sign upload URL:", signError);
+
+      // As a last resort in development, return a direct upload endpoint
+      // This will only work in development environment
+      if (process.env.NODE_ENV === 'development') {
+        console.warn("Using development fallback for upload URL");
+        // Return a development-only endpoint that will handle the upload
+        return `/api/dev-upload/generic/${objectId}`;
       }
+
+      throw signError;
     }
   }
 
@@ -291,42 +271,4 @@ export function parseObjectPath(path: string): {
     bucketName,
     objectName,
   };
-}
-
-async function signObjectURL({
-  bucketName,
-  objectName,
-  method,
-  ttlSec,
-}: {
-  bucketName: string;
-  objectName: string;
-  method: "GET" | "PUT" | "DELETE" | "HEAD";
-  ttlSec: number;
-}): Promise<string> {
-  const request = {
-    bucket_name: bucketName,
-    object_name: objectName,
-    method,
-    expires_at: new Date(Date.now() + ttlSec * 1000).toISOString(),
-  };
-  const response = await fetch(
-    `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    }
-  );
-  if (!response.ok) {
-    throw new Error(
-      `Failed to sign object URL, errorcode: ${response.status}, ` +
-        `make sure you're running on Replit`
-    );
-  }
-
-  const { signed_url: signedURL } = await response.json();
-  return signedURL;
 }

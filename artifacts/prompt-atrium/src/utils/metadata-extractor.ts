@@ -126,7 +126,9 @@ export class MetadataExtractor {
       }
 
       // Create a readable stream from the compressed data
-      const blob = new Blob([compressed]);
+      // (copy into a fresh Uint8Array so the type is Uint8Array<ArrayBuffer>,
+      // which BlobPart requires)
+      const blob = new Blob([new Uint8Array(compressed)]);
       const stream = blob.stream();
       
       // Create decompression stream

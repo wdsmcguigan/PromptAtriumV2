@@ -18,7 +18,7 @@ import {
   requireRole,
   requireCommunityManager 
 } from "../rbac";
-import { isAuthenticated } from "../replitAuth";
+import { isAuthenticated } from "../auth";
 import { sql, eq, desc, asc, and, or, gte, lte, count, sum } from "drizzle-orm";
 import { subDays, startOfDay, endOfDay, format } from "date-fns";
 

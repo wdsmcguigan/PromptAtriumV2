@@ -37,39 +37,21 @@ function isCrawler(userAgent: string | undefined): boolean {
 
 // Helper to get the correct base URL
 function getBaseUrl(req?: Request): string {
-  // Try to get from request headers first (most reliable in production)
+  // Explicit configuration wins
+  if (process.env.APP_URL) {
+    return process.env.APP_URL.replace(/\/$/, '');
+  }
+
+  // Fall back to the request's Host header
   if (req) {
     const host = req.headers.host || req.hostname;
-    if (host && host.includes('promptatrium')) {
+    if (host) {
       const protocol = req.protocol || 'https';
       return `${protocol}://${host}`;
     }
   }
-  
-  // For production deployments on Replit
-  if (process.env.REPLIT_DEPLOYMENT_ID || process.env.NODE_ENV === 'production') {
-    // Check if we have REPLIT_DOMAINS environment variable (set by Replit deployment)
-    if (process.env.REPLIT_DOMAINS) {
-      const domains = process.env.REPLIT_DOMAINS.split(',');
-      // Return the custom domain if it includes promptatrium
-      const customDomain = domains.find(d => d.includes('promptatrium'));
-      if (customDomain) {
-        return `https://${customDomain}`;
-      }
-      // Otherwise use the first domain
-      return `https://${domains[0]}`;
-    }
-    // If no REPLIT_DOMAINS, return the known production URL
-    return 'https://promptatrium.replit.app';
-  }
-  
-  // For development environment (Replit dev domain)
-  if (process.env.REPLIT_DEV_DOMAIN) {
-    return `https://${process.env.REPLIT_DEV_DOMAIN}`;
-  }
-  
-  // Default fallback to production URL
-  return 'https://promptatrium.replit.app';
+
+  return `http://localhost:${process.env.PORT ?? 8080}`;
 }
 
 // Generate Open Graph HTML for a prompt
@@ -227,7 +209,7 @@ export function setupOpenGraph(app: Express) {
       return next();
     }
     
-    const promptId = req.params.id;
+    const promptId = String(req.params.id);
     console.log(`[Open Graph] Crawler detected for prompt ${promptId}, user-agent: ${userAgent}`);
     
     try {
