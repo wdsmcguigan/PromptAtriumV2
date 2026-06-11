@@ -90,9 +90,13 @@ drivers for in-the-know users.
   **file bundle** (1 file for a prompt, N files for a skill/plugin),
   stored in GCS like existing objects. Single-text assets and multi-file
   assets are the same shape.
-- **`collections` (stacks)** — ordered sets of assets, deployable as a
-  unit ("my Claude Code setup", "beginner Midjourney starter pack").
-  Presented as folders in the Stash, as curated packs in the Atrium.
+- **`collections` (stacks)** — compositions are themselves assets
+  (kind=stack: content is a manifest; membership edges carry a `role` and
+  metadata). A stack presents as a folder in the Stash and a curated pack
+  in the Atrium today, and the same mechanism grows into deployable
+  harnesses (system prompt in the `system` slot, rules in `rules`, skills
+  in `skills`, MCP config in `tools`) and platform blueprints later —
+  with versioning, forking, and starring of compositions for free.
 - **Results/creations** — media or text outputs attachable to an asset
   version (the Atrium's content; continuous with the existing prompt-image
   model).
@@ -103,10 +107,74 @@ drivers for in-the-know users.
   no more interactive `push` against shared databases.
 - **Forking lineage, stars, tags** from day one (cheap now, painful later).
 
+### Future-proofing: the option purchases
+
+The practice keeps renaming itself (prompts → prompt engineering →
+context engineering → harness engineering → …). We model the invariants —
+artifact, version, composition, provenance, target, evidence — as tables,
+and push everything that churns into data. Each item below is cheap at
+schema-birth and brutal to retrofit; none implies building the feature now:
+
+1. **Kinds as registry, not enum** — new artifact kinds (harness config,
+   eval suite, …) are an INSERT, not a migration.
+2. **Polymorphic ownership** — assets belong to a *principal*; only users
+   exist today, but orgs/teams/sub-groups (social and enterprise) arrive
+   later without touching asset tables.
+3. **Visibility as enum, never boolean** — `private | unlisted | public`,
+   so audience-scoped sharing ("my team", "this community") is an
+   additive table later.
+4. **Immutable versions with stable IDs** — anything ever licensed,
+   audited, or pinned by a deployment must be immutable. This is the
+   marketplace *and* enterprise hook.
+5. **Events, not features** — append-only event stream
+   (asset_published, fork_created, star_given, sync_pulled, …).
+   Gamification (credits, badges, streaks) is *derived state* over
+   events, as are future reputation, analytics, and trending.
+6. **Commerce stays satellite** — the old marketplace failed partly by
+   weaving money into content tables. If commerce ever returns it is a
+   separate schema (offers, entitlements) referencing asset versions and
+   reading the event stream; zero columns on assets. A `license` field on
+   assets now (useful for sharing anyway) completes the optionality.
+7. **Stable public IDs + slugs** — URLs, API refs, and CLI pins survive
+   internal refactors.
+
+Explicitly *not* built now: org tables, ACL machinery, commerce
+satellites, reputation systems. Future-proofing buys options; it does not
+exercise them.
+
 **Haunted-forest rule:** the schema's generality must never leak into the
 default UI. Progressive disclosure is a hard product requirement: users
 see only the kinds they own, versioning hides behind "history", and
 capture never asks a taxonomy question.
+
+## 5b. Philosophy & metaphor: the garden
+
+The horticulture metaphor is not decoration — it maps onto the
+architecture and should be ground into brand voice and consumer UX:
+
+| Garden | Mechanism |
+|---|---|
+| Seed / seedling | Quick capture into the Stash, zero ceremony |
+| Rings (inside the branch) | Immutable version history + event log — present, hidden |
+| Leaves & fruit | Results/creations attached to assets — what the Atrium displays |
+| Cutting / graft | Fork with lineage ("grow a cutting of this") |
+| Garden bed | Stack |
+| Greenhouse | Private stash |
+| The Atrium | The shared, light-filled space where things are shown in bloom |
+| Pruning | Archive / curation |
+| Permaculture | A harness: a designed, self-sustaining context ecosystem |
+
+**Positioning insight:** every industry label is a verb-phase that gets
+superseded (prompt engineering → context engineering → harness
+engineering → …). PromptAtrium owns the **noun** — the *place* where the
+stuff lives, whatever the practice is called this year. "Your garden
+grows with you" is the through-line; we never tell users they're "doing
+AI wrong."
+
+**Discipline:** the metaphor lives in brand voice and the consumer
+surfaces only. Professional interfaces stay plain — the CLI is
+`pa pull`, never `pa harvest`. Leaves for the conscript and creator;
+plain bark for the professional.
 
 ## 6. Execution phases
 
