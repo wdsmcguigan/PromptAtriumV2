@@ -4,4 +4,4 @@
 - [platform_settings unique-key drift](platform-settings-constraint-drift.md) — `key` declared `.unique()` in schema but dev DB lacked the constraint, silently breaking `onConflictDoUpdate` upserts.
 - [dev DB schema drift vs schema.ts](schema-drift-dev-db.md) — DB drifted both ways; DON'T run db:push (it drops tables/cols & truncates); fix missing constraints/indexes via raw SQL.
 - [Marketplace runtime flag](marketplace-runtime-flag.md) — marketplace on/off lives in platform_settings (key `marketplace_enabled`, default off); server caches it, client reads `/api/features`.
-- [Mobile public-API gotchas](mobile-public-api-gotchas.md) — unauth clients: wildcard CORS forbids credentials; server ignores sortBy & serves NSFW; /api/prompts/:id skips isPublic. Filter/sort client-side.
+- [Mobile public-API gotchas](mobile-public-api-gotchas.md) — unauth clients: wildcard CORS forbids credentials; server ignores sortBy & serves NSFW; filter/sort client-side.
