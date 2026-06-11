@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/NotificationBell";
-import { useMarketplaceEnabled } from "@/config/features";
 import { NotificationModal } from "@/components/NotificationModal";
 import {
   DropdownMenu,
@@ -49,7 +48,6 @@ const collectionSchema = z.object({
 type CollectionFormData = z.infer<typeof collectionSchema>;
 
 export function Layout({ children, onCreatePrompt }: LayoutProps) {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const { user, isLoading, isAuthenticated } = useAuth();
   const typedUser = user as User;
   const { toast } = useToast();
@@ -124,14 +122,6 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
     queryKey: ["/api/collections"],
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000,
-    retry: false,
-  });
-
-  // Fetch user credit balance
-  const { data: creditBalance } = useQuery<{ balance: number }>({
-    queryKey: ["/api/credits/balance"],
-    enabled: isAuthenticated && MARKETPLACE_ENABLED,
-    staleTime: 60 * 1000, // Refresh every minute
     retry: false,
   });
 
@@ -221,7 +211,6 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
     // Determine gradient based on path
     let gradient = 'default';
     if (path === '/library') gradient = 'library';
-    else if (path === '/marketplace') gradient = 'marketplace';
     else if (path === '/community') gradient = 'community';
     else if (path === '/admin') gradient = 'admin';
     else if (path === '/dev') gradient = 'dev';
@@ -238,7 +227,6 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
   useEffect(() => {
     const activeKey = location.startsWith('/community') ? '/community' 
       : location.startsWith('/library') ? '/library'
-      : location.startsWith('/marketplace') ? '/marketplace' 
       : location.startsWith('/admin') ? '/admin'
       : location.startsWith('/dev') ? '/dev'
       : '/';
@@ -250,8 +238,7 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
     const onResize = () => {
       const activeKey = location.startsWith('/community') ? '/community' 
         : location.startsWith('/library') ? '/library'
-        : location.startsWith('/marketplace') ? '/marketplace' 
-        : location.startsWith('/admin') ? '/admin'
+          : location.startsWith('/admin') ? '/admin'
         : location.startsWith('/dev') ? '/dev'
         : '/';
       positionTo(linkRefs.current[activeKey], activeKey);
@@ -314,22 +301,6 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
           />
 
           <div className="flex items-center space-x-2 md:space-x-4">
-            {/* Credits Balance */}
-            {MARKETPLACE_ENABLED && (
-              <Link href="/credits">
-                <Button
-                  variant="ghost"
-                  className="hidden md:flex items-center gap-2 text-yellow-500 hover:text-yellow-400 px-3 h-8"
-                  data-testid="button-credits"
-                >
-                  <Coins className="w-4 h-4" />
-                  <span className="font-medium">
-                    {creditBalance ? creditBalance.balance.toLocaleString() : '0'} credits
-                  </span>
-                </Button>
-              </Link>
-            )}
-
             {/* Notification Bell */}
             <NotificationBell onClick={() => setNotificationModalOpen(true)} />
 
@@ -449,31 +420,6 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
                   </Link>
                 </DropdownMenuItem>
 
-                {MARKETPLACE_ENABLED && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/seller/dashboard" className="flex items-center cursor-pointer" data-testid="menu-start-selling">
-                        <DollarSign className="mr-2 h-4 w-4" />
-                        Start Selling
-                      </Link>
-                    </DropdownMenuItem>
-                    {/* Credits Balance - Visible on Mobile */}
-                    <div className="md:hidden px-2 py-1 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center text-muted-foreground">
-                          <DollarSign className="mr-4 h-4 w-4" />
-                            Credits
-                        </span>
-                        <span className="font-semibold text-primary">
-                          {creditBalance ? creditBalance.balance.toLocaleString() : '0'}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <DropdownMenuSeparator className="md:hidden" />
-                  </>
-                )}
 
 
 
@@ -570,16 +516,6 @@ export function Layout({ children, onCreatePrompt }: LayoutProps) {
               >
                 Community
               </Link>
-              {MARKETPLACE_ENABLED && (
-                <Link 
-                  href="/marketplace" 
-                  className={isActiveRoute("/marketplace") ? "nav-gradient-marketplace font-medium py-2" : "nav-gradient-marketplace transition-colors py-2"} 
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-nav-marketplace"
-                >
-                  Marketplace
-                </Link>
-              )}
 
               {(typedUser?.role === "super_admin" || typedUser?.role === "community_admin" || typedUser?.role === "developer" || userCommunityMemberships.some(m => m.role === "admin")) && (
                 <Link 

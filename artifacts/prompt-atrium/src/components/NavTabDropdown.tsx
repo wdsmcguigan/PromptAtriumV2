@@ -14,7 +14,7 @@ interface TabOption {
 }
 
 interface NavTabDropdownProps {
-  page: 'library' | 'tools' | 'community' | 'marketplace';
+  page: 'library' | 'tools' | 'community';
   isOpen: boolean;
   onClose: () => void;
   buttonRef: React.RefObject<HTMLElement | null>;
@@ -60,12 +60,6 @@ const PAGE_CONFIGS = {
       { label: 'Following', tab: 'followed', icon: Heart }
     ]
   },
-  marketplace: {
-    path: '/marketplace',
-    icon: ShoppingBag,
-    title: 'Marketplace',
-    tabs: [] // Marketplace uses filters, not tabs
-  }
 };
 
 export function NavTabDropdown({ page, isOpen, onClose, buttonRef }: NavTabDropdownProps) {

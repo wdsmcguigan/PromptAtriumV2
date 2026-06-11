@@ -29,7 +29,6 @@ import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import AuditLog from "@/components/admin/AuditLog";
 import CommunitySettings from "@/components/admin/CommunitySettings";
 import ReportsQueue from "@/components/admin/ReportsQueue";
-import MarketplaceManagement from "@/components/admin/MarketplaceManagement";
 
 const communitySchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -632,10 +631,6 @@ export default function AdminPage() {
                     <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span>Settings</span>
                   </TabsTrigger>
-                  <TabsTrigger value="marketplace" className="flex-shrink-0 flex items-center justify-center gap-1 text-xs sm:text-sm px-3 py-2 sm:px-2">
-                    <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Marketplace</span>
-                  </TabsTrigger>
                 </>
               )}
             </TabsList>
@@ -975,14 +970,6 @@ export default function AdminPage() {
               isSuperAdmin={isSuperAdmin}
             />
           </TabsContent>
-
-          {/* Marketplace Tab - Only for Super Admins. Always available so the
-              marketplace can be switched on/off even while it is disabled. */}
-          {isSuperAdmin && (
-            <TabsContent value="marketplace" className="space-y-6">
-              <MarketplaceManagement />
-            </TabsContent>
-          )}
 
         </Tabs>
 

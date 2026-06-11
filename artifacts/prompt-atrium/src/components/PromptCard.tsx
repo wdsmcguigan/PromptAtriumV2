@@ -26,7 +26,6 @@ import { AddExampleImagesDialog } from "./AddExampleImagesDialog";
 import { AddToCollectionDialog } from "./AddToCollectionDialog";
 import { ImageLightbox } from "./ImageLightbox";
 import { PromptContent } from "./PromptContent";
-import { useMarketplaceEnabled } from "@/config/features";
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -58,7 +57,6 @@ export function PromptCard({
   isProfilePage = false,
   compact = false
 }: PromptCardProps) {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -1489,20 +1487,6 @@ export function PromptCard({
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-
-                    {/* List for Sale Button - Dollar sign icon - Only show in library, not on community page */}
-                    {MARKETPLACE_ENABLED && !isCommunityPage && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => window.location.href = '/seller/dashboard'}
-                        className="h-8 w-8 p-0 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all duration-200 hover:scale-110 active:scale-95"
-                        data-testid={`button-list-sale-${prompt.id}`}
-                        title="List this prompt for sale"
-                      >
-                        <DollarSign className="h-4 w-4" />
-                      </Button>
-                    )}
                 
                     {/* 3. Collections - Yellow folder with dropdown */}
                     <DropdownMenu>

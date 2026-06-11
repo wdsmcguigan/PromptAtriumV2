@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 import { SidebarNav, SIDEBAR_CONTAINER_BACKGROUND } from "@/components/SidebarNav";
-import { useMarketplaceEnabled } from "@/config/features";
 import { 
   Folder, 
   FolderOpen, 
@@ -60,7 +59,6 @@ interface CollectionWithPrompts extends Collection {
 }
 
 export function CollectionsSidebar({ isOpen, onCreateCollection }: CollectionsSidebarProps) {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const { user, isAuthenticated } = useAuth();
   const typedUser = user as User | null;
   const [location, setLocation] = useLocation();
@@ -257,14 +255,6 @@ export function CollectionsSidebar({ isOpen, onCreateCollection }: CollectionsSi
 
                   <DropdownMenuSeparator />
 
-                  {MARKETPLACE_ENABLED && (
-                    <DropdownMenuItem asChild>
-                      <Link href="/seller/dashboard" className="flex items-center cursor-pointer">
-                        <DollarSign className="mr-2 h-4 w-4" />
-                        Start Selling
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/prompt-history" className="flex items-center cursor-pointer">
                       <FileText className="mr-2 h-4 w-4" />

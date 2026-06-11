@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-import { useMarketplaceEnabled } from "@/config/features";
 import { queryClient, prefetchCommonData, apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,14 +21,13 @@ import { PromptModal } from "@/components/PromptModal";
 import { QuickActions } from "@/components/QuickActions";
 import { BulkImportModal } from "@/components/BulkImportModal";
 import { StatsCard } from "@/components/StatsCard";
-import { MarketplaceListingCard } from "@/components/MarketplaceListingCard";
 import { PromptImporter } from "@/components/PromptImporter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { Prompt, Collection, User, MarketplaceListing } from "@shared/schema";
+import type { Prompt, Collection, User } from "@shared/schema";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -44,7 +42,6 @@ interface DashboardProps {
 }
 
 export default function Dashboard() {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
@@ -81,7 +78,6 @@ export default function Dashboard() {
   const [isActivityCollapsed, setIsActivityCollapsed] = useState(false);
   const [isRecentPromptsCollapsed, setIsRecentPromptsCollapsed] = useState(false);
   const [isBookmarkedPromptsCollapsed, setIsBookmarkedPromptsCollapsed] = useState(false);
-  const [isMarketplaceCollapsed, setIsMarketplaceCollapsed] = useState(false);
   const [isCommunityHighlightsCollapsed, setIsCommunityHighlightsCollapsed] = useState(false);
   const [isToolsCollapsed, setIsToolsCollapsed] = useState(false);
 
@@ -90,7 +86,6 @@ export default function Dashboard() {
   const [isToolsVisible, setIsToolsVisible] = useState(true);
   const [isRecentPromptsVisible, setIsRecentPromptsVisible] = useState(true);
   const [isBookmarkedPromptsVisible, setIsBookmarkedPromptsVisible] = useState(true);
-  const [isMarketplaceVisible, setIsMarketplaceVisible] = useState(true);
   const [isCommunityHighlightsVisible, setIsCommunityHighlightsVisible] = useState(true);
   const [isActivityVisible, setIsActivityVisible] = useState(true);
 
@@ -115,11 +110,6 @@ export default function Dashboard() {
       const bookmarkedPromptsStored = localStorage.getItem(`bookmarkedPromptsCollapsed_${user.id}`);
       if (bookmarkedPromptsStored !== null) {
         setIsBookmarkedPromptsCollapsed(bookmarkedPromptsStored === 'true');
-      }
-
-      const marketplaceStored = localStorage.getItem(`marketplaceCollapsed_${user.id}`);
-      if (marketplaceStored !== null) {
-        setIsMarketplaceCollapsed(marketplaceStored === 'true');
       }
 
       const communityHighlightsStored = localStorage.getItem(`communityHighlightsCollapsed_${user.id}`);
@@ -151,11 +141,6 @@ export default function Dashboard() {
       const bookmarkedPromptsVisible = localStorage.getItem(`bookmarkedPromptsVisible_${user.id}`);
       if (bookmarkedPromptsVisible !== null) {
         setIsBookmarkedPromptsVisible(bookmarkedPromptsVisible === 'true');
-      }
-
-      const marketplaceVisible = localStorage.getItem(`marketplaceVisible_${user.id}`);
-      if (marketplaceVisible !== null) {
-        setIsMarketplaceVisible(marketplaceVisible === 'true');
       }
 
       const communityHighlightsVisible = localStorage.getItem(`communityHighlightsVisible_${user.id}`);
@@ -197,12 +182,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (user?.id) {
-      localStorage.setItem(`marketplaceCollapsed_${user.id}`, isMarketplaceCollapsed.toString());
-    }
-  }, [isMarketplaceCollapsed, user?.id]);
-
-  useEffect(() => {
-    if (user?.id) {
       localStorage.setItem(`communityHighlightsCollapsed_${user.id}`, isCommunityHighlightsCollapsed.toString());
     }
   }, [isCommunityHighlightsCollapsed, user?.id]);
@@ -237,12 +216,6 @@ export default function Dashboard() {
       localStorage.setItem(`bookmarkedPromptsVisible_${user.id}`, isBookmarkedPromptsVisible.toString());
     }
   }, [isBookmarkedPromptsVisible, user?.id]);
-
-  useEffect(() => {
-    if (user?.id) {
-      localStorage.setItem(`marketplaceVisible_${user.id}`, isMarketplaceVisible.toString());
-    }
-  }, [isMarketplaceVisible, user?.id]);
 
   useEffect(() => {
     if (user?.id) {
@@ -349,14 +322,6 @@ export default function Dashboard() {
     queryKey: ["/api/user/favorites"],
     enabled: isAuthenticated,
     staleTime: 3 * 60 * 1000, // 3 minutes
-    retry: false,
-  });
-
-  // Fetch featured marketplace listings
-  const { data: featuredListings = [] } = useQuery<MarketplaceListing[]>({
-    queryKey: ["/api/marketplace/featured?limit=4"],
-    enabled: isAuthenticated && MARKETPLACE_ENABLED,
-    staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false,
   });
 
@@ -616,17 +581,6 @@ export default function Dashboard() {
                     <Eye className={`h-4 w-4 mr-2 ${isBookmarkedPromptsVisible ? '' : 'opacity-50'}`} />
                     Bookmarked Prompts
                   </DropdownMenuCheckboxItem>
-
-                  {MARKETPLACE_ENABLED && (
-                    <DropdownMenuCheckboxItem
-                      checked={isMarketplaceVisible}
-                      onCheckedChange={setIsMarketplaceVisible}
-                      className="cursor-pointer"
-                    >
-                      <Eye className={`h-4 w-4 mr-2 ${isMarketplaceVisible ? '' : 'opacity-50'}`} />
-                      Featured Marketplace
-                    </DropdownMenuCheckboxItem>
-                  )}
 
                   <DropdownMenuCheckboxItem
                     checked={isCommunityHighlightsVisible}
@@ -981,46 +935,6 @@ export default function Dashboard() {
                 </div>
               </CollapsibleContent>
             </Collapsible>
-            )}
-
-            {/* Featured Marketplace Listings */}
-            {MARKETPLACE_ENABLED && isMarketplaceVisible && featuredListings.length > 0 && (
-              <Collapsible
-                open={!isMarketplaceCollapsed}
-                onOpenChange={(open) => setIsMarketplaceCollapsed(!open)}
-                className="mb-6 md:mb-8"
-              >
-                <div className="flex items-center justify-between mb-3 md:mb-4">
-                  <h2 className="text-lg md:text-xl font-semibold text-purple-600 dark:text-purple-400">
-                    <TrendingUp className="inline h-5 w-5 mr-2" />
-                    Featured in Marketplace
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    <Link href="/marketplace">
-                      <Button variant="link" className="text-purple-600 hover:text-purple-500" data-testid="link-view-marketplace">
-                        <ShoppingBag className="h-4 w-4 mr-1" />
-                        Browse All
-                      </Button>
-                    </Link>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" data-testid="button-toggle-marketplace">
-                        {isMarketplaceCollapsed ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronUp className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </CollapsibleTrigger>
-                  </div>
-                </div>
-                <CollapsibleContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="section-featured-marketplace">
-                    {featuredListings.slice(0, 4).map((listing) => (
-                      <MarketplaceListingCard key={listing.id} listing={listing as any} />
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
             )}
 
             {/* Community Highlights */}

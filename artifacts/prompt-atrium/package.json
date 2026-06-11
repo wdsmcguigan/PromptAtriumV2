@@ -78,8 +78,6 @@
     "zod": "catalog:"
   },
   "dependencies": {
-    "@stripe/react-stripe-js": "^6.6.0",
-    "@stripe/stripe-js": "^9.8.0",
     "croppie": "^2.6.5",
     "motion": "^12.40.0",
     "papaparse": "^5.5.3",

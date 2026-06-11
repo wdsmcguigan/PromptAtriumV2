@@ -7,20 +7,17 @@ import { NavTabDropdown } from "./NavTabDropdown";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import type { User, UserCommunity } from "@shared/schema";
-import { useMarketplaceEnabled } from "@/config/features";
 
 export function MobilePageNav() {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const { user, isAuthenticated } = useAuth();
   const typedUser = user as User;
   const [location, setLocation] = useLocation();
-  const [openDropdown, setOpenDropdown] = useState<'library' | 'tools' | 'community' | 'marketplace' | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'library' | 'tools' | 'community' | null>(null);
   
   const isDashboard = location === "/";
   const isLibraryPage = location === "/library";
   const isCommunityPage = location === "/community";
   const isToolsPage = location === "/tools";
-  const isMarketplacePage = location.startsWith("/marketplace");
   const isAdminPage = location.startsWith("/admin");
   
   // Fetch user's community memberships to check if they're admin of any community
@@ -39,7 +36,6 @@ export function MobilePageNav() {
   const libraryButtonRef = useRef<HTMLButtonElement>(null);
   const toolsButtonRef = useRef<HTMLButtonElement>(null);
   const communityButtonRef = useRef<HTMLButtonElement>(null);
-  const marketplaceButtonRef = useRef<HTMLButtonElement>(null);
 
   // Long press handlers for each button
   const libraryLongPress = useLongPress({
@@ -55,11 +51,6 @@ export function MobilePageNav() {
   const communityLongPress = useLongPress({
     onLongPress: () => setOpenDropdown('community'),
     onClick: () => setLocation('/community')
-  });
-
-  const marketplaceLongPress = useLongPress({
-    onLongPress: () => setOpenDropdown('marketplace'),
-    onClick: () => setLocation('/marketplace')
   });
 
   return (
@@ -164,27 +155,6 @@ export function MobilePageNav() {
               </Button>
             </div>
           )}
-
-          {/* Marketplace Button */}
-          {MARKETPLACE_ENABLED && (
-            <div className="flex-1">
-              <Button 
-                ref={marketplaceButtonRef}
-                variant="outline"
-                className={`w-full relative group px-1 py-2 h-auto border-transparent select-none ${isMarketplacePage ? 'button-gradient-marketplace hover:color-white' : 'bg-gray-900/70 hover:bg-white/5'}`}
-                data-testid="button-marketplace"
-                {...marketplaceLongPress}
-              >
-                <div className="flex flex-col items-center gap-0.5">
-                  <ShoppingBag className={`h-4 w-4 text-white transition-all ${!isMarketplacePage ? 'group-hover:scale-110 group-hover:brightness-150' : ''}`} />
-                  <span className={`text-[9px] ${!isMarketplacePage ? 'nav-gradient-marketplace' : ''}`}>Market</span>
-                </div>
-                {isMarketplacePage && (
-                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
-                )}
-              </Button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -207,14 +177,6 @@ export function MobilePageNav() {
         onClose={() => setOpenDropdown(null)}
         buttonRef={communityButtonRef}
       />
-      {MARKETPLACE_ENABLED && (
-        <NavTabDropdown
-          page="marketplace"
-          isOpen={openDropdown === 'marketplace'}
-          onClose={() => setOpenDropdown(null)}
-          buttonRef={marketplaceButtonRef}
-        />
-      )}
     </>
   );
 }

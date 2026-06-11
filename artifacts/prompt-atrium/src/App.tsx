@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Switch, Route, Redirect, useLocation, Router as WouterRouter } from "wouter";
-import { useMarketplaceEnabled } from "@/config/features";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -37,13 +36,6 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsAndConditions from "@/pages/terms";
 import Codex from "@/pages/Codex";
 import Tools from "@/pages/tools";
-import Credits from "@/pages/Credits";
-import SellerDashboard from "@/pages/SellerDashboard";
-import Marketplace from "@/pages/Marketplace";
-import ListingDetail from "@/pages/ListingDetail";
-import MarketplaceDocs from "@/pages/MarketplaceDocs";
-import { PurchaseHistory } from "@/pages/PurchaseHistory";
-import { AdminDisputes } from "@/pages/AdminDisputes";
 import SubCommunityAdminDashboard from "@/pages/SubCommunityAdminDashboard";
 import { GlobalSubCommunityAdmin } from "@/pages/GlobalSubCommunityAdmin";
 import SubCommunityContent from "@/pages/SubCommunityContent";
@@ -56,7 +48,6 @@ import { useDynamicManifest } from "@/hooks/useDynamicManifest";
 import type { User } from "@shared/schema";
 
 function Router() {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const { isAuthenticated, isLoading, user } = useAuth();
   useDynamicManifest();
   const [location, setLocation] = useLocation();
@@ -125,22 +116,6 @@ function Router() {
         <Route path="/tools/prompt-miner">
           {() => isAuthenticated ? <Layout><PromptMinerPage /></Layout> : <PromptMinerPage />}
         </Route>
-        <Route path="/marketplace">
-          {() => !MARKETPLACE_ENABLED ? <Redirect to="/" /> : isAuthenticated ? <Layout><Marketplace /></Layout> : <Marketplace />}
-        </Route>
-        <Route path="/marketplace/listing/:id">
-          {() => !MARKETPLACE_ENABLED ? <Redirect to="/" /> : isAuthenticated ? <Layout><ListingDetail /></Layout> : <ListingDetail />}
-        </Route>
-        <Route path="/marketplace/help">
-          {() => !MARKETPLACE_ENABLED ? <Redirect to="/" /> : isAuthenticated ? <Layout><MarketplaceDocs /></Layout> : <MarketplaceDocs />}
-        </Route>
-        {/* When marketplace is disabled, redirect these auth-only marketplace URLs to home
-            for ALL users (including unauthenticated) so they never fall through to 404.
-            Re-enabling is a single flag flip — these guards become inert. */}
-        {!MARKETPLACE_ENABLED && <Route path="/credits"><Redirect to="/" /></Route>}
-        {!MARKETPLACE_ENABLED && <Route path="/seller/dashboard"><Redirect to="/" /></Route>}
-        {!MARKETPLACE_ENABLED && <Route path="/admin/disputes"><Redirect to="/" /></Route>}
-        {!MARKETPLACE_ENABLED && <Route path="/purchases"><Redirect to="/" /></Route>}
         <Route path="/prompting-guides">
           {() => isAuthenticated ? <Layout><PromptingGuides /></Layout> : <PromptingGuides />}
         </Route>
@@ -201,20 +176,11 @@ function Router() {
             <Route path="/collection/:id">
               {() => <Layout><CollectionView /></Layout>}
             </Route>
-            <Route path="/credits">
-              {() => <Layout><Credits /></Layout>}
-            </Route>
-            <Route path="/seller/dashboard">
-              {() => <Layout><SellerDashboard /></Layout>}
-            </Route>
             <Route path="/admin">
               {() => <Layout><Admin /></Layout>}
             </Route>
             <Route path="/admin/sub-communities">
               {() => <Layout><GlobalSubCommunityAdmin /></Layout>}
-            </Route>
-            <Route path="/admin/disputes">
-              {() => <Layout><AdminDisputes /></Layout>}
             </Route>
             <Route path="/dev">
               {() => <Layout><Dev /></Layout>}
@@ -236,9 +202,6 @@ function Router() {
             </Route>
             <Route path="/prompt-history">
               {() => <Layout><PromptHistoryPage /></Layout>}
-            </Route>
-            <Route path="/purchases">
-              {() => <Layout><PurchaseHistory /></Layout>}
             </Route>
           </>
         )}
