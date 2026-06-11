@@ -45,7 +45,7 @@ An AI prompt library and community platform for managing, sharing, and refining 
 
 ## Product
 
-PromptAtrium is a community platform where users can manage, share, and refine AI prompts. Features include a prompt library, community sharing, collections, a marketplace (currently feature-flagged off), codex/glossary, credits system, and AI-powered prompt refinement tools.
+PromptAtrium is "the home for your AI working set" — a library and community for prompts in the umbrella sense: prompts, system prompts, skills, rules, and workflows. It serves beginners (browse/copy/grow) through professionals (versioned assets synced into tools via MCP/CLI — in progress). Features today: prompt library, community sharing, collections, codex/glossary, gamification credits, and AI-powered prompt refinement. The marketplace experiment was removed entirely (commit history has it if ever needed).
 
 ## Gotchas
 
