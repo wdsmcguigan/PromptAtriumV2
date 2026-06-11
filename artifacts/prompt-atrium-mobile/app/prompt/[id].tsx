@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import React, { useLayoutEffect, useState } from "react";
 import {
@@ -29,6 +29,7 @@ const { width: SCREEN_W } = Dimensions.get("window");
 export default function PromptDetailScreen() {
   const colors = useColors();
   const navigation = useNavigation();
+  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   // Locally-created prompts (generated / mined / imported) live only in the
   // saved store and have no server record, so we read them from there and
@@ -53,31 +54,44 @@ export default function PromptDetailScreen() {
       title: blocked ? "Not available" : prompt?.name ?? "Prompt",
       headerRight: () =>
         prompt && !blocked ? (
-          <Pressable
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (isLocal && saved) {
-                const msg =
-                  "This prompt was created in the app and isn't stored anywhere else. Removing it deletes it permanently.";
-                if (Platform.OS === "web") {
-                  if (typeof window !== "undefined" && window.confirm(msg)) toggle(prompt);
+          <View style={styles.headerActions}>
+            {isLocal ? (
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push(`/prompt/edit/${prompt.id}`);
+                }}
+                hitSlop={10}
+              >
+                <Feather name="edit-2" size={20} color={colors.foreground} />
+              </Pressable>
+            ) : null}
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                if (isLocal && saved) {
+                  const msg =
+                    "This prompt was created in the app and isn't stored anywhere else. Removing it deletes it permanently.";
+                  if (Platform.OS === "web") {
+                    if (typeof window !== "undefined" && window.confirm(msg)) toggle(prompt);
+                  } else {
+                    Alert.alert("Remove from library?", msg, [
+                      { text: "Cancel", style: "cancel" },
+                      { text: "Remove", style: "destructive", onPress: () => toggle(prompt) },
+                    ]);
+                  }
                 } else {
-                  Alert.alert("Remove from library?", msg, [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "Remove", style: "destructive", onPress: () => toggle(prompt) },
-                  ]);
+                  toggle(prompt);
                 }
-              } else {
-                toggle(prompt);
-              }
-            }}
-            hitSlop={10}
-          >
-            <Feather name="bookmark" size={22} color={saved ? colors.primary : colors.foreground} />
-          </Pressable>
+              }}
+              hitSlop={10}
+            >
+              <Feather name="bookmark" size={22} color={saved ? colors.primary : colors.foreground} />
+            </Pressable>
+          </View>
         ) : null,
     });
-  }, [navigation, prompt, blocked, saved, colors, toggle]);
+  }, [navigation, router, prompt, blocked, isLocal, saved, colors, toggle]);
 
   if (isLoading) return <LoadingState label="Loading prompt…" />;
   if (isError || !prompt)
@@ -279,6 +293,7 @@ export default function PromptDetailScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingBottom: 48 },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 18 },
   gallery: { paddingHorizontal: 18, paddingTop: 18 },
   heroPlaceholder: { height: 180, alignItems: "center", justifyContent: "center" },
   section: { padding: 18, gap: 14 },

@@ -21,6 +21,8 @@ interface SavedContextValue {
   add: (prompt: Prompt) => void;
   /** Add many prompts at once, de-duplicating by id — used by Import. */
   addMany: (prompts: Prompt[]) => void;
+  /** Patch an existing saved prompt in place — used by local CRUD edits. */
+  update: (id: string, patch: Partial<Prompt>) => void;
 }
 
 const SavedContext = createContext<SavedContextValue | null>(null);
@@ -97,9 +99,17 @@ export function SavedProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const update = useCallback((id: string, patch: Partial<Prompt>) => {
+    setSaved((prev) => {
+      const next = prev.map((p) => (p.id === id ? { ...p, ...patch, id } : p));
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
+      return next;
+    });
+  }, []);
+
   return (
     <SavedContext.Provider
-      value={{ saved, ready, isSaved, toggle, remove, add, addMany }}
+      value={{ saved, ready, isSaved, toggle, remove, add, addMany, update }}
     >
       {children}
     </SavedContext.Provider>

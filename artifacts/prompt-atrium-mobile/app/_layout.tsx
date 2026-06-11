@@ -43,6 +43,7 @@ function RootLayoutNav() {
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="prompt/[id]" options={{ title: "Prompt", headerBackTitle: "Back" }} />
+      <Stack.Screen name="prompt/edit/[id]" options={{ title: "Edit prompt", headerBackTitle: "Back" }} />
       <Stack.Screen name="tools/aspect-ratio" options={{ title: "Aspect Ratio" }} />
       <Stack.Screen name="tools/prompting-guides" options={{ title: "Prompting Guides" }} />
       <Stack.Screen name="tools/metadata-analyzer" options={{ title: "Image Metadata" }} />

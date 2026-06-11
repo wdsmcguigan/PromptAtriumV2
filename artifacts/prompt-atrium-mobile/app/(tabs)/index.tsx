@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useCallback } from "react";
@@ -17,7 +18,13 @@ import { PromptCard } from "@/components/PromptCard";
 import { ErrorState, SkeletonCard } from "@/components/ui";
 import { gradients } from "@/constants/colors";
 import { useColors } from "@/hooks/useColors";
-import { usePrompts, type Prompt } from "@/lib/api";
+import {
+  resolveImageUrl,
+  useLiteFeatured,
+  useLitePreview,
+  usePrompts,
+  type Prompt,
+} from "@/lib/api";
 
 function SectionTitle({
   title,
@@ -54,6 +61,64 @@ function HRow({ data }: { data: Prompt[] }) {
   );
 }
 
+/**
+ * A teaser card for `is_lite_preview` prompts. Intentionally NOT pressable and
+ * never renders the prompt body — it advertises content available in the full
+ * PromptAtrium experience with a blurred cover and a lock overlay.
+ */
+function LockedCard({ prompt }: { prompt: Prompt }) {
+  const colors = useColors();
+  const r = colors.radius;
+  const cover = resolveImageUrl(prompt.exampleImagesUrl?.[0]);
+  return (
+    <View
+      style={[
+        lockStyles.card,
+        { backgroundColor: colors.card, borderColor: colors.border, borderRadius: r + 4 },
+      ]}
+    >
+      <View style={[lockStyles.media, { borderTopLeftRadius: r + 4, borderTopRightRadius: r + 4 }]}>
+        {cover ? (
+          <Image
+            source={{ uri: cover }}
+            style={lockStyles.cover}
+            contentFit="cover"
+            blurRadius={22}
+            transition={200}
+          />
+        ) : (
+          <LinearGradient
+            colors={gradients.tools as unknown as [string, string]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={lockStyles.cover}
+          />
+        )}
+        <View style={lockStyles.overlay}>
+          <View style={lockStyles.lockCircle}>
+            <Feather name="lock" size={18} color="#fff" />
+          </View>
+        </View>
+        <View style={[lockStyles.proPill, { backgroundColor: colors.primary }]}>
+          <Feather name="star" size={10} color={colors.primaryForeground} />
+          <Text style={[lockStyles.proText, { color: colors.primaryForeground }]}>Pro</Text>
+        </View>
+      </View>
+      <View style={lockStyles.body}>
+        <Text style={[lockStyles.title, { color: colors.foreground }]} numberOfLines={2}>
+          {prompt.name}
+        </Text>
+        {prompt.category ? (
+          <Text style={[lockStyles.meta, { color: colors.mutedForeground }]} numberOfLines={1}>
+            {prompt.category}
+          </Text>
+        ) : null}
+        <Text style={[lockStyles.nudge, { color: colors.primary }]}>Unlock in the full app</Text>
+      </View>
+    </View>
+  );
+}
+
 export default function DiscoverScreen() {
   const colors = useColors();
   const router = useRouter();
@@ -61,19 +126,29 @@ export default function DiscoverScreen() {
   const trending = usePrompts({ sortBy: "trending", limit: 10 });
   const featured = usePrompts({ isFeatured: true, sortBy: "featured", limit: 8 });
   const recent = usePrompts({ sortBy: "recent", limit: 8 });
+  const liteFeatured = useLiteFeatured(15);
+  const litePreview = useLitePreview(8);
 
   const refreshing =
-    trending.isRefetching || featured.isRefetching || recent.isRefetching;
+    trending.isRefetching ||
+    featured.isRefetching ||
+    recent.isRefetching ||
+    liteFeatured.isRefetching ||
+    litePreview.isRefetching;
 
   const onRefresh = useCallback(() => {
     trending.refetch();
     featured.refetch();
     recent.refetch();
-  }, [trending, featured, recent]);
+    liteFeatured.refetch();
+    litePreview.refetch();
+  }, [trending, featured, recent, liteFeatured, litePreview]);
 
   const loading = trending.isLoading && recent.isLoading;
   const errored = trending.isError && recent.isError;
   const featuredList = (featured.data || []).filter((p) => p.isFeatured);
+  const curated = liteFeatured.data ?? [];
+  const locked = litePreview.data ?? [];
 
   return (
     <View style={[styles.flex, { backgroundColor: colors.background }]}>
@@ -106,6 +181,13 @@ export default function DiscoverScreen() {
             <Text style={styles.heroBtnText}>Browse the library</Text>
           </Pressable>
         </LinearGradient>
+
+        {curated.length > 0 ? (
+          <View style={styles.section}>
+            <SectionTitle title="Curated for you" />
+            <HRow data={curated} />
+          </View>
+        ) : null}
 
         {errored ? (
           <ErrorState message={(trending.error as Error)?.message} onRetry={onRefresh} />
@@ -142,6 +224,24 @@ export default function DiscoverScreen() {
             ) : null}
           </>
         )}
+
+        {locked.length > 0 ? (
+          <View style={styles.section}>
+            <SectionTitle title="More premium prompts" />
+            <Text style={[styles.lockedLead, { color: colors.mutedForeground }]}>
+              A preview of prompts available in the full PromptAtrium experience.
+            </Text>
+            <FlatList
+              horizontal
+              data={locked}
+              keyExtractor={(p) => p.id}
+              renderItem={({ item }) => <LockedCard prompt={item} />}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.hList}
+              ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+            />
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -184,4 +284,48 @@ const styles = StyleSheet.create({
   hList: { paddingHorizontal: 18 },
   vList: { paddingHorizontal: 18 },
   skeletons: { padding: 18 },
+  lockedLead: {
+    paddingHorizontal: 18,
+    marginTop: -4,
+    marginBottom: 12,
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 18,
+  },
+});
+
+const lockStyles = StyleSheet.create({
+  card: { width: 200, borderWidth: 1, overflow: "hidden", marginBottom: 14 },
+  media: { height: 120, overflow: "hidden" },
+  cover: { flex: 1, alignItems: "center", justifyContent: "center" },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(10,12,18,0.35)",
+  },
+  lockCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  proPill: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  proText: { fontSize: 10, fontFamily: "Inter_600SemiBold" },
+  body: { padding: 12, gap: 5 },
+  title: { fontSize: 14, fontFamily: "Inter_700Bold", lineHeight: 19 },
+  meta: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  nudge: { fontSize: 12, fontFamily: "Inter_600SemiBold", marginTop: 2 },
 });

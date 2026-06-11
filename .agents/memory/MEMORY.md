@@ -9,3 +9,4 @@
 - [Mobile AI tools API contracts](mobile-ai-tools-api-contracts.md) — miner /analyze needs taskType "file" + data-URL base64 (bare base64 silently breaks); enhance-prompt character is an object; cap ALL free-text fields on the public endpoint.
 - [Schema reconciliation TODO](schema-reconciliation-todo.md) — schema.ts missing real tables + has legacy duplicate columns; deferred; full detail in docs/schema-reconciliation-todo.md; do NOT run db:push until reconciled.
 - [Expo native-only APIs crash web preview](expo-web-preview-native-apis.md) — unguarded native calls (e.g. expo-notifications) redbox the whole web dev preview; Platform-guard them.
+- [Lite features architecture](lite-features-architecture.md) — Lite (curated/teaser + local CRUD) lives INSIDE prompt-atrium-mobile; extend SavedProvider, do NOT consume lib/prompt-crud.

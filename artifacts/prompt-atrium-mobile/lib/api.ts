@@ -248,6 +248,34 @@ export function usePrompt(id?: string) {
   });
 }
 
+/**
+ * Curated "lite featured" prompts — public, no auth. Served by the dedicated
+ * `/api/lite/featured` endpoint (NOT the generic /api/prompts handler), which
+ * already filters to public, non-hidden, non-NSFW rows. The extra NSFW filter
+ * here is belt-and-suspenders for the client.
+ */
+export function useLiteFeatured(limit = 15) {
+  const path = `/api/lite/featured${qs({ limit })}`;
+  return useQuery<Prompt[], Error, Prompt[]>({
+    queryKey: [path],
+    queryFn: () => apiGet<Prompt[]>(path),
+    select: (data) => data.filter((p) => !p.isNsfw),
+  });
+}
+
+/**
+ * "Lite preview" prompts used for locked teaser cards. Public, no auth. These
+ * are advertised but never opened in this app, so the body is irrelevant.
+ */
+export function useLitePreview(limit = 8) {
+  const path = `/api/lite/preview${qs({ limit })}`;
+  return useQuery<Prompt[], Error, Prompt[]>({
+    queryKey: [path],
+    queryFn: () => apiGet<Prompt[]>(path),
+    select: (data) => data.filter((p) => !p.isNsfw),
+  });
+}
+
 export function useCodexCategories() {
   return useQuery<CodexCategory[]>({
     queryKey: ["/api/codex/categories"],
