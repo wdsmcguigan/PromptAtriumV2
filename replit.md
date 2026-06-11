@@ -1,103 +1,55 @@
-# PromptAtrium - AI Prompt Management Platform
+# PromptAtrium
 
-## Overview
-PromptAtrium is a comprehensive platform designed for managing, sharing, and generating AI prompts. Its purpose is to empower users with tools for organizing, collaborating on, and enhancing AI prompts. Key capabilities include a robust prompt library, community sharing features, collections management, advanced prompt generation tools, and a complete marketplace payment infrastructure. The platform aims to be the go-to solution for AI prompt engineers, creators, and enthusiasts, fostering a vibrant community and enabling monetization opportunities through its marketplace.
+An AI prompt library and community platform for managing, sharing, and refining AI prompts.
 
-## User Preferences
-- Dark mode preferred for UI
-- Emphasis on visual design with card-based layouts
-- Toast notifications for user feedback
-- Mobile-responsive design
+## Run & Operate
 
-## System Architecture
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080, proxied at `/api`)
+- `pnpm --filter @workspace/prompt-atrium run dev` — run the frontend (Vite, proxied at `/`)
+- `pnpm run typecheck` — full typecheck across all packages
+- `pnpm run build` — typecheck + build all packages
+- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only — see Gotchas)
+- Required env: `DATABASE_URL` — Postgres connection string
 
-### UI/UX Decisions
-The application employs a dark-first design with deep blue-gray backgrounds, accented with glass-morphism effects for interactive elements like toasts, dropdowns, and navigation. Gradient accents are used for section branding (Library, Community, Tools, Marketplace). The UI emphasizes card-based layouts and provides toast notifications for user feedback. The design is mobile-responsive. A comprehensive design system, including design tokens, component patterns, and CSS architecture, is documented and integrated.
+## Stack
 
-### Technical Implementations
-- **Frontend**: Built with React, TypeScript, Wouter for routing, TanStack Query v5 for state management, and Shadcn/ui + Tailwind CSS for UI components. Authentication is handled via Replit Auth with OIDC.
-- **Backend**: Utilizes Express.js.
-- **Database**: PostgreSQL with Drizzle ORM.
-- **File Storage**: Google Cloud Storage for image assets.
-- **Authentication**: Passport with OIDC strategy for the backend.
-- **AI Integration**: Uses Replit AI Integrations with GPT-5 for intelligent prompt refinement and metadata generation.
-- **Payment Processing**: Automated Stripe Connect integration for marketplace transactions, commission calculation, and payouts, supported by a transaction ledger system and robust webhook handlers.
+- pnpm workspaces, Node.js 24, TypeScript 5.9
+- API: Express 5
+- DB: PostgreSQL + Drizzle ORM
+- Validation: Zod (`zod/v4`), `drizzle-zod`
+- Frontend: React + Vite + Tailwind CSS v3
+- Build: esbuild (CJS bundle)
 
-### Feature Specifications
-- **Prompt Management**: Features include creation, editing, organization with rich metadata (categories, tags, models), version history, and public/private visibility.
-- **Community Features**: Supports public prompt sharing, like/favorite systems, user profiles, activity feeds, and a hierarchical sub-community structure with delegated administration and RBAC.
-- **Collections**: Allows users to organize prompts into public, private, and collaborative collections.
-- **Tools**: Includes an Aspect Ratio Calculator, Metadata Analyzer, and an advanced Quick Prompt Generator with template-based generation, character presets, random scenario generation, prompt enhancement, social media caption generation, and AI-powered metadata auto-filling.
-- **Prompt Refinement**: An AI-powered chat interface allows for iterative improvement of generated prompts, with per-user memory for learning preferences and persistent conversation history.
-- **Admin Features**: User management, community management, system statistics, and developer tools.
+## Where things live
 
-### System Design Choices
-- **Database Schema**: Structured with tables for users, prompts, collections, activities, communities, prompt sharing, transaction ledger, payout batches, and system settings. New tables for `prompt_refinement_conversations`, `prompt_refinement_messages`, and `user_prompt_memory` support AI features.
-- **API Structure**: RESTful endpoints under `/api` with authentication for user-specific operations, public endpoints for community content, and rate limiting.
-- **Security**: Employs input validation with Zod, SQL injection prevention (Drizzle ORM), XSS protection, CORS configuration, and rate limiting. `isSuperAdmin` middleware secures admin-only endpoints.
-- **Development Guidelines**: Adheres to TypeScript for type safety, functional components with hooks, async/await, and comprehensive error handling. Testing includes end-to-end (Playwright), component, and API endpoint testing.
+- `artifacts/api-server/src/legacyRoutes.ts` — all backend routes (migrated from Express 4 monolith)
+- `artifacts/api-server/src/index.ts` — server entry, registers routes + starts listening
+- `lib/db/src/schema/schema.ts` — source of truth for DB schema and Drizzle types
+- `artifacts/prompt-atrium/src/` — React frontend (pages, components, hooks)
+- `artifacts/prompt-atrium/vite.config.ts` — Vite config; `@shared` alias → `lib/db/src/schema`
 
-## Design System
+## Architecture decisions
 
-The application includes a comprehensive design system located in `design-system/`:
+- **Skipped OpenAPI codegen** — legacy app has 7,000+ line route file; kept existing `apiRequest` fetch layer rather than generating hooks.
+- **`@shared/*` alias** — both Vite and tsconfig alias `@shared/` → `lib/db/src/schema/` so 66+ frontend files that import shared types continue to work.
+- **Express 5 wildcard routes** — legacy `:param(*)` and `:param(.*)` patterns replaced with named wildcards (`/*name`). Handlers use `req.path` instead of `req.params`.
+- **DB constraints via raw SQL** — `drizzle-kit push` requires TTY for safety prompts; unique constraints added via `executeSql` directly to avoid data loss from interactive prompts.
+- **No `memoizee` dependency** — replaced with inline TTL cache in `replitAuth.ts`; `es5-ext` is firewall-blocked.
 
-### Documentation Files
-- `README.md` - Overview and quick start guide
-- `DESIGN_TOKENS.md` - Complete token definitions (colors, spacing, shadows)
-- `COMPONENT_PATTERNS.md` - Component usage examples and patterns
-- `CSS_ARCHITECTURE.md` - CSS file structure and organization guide
-- `DESIGN_CHANGE_WORKFLOW.md` - Step-by-step guide for implementing design changes and prompting workflows
-- `FIGMA_DESIGN_TOKENS.json` - Figma-ready token export (copy-paste into Figma Tokens plugin)
-- `design-tokens.css` - Extended CSS custom properties
+## Product
 
-#### System-Level Documentation
-- `SYSTEM_OVERVIEW.md` - **Master architecture document** with C4 System Context, Container diagrams, cross-feature flows, shared data contracts, and glossary
-- `FEATURE_INTERACTION_MAP.md` - Visual map of how features connect, share data, and trigger events
+PromptAtrium is a community platform where users can manage, share, and refine AI prompts. Features include a prompt library, community sharing, collections, a marketplace, codex/glossary, credits system, and AI-powered prompt refinement tools.
 
-#### Feature Architecture Documentation
-Each feature has comprehensive diagrams (C4, Sequence, ERD) for redesign planning:
+## User preferences
 
-**Prompt Database:**
-- `PROMPT_DATABASE_ARCHITECTURE.md` - Flow documentation with sequence diagrams
-- `DATA_OBJECT_REFERENCE.md` - Data objects quick reference
-- `PROMPT_DATABASE_DIAGRAMS.md` - **Complete diagram set** (C4, Sequence, ERD)
+_Populate as you build — explicit user instructions worth remembering across sessions._
 
-**Prompt Generator:**
-- `PROMPT_GENERATOR_ARCHITECTURE.md` - Generator flow with AI enhancement
-- `GENERATOR_DATA_OBJECTS.md` - Generator data objects reference
-- `PROMPT_GENERATOR_DIAGRAMS.md` - **Complete diagram set** (C4, Sequence, ERD)
+## Gotchas
 
-**Wordsmith Codex:**
-- `WORDSMITH_CODEX_ARCHITECTURE.md` - Codex component library flow
-- `CODEX_DATA_OBJECTS.md` - Codex data objects reference
-- `WORDSMITH_CODEX_DIAGRAMS.md` - **Complete diagram set** (C4, Sequence, ERD)
+- **`pnpm --filter @workspace/db run push` warns about DATA LOSS** — the live DB has extra tables/columns (agent_profiles, prompt_generator_components, workflow_missions, workflow_steps, plus extra columns on several tables) that are not in `schema.ts`. Never confirm the destructive push. Add missing constraints/indexes via raw SQL instead.
+- **Express 5 route syntax** — never use `:param(*)` or `:param(.*)`. Use `/*name` for named wildcards; access via `req.path` in handlers.
+- **WebGL errors in preview** — Three.js particle system fails in the sandboxed preview (no GPU). This is expected in development and does not affect production.
 
-### Key Design Principles
-- **Dark-first design** with deep blue-gray backgrounds
-- **Glass-morphism effects** for toasts, dropdowns, and navigation
-- **Gradient accents** for section branding (Library, Community, Tools, Marketplace)
-- **Consistent tokens** using CSS custom properties
+## Pointers
 
-### Core Token Categories
-- Semantic colors (`--primary`, `--secondary`, `--destructive`, `--success`, `--warning`)
-- Surface colors (`--card`, `--popover`, `--sidebar`)
-- Shadow scale (`--shadow-xs` through `--shadow-2xl`)
-- Typography (`--font-sans`, `--font-serif`, `--font-mono`)
-
-### Design Change Workflow
-For implementing design changes effectively:
-1. **Token Changes** - Update CSS variables in `index.css` → automatically propagates to all components
-2. **Component Changes** - Update specific components in `client/src/components/ui/`
-3. **New Features** - Use token-based classes from existing design tokens
-
-See `BRAND_GUIDELINES.md` for detailed visual specifications and `DESIGN_CHANGE_WORKFLOW.md` for implementation guidance.
-
-## Import Scripts
-- `scripts/import-all-prompts.ts` — Comprehensive bulk import script that handles all prompt file formats in `attached_assets/prompts/` (individual JSON, array JSON, aggregate JSON collections, markdown with code blocks, plain text). Supports deduplication via MD5 content hashing and batch inserts. Successfully imported 1,644 prompts from 198 source files.
-
-## External Dependencies
-- **Replit Auth**: For user authentication.
-- **Replit AI Integrations (GPT-5)**: For AI-powered prompt refinement and metadata generation.
-- **PostgreSQL**: Primary database.
-- **Google Cloud Storage**: For storing image assets.
-- **Stripe Connect**: For marketplace payment processing, including automated transfers and webhook handling.
+- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details

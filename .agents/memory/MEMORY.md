@@ -1,3 +1,4 @@
+- [Express 5 wildcard routes](express5-wildcard-routes.md) — `:param(*)` and `:param(.*)` are rejected by path-to-regexp v8; use `/*name` named wildcards and `req.path` in handlers.
 - [TypeScript debt & masked bugs](typescript-debt-and-masked-bugs.md) — dev is transpile-only (no tsc gate); real apiRequest/storage/schema bugs sit behind `as any` in MARKETPLACE_ENABLED-gated features.
 - [Gemini grounding vs structured output](gemini-grounding-vs-structured-output.md) — googleSearch tool can't combine with responseMimeType/responseSchema (400); parse JSON from text. Model ids expire.
 - [platform_settings unique-key drift](platform-settings-constraint-drift.md) — `key` declared `.unique()` in schema but dev DB lacked the constraint, silently breaking `onConflictDoUpdate` upserts.
