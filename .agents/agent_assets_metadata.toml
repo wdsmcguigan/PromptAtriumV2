@@ -1,0 +1,20 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "in9BxsC8SG4JsUJHXAHpr"
+uri = "file://docs/plans/27-promptatriumlite-mobile-app.md"
+type = "text"
+title = "Plan #27 — PromptAtriumLite Mobile App"
+
+[[outputs]]
+id = "CEuig60wGswbN1pHlFhsm"
+uri = "file://docs/plans/28-schema-db-additions.md"
+type = "text"
+title = "Plan #28 — Schema & DB Additions"
+
+[[outputs]]
+id = "t76vuFiP1af0mJMexlPlf"
+uri = "file://docs/plans/29-mobile-crud-shared-lib.md"
+type = "text"
+title = "Plan #29 — Mobile CRUD + Shared Library"
