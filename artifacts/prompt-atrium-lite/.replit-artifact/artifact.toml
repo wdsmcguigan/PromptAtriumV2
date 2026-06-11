@@ -3,14 +3,15 @@ previewPath = "/prompt-atrium-lite/"
 title = "PromptAtriumLite"
 version = "1.0.0"
 id = "artifacts/prompt-atrium-lite"
-router = "path"
+router = "expo-domain"
 
 [[integratedSkills]]
 name = "react-vite"
 version = "1.0.0"
 
 [[services]]
-name = "web"
+ensurePreviewReachable = "/status"
+name = "expo"
 paths = [ "/prompt-atrium-lite/" ]
 localPort = 19854
 
