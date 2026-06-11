@@ -162,6 +162,7 @@ architecture and should be ground into brand voice and consumer UX:
 | Greenhouse | Private stash |
 | The Atrium | The shared, light-filled space where things are shown in bloom |
 | Pruning | Archive / curation |
+| Mycelium | The backend + MCP/CLI substrate — invisible, connects every garden, moves nutrients (assets) between them |
 | Permaculture | A harness: a designed, self-sustaining context ecosystem |
 
 **Positioning insight:** every industry label is a verb-phase that gets
