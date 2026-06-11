@@ -1,12 +1,3 @@
-# Handoff Prompt — PromptAtriumLite + Supporting Work
-
-> Copy everything in the "PROMPT TO PASTE" block below into a new chat session.
-> Build the Expo mobile app on **replit.com (desktop browser)** — mobile apps cannot be created from the iOS Replit app.
-
----
-
-## PROMPT TO PASTE
-
 I'm continuing work on the PromptAtrium monorepo. A previous agent session planned three tasks and the task agents built them, but the work was later rolled back (a "Restored to checkpoint" commit undid the merges). I want to rebuild it fresh and correctly.
 
 **Before doing anything, read these in order:**
@@ -17,7 +8,7 @@ I'm continuing work on the PromptAtrium monorepo. A previous agent session plann
 5. `replit.md` (project overview + Gotchas)
 6. `docs/schema-reconciliation-todo.md`
 
-**Goal:** Build PromptAtriumLite — a standalone, local-only personal prompt library mobile app (no auth, no sync, no communities) — plus the supporting schema/API and shared component library it depends on. These are TWO distinct apps (existing PromptAtrium Mobile stays, plus the new Lite app). This is NOT in-app-purchase / marketplace work. This should be an Expo App Just Like Prompt Atrium Mobile NOT a webapp. Please reuse and directly copy as much as possible from the Prompt Atrium Mobile App so that we don't have to reinvent the wheel. I am also attaching a generic Mobile app building prompt for guidance if needed.
+**Goal:** Build PromptAtriumLite — a standalone, local-only personal prompt library mobile app (no auth, no sync, no communities) — plus the supporting schema/API and shared component library it depends on. These are TWO distinct apps (existing PromptAtrium Mobile stays, plus the new Lite app). This is NOT in-app-purchase / marketplace work.
 
 **Current verified state (everything below needs to be built fresh — the rollback removed it):**
 - `artifacts/prompt-atrium-lite/` — empty (only `.expo/` cache + `expo-env.d.ts`). No app code, no `package.json`, NOT registered as an artifact, NOT in the preview dropdown.

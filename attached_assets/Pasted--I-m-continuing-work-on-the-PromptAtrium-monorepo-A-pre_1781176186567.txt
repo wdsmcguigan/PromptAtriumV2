@@ -1,11 +1,3 @@
-# Handoff Prompt — PromptAtriumLite + Supporting Work
-
-> Copy everything in the "PROMPT TO PASTE" block below into a new chat session.
-> Build the Expo mobile app on **replit.com (desktop browser)** — mobile apps cannot be created from the iOS Replit app.
-
----
-
-## PROMPT TO PASTE
 
 I'm continuing work on the PromptAtrium monorepo. A previous agent session planned three tasks and the task agents built them, but the work was later rolled back (a "Restored to checkpoint" commit undid the merges). I want to rebuild it fresh and correctly.
 
