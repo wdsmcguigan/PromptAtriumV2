@@ -1,5 +1,6 @@
 export type { PromptCrudAdapter, PromptCrudItem, PromptCreateInput, AuthConfig } from "./types";
 export { ServerAdapter } from "./adapters/ServerAdapter";
+export { LocalAdapter } from "./adapters/LocalAdapter";
 export { usePromptCrud } from "./hooks/usePromptCrud";
 export type { UsePromptCrudResult } from "./hooks/usePromptCrud";
 export { PromptForm } from "./components/PromptForm";
