@@ -18,3 +18,9 @@ id = "t76vuFiP1af0mJMexlPlf"
 uri = "file://docs/plans/29-mobile-crud-shared-lib.md"
 type = "text"
 title = "Plan #29 — Mobile CRUD + Shared Library"
+
+[[outputs]]
+id = "ypOKPmtnusfQOZfv9mXxI"
+uri = "file://docs/plans/HANDOFF.md"
+type = "text"
+title = "Handoff Prompt for New Session"

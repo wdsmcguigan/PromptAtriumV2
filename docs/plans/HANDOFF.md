@@ -1,0 +1,49 @@
+# Handoff Prompt — PromptAtriumLite + Supporting Work
+
+> Copy everything in the "PROMPT TO PASTE" block below into a new chat session.
+> Build the Expo mobile app on **replit.com (desktop browser)** — mobile apps cannot be created from the iOS Replit app.
+
+---
+
+## PROMPT TO PASTE
+
+I'm continuing work on the PromptAtrium monorepo. A previous agent session planned three tasks and the task agents built them, but the work was later rolled back (a "Restored to checkpoint" commit undid the merges). I want to rebuild it fresh and correctly.
+
+**Before doing anything, read these in order:**
+1. `docs/plans/27-promptatriumlite-mobile-app.md`
+2. `docs/plans/28-schema-db-additions.md`
+3. `docs/plans/29-mobile-crud-shared-lib.md`
+4. `.agents/memory/MEMORY.md` (and the linked topic files it references)
+5. `replit.md` (project overview + Gotchas)
+6. `docs/schema-reconciliation-todo.md`
+
+**Goal:** Build PromptAtriumLite — a standalone, local-only personal prompt library mobile app (no auth, no sync, no communities) — plus the supporting schema/API and shared component library it depends on. These are TWO distinct apps (existing PromptAtrium Mobile stays, plus the new Lite app). This is NOT in-app-purchase / marketplace work.
+
+**Current verified state (everything below needs to be built fresh — the rollback removed it):**
+- `artifacts/prompt-atrium-lite/` — empty (only `.expo/` cache + `expo-env.d.ts`). No app code, no `package.json`, NOT registered as an artifact, NOT in the preview dropdown.
+- `lib/prompt-crud/` — only stale `dist/` build output, NO `src/`, NO `package.json`.
+- `lib/db/src/schema/schema.ts` — does NOT contain `is_lite_featured`, `is_lite_preview`, `feature_types`, or `prompt_features`.
+- `artifacts/api-server/src/legacyRoutes.ts` — does NOT contain the public lite/discover endpoints.
+
+**Build order (respect dependencies):**
+1. **Schema & DB (plan #28)** — add `is_lite_featured` / `is_lite_preview` boolean columns to `prompts`, add `feature_types` + `prompt_features` join table (many-to-many), add new `prompt_types` lookup rows (skill, rule, agent, plugin), and add the public no-auth API endpoints. Apply ALL DB changes via raw `ALTER TABLE` / SQL on BOTH dev and prod — see gotchas below.
+2. **Mobile CRUD + shared lib (plan #29)** — build `lib/prompt-crud` (source + package.json) and wire full create/edit/delete into the EXISTING PromptAtrium Mobile app first.
+3. **PromptAtriumLite (plan #27)** — scaffold a NEW Expo artifact via the `artifacts` skill so it registers and appears in the preview dropdown. Local-first (AsyncStorage) CRUD, a read-only "Discover" tab pulling curated public prompts (savable locally), locked upgrade-teaser cards, the 5 existing no-auth AI tools, and JSON import/export.
+
+**Critical gotchas (do not skip):**
+- NEVER run `pnpm --filter @workspace/db run push` / `db:push` — the live DB has drifted from schema.ts both directions; db:push will offer to DROP real tables (esp. `agent_profiles`, which has real data). Apply schema changes via raw SQL instead, on both dev AND prod.
+- `prompt_types` is a lookup TABLE, not an enum — add new categories as rows.
+- `is_featured` stays a boolean; the new `feature_types` / `prompt_features` are added alongside it (many-to-many), not replacing it.
+- The Lite app must be created as a proper Expo (mobile) artifact via the `artifacts` skill, and registered so it shows in the preview-pane dropdown. Verify with `listArtifacts()`.
+- AI tool API contracts: the miner `/analyze` endpoint needs `taskType: "file"` + a data-URL base64 (bare base64 silently breaks); `enhance-prompt` `character` is an object; cap all free-text fields on public endpoints.
+- Verify with `pnpm --filter @workspace/<slug> run typecheck` (not `build`).
+
+Start by reading the six files above, then propose your task breakdown.
+
+---
+
+## Notes for the human (not part of the paste)
+
+- The recovered plan files in `docs/plans/` are the verbatim originals, extracted from the prior session transcript (not reconstructed).
+- The prior attempt's commits still exist in git history (range ending `6f29bf5 feat: PromptAtriumLite`) if you ever want to reference what was tried before the rollback.
+- Build the Expo app from a desktop browser on replit.com — the iOS Replit app cannot create mobile apps.
