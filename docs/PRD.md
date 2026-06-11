@@ -211,3 +211,32 @@ legacy code is deleted, never polished.
   gamification credits — keep, fold in, or retire per usage.
 - Result-attachment moderation story once the Atrium opens.
 - Mobile: parked; responsive web serves it. Revisit post-Phase 4.
+
+## 9. Standing doubts (the pruning list)
+
+Devil's-advocate positions held open on purpose — revisit at each phase
+gate rather than letting the plan calcify around them:
+
+1. **One-growth-path may be a launch mistake.** The conscript → creator
+   → professional arc is a data-model truth but unproven as marketing.
+   Strong prior: launch messaging targets the professional/MCP wedge
+   only; conscript framing is a later expansion. Decide at Phase 3.
+2. **The Atrium may not belong in v1.** Stash + MCP + public
+   share-links-with-results might be the whole product for months;
+   editorial curation is founder labor. Gate the Atrium on share-link
+   traction, not on the roadmap reaching Phase 3.
+3. **Strangler-fig vs freeze.** With no real users, keeping the legacy
+   app deployable is a tax paid to nobody. Default to freezing it
+   (in-tree reference, optional build) unless a demo need appears.
+4. **Platform risk on sync.** Tool vendors could ship native rules/skills
+   sync any quarter; the defensible layer is content + community, which
+   is the slow layer. Size this against Brief 1's gap-check findings.
+5. **Metaphor-vs-credibility.** The landing page must pass: *a skeptical
+   engineer can say what this does, from the hero alone, in one
+   sentence.* Garden poetry is page two.
+6. **Gamification credits should not survive cutover by default** — they
+   re-earn their place once the Atrium has people in it.
+7. **The name.** "Prompt" is the fastest-aging word in the verb churn;
+   "Atrium" survives as the short form. No rename planned — but examine
+   once, deliberately, before brand guidelines calcify.
+
