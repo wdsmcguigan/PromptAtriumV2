@@ -97,10 +97,18 @@ for (const file of files) {
       });
     } else {
       seen.set(hash, obj);
-      // Attach the content hash to provenance for downstream use
+      // content_hash is an INTEGRITY hash: sha256 of the exact stored content
+      // (content_text, or each file's text joined by path order for bundles).
+      // The normalized hash above is only the dedupe key — never persist it.
+      const exact = typeof obj.content_text === 'string'
+        ? obj.content_text
+        : (obj.content_files ?? []).map((f) => `${f.path}\n${f.text}`).join('\n');
       const out = {
         ...obj,
-        provenance: { ...obj.provenance, content_hash: hash },
+        provenance: {
+          ...obj.provenance,
+          content_hash: createHash('sha256').update(exact).digest('hex'),
+        },
       };
       console.log(JSON.stringify(out));
     }

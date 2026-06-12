@@ -54,7 +54,14 @@ Store this SHA. Every `source_url` and `provenance.commit_sha` uses it.
 
 ### 3. Fetch and curate
 
-Fetch file content via the GitHub API (blob endpoint) or raw URL pinned to the SHA. **Curate — do not dump.** An asset earns inclusion if a Claude Code / Cursor power user would actually install it. When a collection has 50 variants of the same rule, take the best 1-3.
+Fetch file content **only** via the GitHub API (blob endpoint) or a raw URL
+(`raw.githubusercontent.com/<repo>/<sha>/<path>`) pinned to the SHA, using
+curl/fetch. **Never use WebFetch or any page-rendering fetch for content** —
+those can silently summarize, truncate, or reflow the file (the 2026-06-12
+pilot run shipped 8 corrupted assets this way). `content_text` must be the
+exact bytes of the upstream file. **Curate — do not dump.** An asset earns
+inclusion if a Claude Code / Cursor power user would actually install it. When
+a collection has 50 variants of the same rule, take the best 1-3.
 
 ### 4. Write JSONL
 
@@ -107,7 +114,7 @@ node .claude/skills/harvest-source/deduper.mjs \
   > data/seed/assets-rule.jsonl
 ```
 
-The deduper normalizes content (trim, CRLF→LF, strip trailing whitespace per line), hashes with SHA-256, and keeps the first-seen record when hashes collide. It adds `provenance.content_hash` to each output record.
+The deduper normalizes content (trim, CRLF→LF, strip trailing whitespace per line) and hashes the normalized form with SHA-256 **only as the dedupe key**, keeping the first-seen record on collision. The `provenance.content_hash` it writes is different: **sha256 of the exact stored `content_text`** (an integrity hash — the validator re-checks it, so never edit content after deduping without re-running the deduper).
 
 ### 7. Write wishlist and SOURCES.md
 
