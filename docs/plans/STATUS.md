@@ -3,6 +3,36 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-12 (evening) — Reconcile merged (PR #11); Gardener agent launched
+
+- **PR #11 merged** — the harvest #2 audit fixes (apache-2.0 registry code,
+  LICENSE.txt in bundles), schema-seams fold-in, and STATUS reconciliation are
+  on main. Fan-out sessions must run off this main or later.
+- **Gardener (Sonnet) launched by the owner** — building the harvest pipeline:
+  `import-seed.ts` with version-aware upsert, a CI byte-audit gate on
+  `data/seed` PRs, a `sources.json` queue, and a weekly staleness check. Lands
+  as a PR with **two decisions flagged for the Steward**: (a) inline-text
+  bundles vs GCS manifests, (b) whether to ever auto-schedule harvests.
+  Steward's preliminary positions (final at review): (a) stay inline — the CI
+  byte-audit gate depends on content being diffable in git; GCS manifests are
+  the *future* large/binary-asset path (claude-api wishlist is the forcing
+  function), not the default; (b) no auto-scheduled harvests — staleness check
+  may auto-open reports/issues, but ingestion needs curation + license judgment
+  and every harvest PR gets the independent audit. Cron detects; it never
+  ingests.
+- **Gardener PR review checklist** (against the real v2 store, per
+  `.agents/memory/v2-asset-api.md`): versions are **immutable** — "upsert"
+  must mean new asset_version only when content_hash differs (idempotent
+  re-run = no-op, like backfill-v2), never mutate a version; head_version_id
+  advances; assets owned by a "PromptAtrium curation" principal; licenses
+  validated via `@shared/licenses` (apache-2.0 exists now); provenance
+  preserved in `metadata.source`; CI gate must implement the *independent*
+  audit from `.agents/memory/seed-harvesting.md` (pinned-tree byte-compare +
+  completeness), not just re-run validate-jsonl; verified on scratch Postgres.
+- **Agent-relationship map** now durable in `.agents/memory/agent-team.md`
+  (Owner → Steward → Gardener → harvest workers → deterministic substrate;
+  research = bounded consultants; marketing tooling read-only).
+
 ## 2026-06-12 (later) — Reconciliation: PRs #6–#10 merged, harvest audited, fan-out approved
 
 ### PR landscape (all verified against GitHub, not memory)

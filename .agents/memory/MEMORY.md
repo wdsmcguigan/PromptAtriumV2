@@ -13,3 +13,4 @@
 - [v2 asset API](v2-asset-api.md) — Phase 1 schema/API/PAT/backfill at `/api/v2`; immutable versions, principals not users, 404-not-403; DEPLOY GATE: migrate:v2 + 31-license-codes.sql must run on dev+prod before deploying main past PR #6.
 - [License registry](license-registry.md) — stable codes only (`cc0` default), `@shared/licenses` is the single source of truth; `arr` blocks copy-to-library; never store display strings or relabel to a "close enough" code (`apache-2.0` exists for this reason); DMCA agent in ToS is a placeholder.
 - [Seed harvesting](seed-harvesting.md) — /harvest-source pipeline state, the independent byte-audit procedure every harvest PR gets, bundle LICENSE.txt rule, WebFetch ban; fan-out approved 2026-06-12.
+- [Agent team](agent-team.md) — Owner → Steward → Gardener → harvest workers → deterministic substrate; who reviews what, decisions flow up; research = bounded consultants; marketing tooling never writes.
