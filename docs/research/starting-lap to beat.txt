@@ -1,0 +1,58 @@
+https://promptdrive.ai/
+https://cloudprompt.app/
+https://rightclickprompt.com/
+https://rightclickprompt.com/blog
+https://www.spaceprompts.com/blog/best-prompt-management-chrome-extensions
+
+
+
+Yes, they are worth analyzing, but **only for your Phase 2 "conscript/beginner" persona, not as direct competitors to your core product.** Based on the market research and strategy documents in your notebook, PromptAtrium's core differentiator and "sharpest wedge" is targeting professionals with a CLI and MCP server to sync complex assets (like `.cursor/rules`, `AGENTS.md`, and system prompts) directly into developer tools.
+
+The tools you listed represent a completely different segment of the market. Here is how they fit into your landscape:
+
+### What these tools are: The "Browser-Bound" Prompt Managers
+
+All the tools you listed—CloudPrompt, PromptDrive, Right-Click Prompts, and the extensions reviewed by SpacePrompts—belong to the consumer/web-app tier of prompt management.
+
+* 
+**CloudPrompt & Right-Click Prompts:** Focus heavily on injecting standard text prompts directly into web chatbots (ChatGPT, Claude) using context menus or right-clicks so users don't have to copy-paste.
+
+
+* 
+**PromptDrive:** Focuses on team collaboration and running AI chats directly within their own workspace using API keys.
+
+
+* 
+**SpacePrompts:** Injects floating toolbars directly into supported AI chat interfaces to save and enhance prompts without switching tabs.
+
+
+
+### Why they are worth analyzing (The Lessons)
+
+While they aren't your primary competitors, you should analyze them to understand the baseline expectations for your "Stash" and future Chrome extension:
+
+1. 
+**Validation of the pain point:** They prove that users are frustrated with "scattered AI config" and losing track of their best prompts.
+
+
+2. 
+**Workflow integration is mandatory:** The SpacePrompts blog notes that if a tool requires users to leave their chatbot to copy-paste, it suffers high churn. The success of "Right-Click Insert" features  shows that your Phase 2 browser extension must be frictionless.
+
+
+3. **The "Keep it Simple" UI:** These tools show how to build an interface that doesn't scare normal users. They focus on simple folders, variables, and tags without overwhelming users with developer jargon.
+
+
+
+### Why they are NOT a threat to PromptAtrium
+
+These tools highlight the exact "white-space gap" your market research identified.
+
+* 
+**No IDE or CLI Integration:** They are entirely confined to the browser. They cannot sync an `AGENTS.md` file to a local GitHub repo, nor can they feed skills into Claude Code or Cursor.
+
+
+* **Not built for "Context Permaculture":** They only handle single text prompts (and sometimes templates). They do not handle composable "stacks," multi-file plugins, or MCP server JSON configurations, which are the future of complex AI workflows.
+
+
+
+**Conclusion:** Look at these tools to borrow UX ideas for your private "Stash" and future browser extension, but do not treat them as your main competitors. Your true competitors are CLI-sync tools like `mcp-sync` and single-IDE registries like `cursor.directory`.
