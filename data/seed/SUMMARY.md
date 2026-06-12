@@ -1,31 +1,70 @@
-## Harvest summary — PatrickJS/awesome-cursorrules — 2026-06-12
+# Harvest summary — PatrickJS/awesome-cursorrules — 2026-06-12
+
+## Cumulative corpus (2 pilot runs)
 
 | Kind  | Count |
 |-------|-------|
-| rule  | 21    |
-| **Total** | **21** |
+| rule  | 41    |
+| **Total** | **41** |
 
-### License distribution
+## License distribution
 
-| Code | Count |
-|------|-------|
-| cc0  | 21    |
+| License | Count |
+|---------|-------|
+| cc0     | 41    |
 
-### Top sources by yield
+All assets from a single CC0-1.0 licensed repo — no mixed-license complexity.
 
-1. PatrickJS/awesome-cursorrules — 21 assets (validation run cap: ~30)
+## Top sources by yield
 
-### Wishlist
+1. PatrickJS/awesome-cursorrules — 41 assets (257 available; 41 harvested across 2 runs)
 
-5 items recorded (no content copied):
-- 3 files where WebFetch returned summaries instead of verbatim content (need GITHUB_TOKEN for future runs)
-- 1 high-value file deferred by the ~30 cap (cypress-e2e)
-- 1 bulk entry for the remaining ~80+ eligible files not fetched in this run
+## Run breakdown
 
-### Notes
+| Run | Assets added | Method | Notes |
+|-----|-------------|--------|-------|
+| 1 (2026-06-12) | 21 | WebFetch (unauthenticated) | Some files returned summaries; excluded |
+| 2 (2026-06-12) | +20 new | curl + GITHUB_TOKEN | Byte-faithful raw API fetch |
+| Deduplication | −10 | content-hash + path-based | 6 exact + 4 path-based dupes removed |
+| **Total** | **41** | | |
 
-- **Validation run**: capped at ~30 assets to test the pipeline end-to-end.
-- **No GITHUB_TOKEN**: the license-detector.mjs script could not authenticate; license was manually verified from the CC0 LICENSE file. Content was fetched from pinned raw.githubusercontent.com URLs.
-- **Skipped low-quality**: `database.mdc` omitted (all-generic "use proper X" bullets).
-- **Skipped ecosystem-specific**: `deno-integration-techniques-cursorrules-prompt-fil.mdc` is specific to the `@findhow` automation project, not general-purpose.
-- **Full harvest next step**: add GITHUB_TOKEN to the environment, then re-run to ingest remaining eligible files and resolve wishlist items.
+## Skipped / wishlisted
+
+| Item | Reason |
+|------|--------|
+| `sveltekit-typescript-guide-cursorrules-prompt-file.mdc` | 769-byte stub — section headings only, no actionable content |
+| `rust.mdc` | Misleading name — Solana/Anchor-specific, not general Rust |
+| `deno-integration-techniques` | Specific to `@findhow` ecosystem |
+| `cypress-e2e-testing` + 4 variants | Deferred; playwright-e2e used as representative |
+| `beefreeSDK` files | Vendor-specific, limited audience |
+| ~216 remaining rules | Deferred to future harvest passes |
+
+## Coverage by category
+
+| Category | Assets |
+|---|---|
+| Universal best-practices | clean-code, anti-overengineering, anti-sycophancy, security, pr-review, git, code-pair-interviews, network-troubleshoot |
+| TypeScript / JavaScript | typescript, react, javascript-typescript-code-quality, react-router-v7, angular-typescript |
+| Frontend frameworks | nextjs, nextjs-app-router, vue, svelte, tailwind |
+| Data fetching / routing | tanstack-query, tanstack-router, tanstack-start |
+| Backend: Python | python, fastapi |
+| Backend: Node | node-express |
+| Backend: JVM | java-springboot-jpa, kotlin-springboot |
+| Backend: Go | go |
+| Backend: Rust | rust-general |
+| Backend: Elixir | elixir-engineer-guidelines |
+| Backend: PHP | laravel-php-83 |
+| Backend: C++ | cpp |
+| Backend: NestJS | nestjs-anti-hallucination |
+| Database / infra | postgresql, database, docker |
+| Mobile | react-native-expo, flutter-app-expert |
+| Embedded | embedded-stm32-hal |
+| Creative / niche | blender-python-addon |
+| Testing | jest, playwright-e2e |
+
+## Next steps
+
+- Full harvest of remaining ~216 rules (target: all quality rules, dedup aggressively)
+- Add Cypress best-variant (cypress-e2e or cypress-api)
+- Check Astro, Deno, SolidJS variants for quality
+- Consider adding `prompt` kind assets from other repos

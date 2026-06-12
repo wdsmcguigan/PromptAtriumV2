@@ -7,52 +7,45 @@
 - **Commit pinned**: `b044f956f021b6e8877f16781bcfc466a6a120e9`
 - **Fetched**: 2026-06-12
 
-### Assets taken: 21 rules
+### Assets taken: 41 rules (merged from 2 runs)
 
-Selected from ~100+ `.mdc` files in the `rules/` directory. Curation policy: one asset
-per distinct framework/topic; when multiple files covered the same tool, only the most
-specific and actionable was included.
+Selected from 257 `.mdc` files in the `rules/` directory. Curation policy: maximize
+breadth across languages, frameworks, and cross-cutting concerns; take the most actionable
+file when multiple cover the same tool.
 
-| File | Included | Notes |
-|---|---|---|
-| clean-code.mdc | ✅ | General quality baseline |
-| anti-overengineering.mdc | ✅ | Short, high-signal |
-| anti-sycophancy-code-discipline-cursorrules-prompt-file.mdc | ✅ | Outstanding — 17 specific directives |
-| go.mdc | ✅ | Idiomatic, specific |
-| docker.mdc | ✅ | Production-focused, specific |
-| nestjs-anti-hallucination-cursorrules-prompt-file.mdc | ✅ | Outstanding — blocked phantom imports with examples |
-| fastapi.mdc | ✅ | Python/FastAPI coverage |
-| cpp.mdc | ✅ | Comprehensive C++ rules |
-| embedded-stm32-hal.mdc | ✅ | Distinctive embedded niche |
-| kotlin-springboot-best-practices-cursorrules-prompt-file.mdc | ✅ | Has inline code examples |
-| network-troubleshoot.mdc | ✅ | High-quality safety-first guide |
-| blender-python-addon.mdc | ✅ | Distinctive Blender/Python niche |
-| git-conventional-commit-messages.mdc | ✅ | Full spec |
-| javascript-typescript-code-quality-cursorrules-pro.mdc | ✅ | General JS/TS discipline |
-| jest-unit-testing-cursorrules-prompt-file.mdc | ✅ | With example templates |
-| nextjs-app-router-cursorrules-prompt-file.mdc | ✅ | Next.js App Router |
-| angular-typescript-cursorrules-prompt-file.mdc | ✅ | Angular 18 specific |
-| flutter-app-expert-cursorrules-prompt-file.mdc | ✅ | BLoC/GetIt/GoRouter |
-| elixir-engineer-guidelines-cursorrules-prompt-file.mdc | ✅ | Full Phoenix stack |
-| laravel-php-83-cursorrules-prompt-file.mdc | ✅ | PHP 8.3 / Laravel |
-| code-pair-interviews.mdc | ✅ | Interview-quality code rules |
+**Run 1 (2026-06-12, unauthenticated WebFetch — 21 assets):**
+clean-code, anti-overengineering, anti-sycophancy, go, docker, nestjs-anti-hallucination,
+fastapi, cpp, embedded-stm32-hal, kotlin-springboot, network-troubleshoot, blender-python-addon,
+git-conventional-commit-messages, javascript-typescript-code-quality, jest, nextjs-app-router,
+angular-typescript, flutter-app-expert, elixir-engineer-guidelines, laravel-php-83,
+code-pair-interviews.
 
-### Assets skipped (~80+)
+**Run 2 (2026-06-12, authenticated GitHub API — 20 new assets):**
+typescript, react, python, postgresql, security-devsecops-ssdls-appsec, rust-general,
+tailwind, svelte, vue, nextjs, node-express, database (Prisma/Supabase), tanstack-query,
+tanstack-router, tanstack-start, pr-review, react-native-expo, java-springboot-jpa,
+react-router-v7, playwright-e2e.
 
-- **database.mdc** — overly generic ("use proper X" for every bullet); not actionable enough
-- **flutter-riverpod-cursorrules-prompt-file.mdc** — WebFetch could not return verbatim content; would need direct API access to verify
-- **java-springboot-jpa-cursorrules-prompt-file.mdc** — WebFetch returned a summary, not verbatim content; withhold until verifiable
-- **astro-typescript-cursorrules-prompt-file.mdc** — WebFetch returned a summary
-- **github-code-quality-cursorrules-prompt-file.mdc** — WebFetch returned a summary
-- **deno-integration-techniques-cursorrules-prompt-fil.mdc** — specific to `@findhow` ecosystem, not general-purpose
-- **Cypress variants** (5 files) — highly similar; none selected for this validation run; a future run could pick the best 1
+### Assets skipped / deferred
+
+- **sveltekit-typescript-guide** — 769-byte stub (section headings only); wishlisted
+- **rust.mdc** — misleading name; is Solana/Anchor-specific, not general Rust; wishlisted
+- **database.mdc** — run 1 found it too generic; run 2 included it (actionable Prisma+Supabase content)
+- **deno-integration-techniques** — specific to `@findhow` ecosystem, not general-purpose
+- **Cypress variants** (5 files) — only playwright-e2e harvested as representative; best Cypress variant deferred
 - **HTMX variants** (5 files) — similar to each other; deferred
-- **beefreeSDK* files** — vendor-specific, limited audience
-- **Remaining ~65 files** — not fetched in this validation run; cap applied at ~30 before fetching
+- **beefreeSDK files** — vendor-specific, limited audience
+- **~216 remaining files** — deferred to future harvest passes
+
+### Deduplication notes
+
+- 6 records were exact content-hash duplicates (removed by deduper)
+- 4 additional path-based duplicates found (same path but slightly different whitespace
+  between WebFetch vs. authenticated raw API fetch). Raw-API versions retained.
 
 ### Anomalies
 
-- `GITHUB_TOKEN` was not available in the session; used `WebFetch` against raw.githubusercontent.com.
-  The license-detector.mjs script could not run; license was manually confirmed via the LICENSE file (CC0-1.0).
-- GitHub API rate-limited unauthenticated requests; all content fetched from `raw.githubusercontent.com` URLs pinned to the commit SHA.
-- A small number of files could only be retrieved as summaries by the WebFetch model; those were excluded.
+- Run 1 had no `GITHUB_TOKEN`; used WebFetch. A few files returned summaries instead of
+  verbatim content — those were excluded in run 1 and correctly fetched in run 2.
+- Run 2 had GITHUB_TOKEN available; all content fetched from pinned raw.githubusercontent.com
+  URLs via authenticated curl — byte-faithful.
