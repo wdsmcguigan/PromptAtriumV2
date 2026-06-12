@@ -1,8 +1,12 @@
 # Phase 1 — v2 core schema design
 
-*Design for review. No migrations have been generated from this yet.
-Implements the PRD §5 principles and the seven option-purchases.
-Expect amendments when research Brief 2 (context-format survey) lands.*
+*Implements the PRD §5 principles and the seven option-purchases.
+Migrations 0000–0002 are generated from this design.
+Brief 2 (context-format survey) landed and its amendments are applied in
+migration `0002_amend-kind-registry.sql`: kinds `command` and `mcp-server`
+added, `workflow` soft-retired (no portable cross-tool schema yet — revisit
+when gh-aw exits preview), and `sync_targets` hints populated per survey
+§5(a)/(c).*
 
 ## Approach
 
@@ -29,7 +33,7 @@ Seeded 1:1 from `users`. Everything in v2 references `principals`, never
 
 | column | type | notes |
 |---|---|---|
-| id | text pk (slug) | `prompt`, `system_prompt`, `skill`, `rule`, `workflow`, `stack` |
+| id | text pk (slug) | `prompt`, `system_prompt`, `skill`, `rule`, `command`, `mcp-server`, `stack` (+ `workflow`, soft-retired) |
 | display_name / description | text | |
 | metadata_schema | jsonb | JSON-Schema (generated from Zod) validating per-asset metadata |
 | capabilities | jsonb | render hints, allowed content shape (inline vs bundle), composition slots |
