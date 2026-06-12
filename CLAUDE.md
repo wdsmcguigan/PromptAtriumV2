@@ -7,9 +7,9 @@ An AI prompt library and community platform for managing, sharing, and refining 
 - `pnpm install` — install all workspace dependencies (pnpm only; npm/yarn are blocked)
 - `pnpm --filter @workspace/api-server run dev` — run the API server (default port 8080)
 - `pnpm --filter @workspace/prompt-atrium run dev` — run the frontend (Vite, default port 5173, proxies `/api` and `/objects` to port 8080)
-- `pnpm run typecheck` — full typecheck across all packages
+- `pnpm run typecheck` — full typecheck across all packages (`typecheck:libs` for shared libs only)
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only — see Gotchas)
+- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only — see Gotchas; `push-force` exists and is destructive, never use it)
 - `pnpm --filter @workspace/db run migrate:v2` — apply v2-schema migrations (additive; legacy tables untouched)
 - `pnpm --filter @workspace/api-server run backfill:v2` — idempotent legacy→v2 data backfill (safe to re-run)
 - Copy `.env.example` to `.env` and fill in values; `DATABASE_URL`, `SESSION_SECRET`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` are required (plus `APP_URL` in production)
@@ -34,6 +34,7 @@ An AI prompt library and community platform for managing, sharing, and refining 
 - `lib/db/src/schema/v2.ts` + `lib/db/migrations/` — v2 asset schema (principals/assets/versions/stars/events/api_tokens), real migrations via `drizzle-v2.config.ts`; design in `docs/plans/phase-1-schema-v2.md`
 - `artifacts/api-server/src/v2/` — v2 asset API mounted at `/api/v2` (session or PAT bearer auth); see `.agents/memory/v2-asset-api.md`
 - `lib/db/src/schema/licenses.ts` — canonical license registry (stable codes, `cc0` default); frontend imports as `@shared/licenses`; see `.agents/memory/license-registry.md`
+- `lib/api-zod/` — exported Zod validation schemas; `lib/api-client-react/` — React Query hooks; `lib/prompt-crud/` — shared prompt business logic (web + mobile)
 - `docs/plans/` — implementation plans (phase-1 schema, phase-2 MCP server, numbered task plans); `docs/plans/STATUS.md` — rolling project status & open threads
 - `docs/research/` — research memos (MCP survey, GTM playbook, licensing, context formats, market/brand)
 - `artifacts/prompt-atrium/src/` — React frontend (pages, components, hooks)
@@ -44,9 +45,11 @@ An AI prompt library and community platform for managing, sharing, and refining 
 ## Architecture decisions
 
 - **Auth identity continuity** — users are matched by verified email (case-insensitive), never by the provider's `sub`. Replit-era `users.id` values stay intact so prompts/orders/ledger rows stay attached. Provider profile data only fills empty fields. Don't weaken this in `auth.ts` / `findOrCreateUser`.
-- **`@shared/*` alias** — both Vite and tsconfig alias `@shared/` → `lib/db/src/schema/` so 66+ frontend files that import shared types continue to work.
+- **`@shared/*` alias** — both Vite and tsconfig alias `@shared/` → `lib/db/src/schema/` so 66+ frontend files that import shared types continue to work. Don't move schema files without updating both configs.
 - **Express 5 wildcard routes** — legacy `:param(*)` and `:param(.*)` patterns replaced with named wildcards (`/*name`). Handlers use `req.path` instead of `req.params`.
 - **DB constraints via raw SQL** — `drizzle-kit push` requires TTY for safety prompts; unique constraints added via raw SQL directly to avoid data loss from interactive prompts.
+- **No OpenAPI codegen** — the route monolith predates the OpenAPI spec; the frontend uses a hand-rolled `apiRequest` fetch layer rather than generated hooks.
+- **No `memoizee`** — `es5-ext` is firewall-blocked; use an inline TTL cache instead.
 - **Production serving** — the API server serves the built SPA (`STATIC_DIR`, default `dist/public` next to the server bundle); in dev, Vite proxies to the API.
 - **Lazy AI clients** — OpenAI/Gemini clients are constructed lazily inside handlers so missing API keys disable features instead of crashing the server at boot.
 
@@ -58,6 +61,7 @@ PromptAtrium is "the home for your AI working set" — a library and community f
 
 - **`pnpm --filter @workspace/db run push` warns about DATA LOSS** — the live DB has extra tables/columns (agent_profiles, prompt_generator_components, workflow_missions, workflow_steps, plus extra columns on several tables) that are not in `schema.ts`. Never confirm the destructive push. Add missing constraints/indexes via raw SQL instead.
 - **Express 5 route syntax** — never use `:param(*)` or `:param(.*)`. Use `/*name` for named wildcards; access via `req.path` in handlers.
+- **Zod v4** — import from `zod/v4`, never bare `zod`.
 - **WebGL errors in headless preview** — Three.js particle system fails without a GPU. Expected in sandboxed dev environments; does not affect production.
 - **Health checks** — `GET /api/health` probes the DB (readiness); `GET /api/healthz` is liveness only. Both are registered before the session middleware so probes never create sessions.
 - **Deploy gate (PR #6 era)** — before deploying a build containing the v2/license work: run `migrate:v2` and `psql -f lib/db/sql/31-license-codes.sql` on dev (verify counts), then prod. The schema and frontend assume both have run. Remove this line once done.
