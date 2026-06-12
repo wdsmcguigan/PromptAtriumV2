@@ -41,6 +41,31 @@ remote endpoint and a local `npx` stdio server.
    mcp.so, Smithery) syndicate from public GitHub — open-sourcing the server
    package is the distribution play (per the GTM memo).
 
+## Schema seams (appendix ↔ actual v2 schema)
+
+The [implementation appendix](phase-2-mcp-server-appendix.md) is written from
+spec-land; these are the three places it meets the real schema (from the PR #8
+review, reconciled here so the build session doesn't have to find a buried
+comment). None change the locked decisions.
+
+1. **`{owner}` doesn't exist yet.** `asset://{owner}/{slug}` assumes a URL-safe
+   owner handle, but v2 `principals` are bare uuids (kind + user_id) — no
+   slug/username, and legacy `users.username` is nullable. **Decision needed
+   from the owner before the scaffold bakes in addressing** (parked with him):
+   either add a required `handle` to principals (backfill from username with
+   generated fallbacks) — recommended, `owner/slug` is much better model-facing
+   UX — or make the canonical URI `asset://{public_id}` and treat `owner/slug`
+   as a friendly alias later.
+2. **Versions are integers, not semver.** `asset_versions.version_number` is a
+   monotonic int with no label system. `get_asset.version` is an integer
+   (`/v/3`), and `asset://{owner}/{slug}/v/{version}` takes the integer. The
+   semver/`production`-label model in appendix §2.4 is a future enhancement
+   (Langfuse prior art), not current schema.
+3. **"Latest published version" = head version of a visible asset.** There is
+   no per-version publish state — only `assets.head_version_id` + asset-level
+   `visibility`. Same semantics (PAT-scoped callers see their own + public
+   assets); implement against `head_version_id`.
+
 ## Done looks like
 
 - New workspace package `artifacts/mcp-server` (`promptatrium-mcp` on npm):

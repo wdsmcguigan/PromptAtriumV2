@@ -9,6 +9,7 @@ export const LICENSE_CODES = [
   "cc-by-4.0",
   "cc-by-sa-4.0",
   "mit",
+  "apache-2.0",
   "arr",
 ] as const;
 
@@ -53,6 +54,14 @@ export const LICENSES: Record<LicenseCode, LicenseMeta> = {
     blurb:
       "Permissive; keep the copyright notice. Best when the asset is mostly code/config.",
     url: "https://opensource.org/license/mit",
+    allowsCopy: true,
+  },
+  "apache-2.0": {
+    code: "apache-2.0",
+    label: "Apache 2.0",
+    blurb:
+      "Permissive with an explicit patent grant; keep the license and notice files.",
+    url: "https://www.apache.org/licenses/LICENSE-2.0",
     allowsCopy: true,
   },
   "arr": {

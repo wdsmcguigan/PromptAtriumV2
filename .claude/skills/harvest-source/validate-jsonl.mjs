@@ -16,7 +16,7 @@ import { createInterface } from 'node:readline';
 import { createHash } from 'node:crypto';
 
 const VALID_KINDS    = ['prompt', 'system_prompt', 'rule', 'skill', 'command', 'mcp-server', 'stack'];
-const VALID_LICENSES = ['cc0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'arr'];
+const VALID_LICENSES = ['cc0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'apache-2.0', 'arr'];
 const PROV_REQUIRED  = ['source_url', 'repo', 'path', 'commit_sha', 'upstream_license', 'fetched_at'];
 
 const files = process.argv.slice(2);

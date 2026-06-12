@@ -13,7 +13,7 @@
 | License code | Count | SPDX |
 |---|---|---|
 | cc0  | 41 | CC0-1.0 |
-| mit  | 11 | Apache-2.0 (mapped) |
+| apache-2.0 | 11 | Apache-2.0 (relabeled from mit in post-merge audit; LICENSE.txt added to bundles) |
 
 ## Top sources by yield
 

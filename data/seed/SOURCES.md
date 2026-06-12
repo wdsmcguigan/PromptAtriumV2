@@ -14,10 +14,28 @@ The repo itself carries no LICENSE file; `license-detector.mjs` returns exit 2 a
 However, the README states "Many skills in this repo are open source (Apache 2.0)," and each
 skill directory that is open source carries its own `LICENSE.txt` (Apache-2.0). Under the
 borderline rule (per-file license), skills with Apache-2.0 `LICENSE.txt` files were treated as
-eligible. Apache-2.0 maps to `mit` output code (SPDX preserved as `Apache-2.0` in
-`provenance.upstream_license`).
+eligible. The run originally mapped Apache-2.0 to the `mit` output code (the registry had no
+Apache entry at the time); see the audit correction below.
+
+### Audit correction (2026-06-12, post-merge independent audit)
+
+An independent byte-level audit against the pinned tree confirmed all 61 bundle files byte-exact
+and all hashes/provenance valid, but flagged two license-compliance defects, both repaired:
+
+1. **`mit` relabel** — all 11 assets relabeled to the new `apache-2.0` registry code
+   (mislabeling Apache-2.0 as MIT misstates the patent grant and notice obligations).
+2. **Missing license text** — each skill's `LICENSE.txt` added to its bundle byte-exact
+   (Apache-2.0 §4 requires redistributions to ship the license text; provenance metadata alone
+   doesn't satisfy that). `content_hash` values recomputed; bundles re-verified **72/72
+   byte-exact** post-repair.
+
+The audit also confirmed the documented exclusions (binaries, `claude-api` size cap, proprietary
+document skills) and the negative test. One nit: upstream `skill-creator/scripts/__init__.py`
+(0 bytes) is not in the bundle — harmless, noted for completeness.
 
 ### Assets taken: 11 skills
+
+Every bundle below also carries the skill's `LICENSE.txt` (added in the audit correction).
 
 | Skill | Files in bundle |
 |---|---|

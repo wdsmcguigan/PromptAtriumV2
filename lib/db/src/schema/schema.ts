@@ -510,7 +510,7 @@ export const prompts = pgTable("prompts", {
   relatedPrompts: text("related_prompts").array(),
   // Keep this literal tuple in sync with LICENSE_CODES in ./licenses.ts
   license: varchar("license", {
-    enum: ["cc0", "cc-by-4.0", "cc-by-sa-4.0", "mit", "arr"],
+    enum: ["cc0", "cc-by-4.0", "cc-by-sa-4.0", "mit", "apache-2.0", "arr"],
   }).notNull().default("cc0"),
   lastUsedAt: timestamp("last_used_at"),
   userId: varchar("user_id").notNull().references(() => users.id),

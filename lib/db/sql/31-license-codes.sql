@@ -18,7 +18,7 @@ UPDATE prompts SET license = 'arr'          WHERE license IN ('All Rights Reserv
 --    Rationale: historically the form defaulted NULL to CC0; keep that intent.
 UPDATE prompts SET license = 'cc0'
   WHERE license IS NULL OR license = ''
-     OR license NOT IN ('cc0','cc-by-4.0','cc-by-sa-4.0','mit','arr');
+     OR license NOT IN ('cc0','cc-by-4.0','cc-by-sa-4.0','mit','apache-2.0','arr');
 
 -- 3) Lock the column down to match schema.ts
 ALTER TABLE prompts ALTER COLUMN license SET DEFAULT 'cc0';
@@ -26,4 +26,4 @@ ALTER TABLE prompts ALTER COLUMN license SET NOT NULL;
 
 -- 4) Defense-in-depth: reject bad values at the DB layer
 ALTER TABLE prompts ADD CONSTRAINT prompts_license_check
-  CHECK (license IN ('cc0','cc-by-4.0','cc-by-sa-4.0','mit','arr'));
+  CHECK (license IN ('cc0','cc-by-4.0','cc-by-sa-4.0','mit','apache-2.0','arr'));

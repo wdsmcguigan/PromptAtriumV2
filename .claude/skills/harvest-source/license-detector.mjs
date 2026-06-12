@@ -37,9 +37,10 @@ function mapSpdx(spdx, name) {
   if (u === 'CC-BY-4.0')                         return { code: 'cc-by-4.0',  spdx, eligible: true };
   if (u === 'CC-BY-SA-4.0')                      return { code: 'cc-by-sa-4.0', spdx, eligible: true };
   if (u === 'MIT' || u === 'MIT-0')              return { code: 'mit',        spdx, eligible: true };
-  if (u === 'APACHE-2.0')                        return { code: 'mit',        spdx, eligible: true,  notes: 'Apache-2.0 mapped to mit bucket; keep provenance.upstream_license' };
-  if (u === 'BSD-2-CLAUSE' || u === 'BSD-3-CLAUSE') return { code: 'mit',   spdx, eligible: true,  notes: `${spdx} mapped to mit bucket` };
-  if (u === 'ISC')                               return { code: 'mit',        spdx, eligible: true,  notes: 'ISC mapped to mit bucket' };
+  if (u === 'APACHE-2.0')                        return { code: 'apache-2.0', spdx, eligible: true };
+  if (u === 'BSD-2-CLAUSE' || u === 'BSD-3-CLAUSE' || u === 'ISC') {
+    return { code: null, spdx, eligible: null, notes: `${spdx} is redistributable but has no exact registry code — add one to @shared/licenses before ingesting; never relabel as mit` };
+  }
   if (u.startsWith('CC-BY-NC') || u.startsWith('CC-BY-ND')) {
     return { code: 'arr', spdx, eligible: false, notes: 'NC/ND variant — ineligible for redistribution' };
   }
