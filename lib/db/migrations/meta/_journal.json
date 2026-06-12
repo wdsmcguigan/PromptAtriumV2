@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1781213657515,
+      "tag": "0000_outstanding_hannibal_king",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781213701542,
+      "tag": "0001_seed-asset-kinds",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781233985567,
+      "tag": "0002_amend-kind-registry",
+      "breakpoints": true
+    }
+  ]
+}

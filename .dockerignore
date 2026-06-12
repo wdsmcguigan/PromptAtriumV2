@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+**/dist
+**/.expo
+.git
+.env
+.env.local
+.migration-backup
+artifacts/prompt-atrium-mobile
+artifacts/mockup-sandbox
+docs
+*.tsbuildinfo

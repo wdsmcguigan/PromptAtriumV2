@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import Papa from "papaparse";
 import type { Collection } from "@shared/schema";
+import { LICENSE_LIST, DEFAULT_LICENSE } from "@shared/licenses";
 import { 
   detectFileFormat, 
   parseJsonPrompts, 
@@ -116,7 +117,7 @@ export function BulkImportModal({ open, onOpenChange, collections }: BulkImportM
   const [defaultPromptType, setDefaultPromptType] = useState<string>("");
   const [defaultPromptStyle, setDefaultPromptStyle] = useState<string>("");
   const [defaultAuthor, setDefaultAuthor] = useState<string>("");
-  const [defaultLicense, setDefaultLicense] = useState<string>("CC0 (Public Domain)");
+  const [defaultLicense, setDefaultLicense] = useState<string>(DEFAULT_LICENSE);
   const [defaultTags, setDefaultTags] = useState<string>("");
   const [defaultSourceUrl, setDefaultSourceUrl] = useState<string>("");
   const [defaultIntendedGenerator, setDefaultIntendedGenerator] = useState<string>("");
@@ -368,7 +369,7 @@ export function BulkImportModal({ open, onOpenChange, collections }: BulkImportM
     setDefaultPromptType("");
     setDefaultPromptStyle("");
     setDefaultAuthor("");
-    setDefaultLicense("CC0 (Public Domain)");
+    setDefaultLicense(DEFAULT_LICENSE);
     setDefaultTags("");
     setDefaultSourceUrl("");
     setDefaultIntendedGenerator("");
@@ -1288,7 +1289,7 @@ export function BulkImportModal({ open, onOpenChange, collections }: BulkImportM
           promptType: defaultPromptType && defaultPromptType !== "none" ? defaultPromptType : "",
           promptStyle: defaultPromptStyle && defaultPromptStyle !== "none" ? defaultPromptStyle : "",
           author: defaultAuthor || "",
-          license: defaultLicense || "CC0 (Public Domain)",
+          license: defaultLicense || DEFAULT_LICENSE,
           sourceUrl: defaultSourceUrl || "",
           intendedGenerator: defaultIntendedGenerator && defaultIntendedGenerator !== "none" ? defaultIntendedGenerator : "",
           images: p.images || [],
@@ -1766,10 +1767,12 @@ export function BulkImportModal({ open, onOpenChange, collections }: BulkImportM
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="CC0 (Public Domain)">CC0 (Public Domain)</SelectItem>
-                <SelectItem value="CC BY (Attribution)">CC BY (Attribution)</SelectItem>
-                <SelectItem value="CC BY-SA (Share Alike)">CC BY-SA (Share Alike)</SelectItem>
-                <SelectItem value="All Rights Reserved">All Rights Reserved</SelectItem>
+                {LICENSE_LIST.map((l) => (
+                  <SelectItem key={l.code} value={l.code}>
+                    <span className="font-medium">{l.label}</span>
+                    <span className="block text-xs text-muted-foreground">{l.blurb}</span>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

@@ -1,6 +1,8 @@
 // Local storage helper for prompt history
 // This provides a fallback for non-authenticated users and merges with database data
 
+import { DEFAULT_LICENSE } from "@shared/licenses";
+
 interface LocalPromptHistoryEntry {
   id: string;
   promptText: string;
@@ -173,6 +175,6 @@ export const convertHistoryToLibrary = (historyEntry: any, userId: string): any 
     character_preset: metadata.character_preset || metadata.character,
     intendedGenerator: metadata.intendedGenerator || historyEntry.templateUsed,
     variables: metadata.variables || {},
-    license: 'private',
+    license: DEFAULT_LICENSE, // 'private' is not a valid license code; saved prompts default to CC0
   };
 };

@@ -124,7 +124,7 @@ export function normalizeError(error: any): AppError {
       ErrorType.VALIDATION,
       400,
       true,
-      { errors: error.errors }
+      { errors: error.issues }
     );
   }
 

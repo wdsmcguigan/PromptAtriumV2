@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { Heart, Star, GitBranch, Eye, Edit, Share2, Trash2, Image as ImageIcon, ZoomIn, X, Copy, Check, Globe, Folder, Download, Archive, Bookmark, ChevronDown, Plus, Minus, ImagePlus, Link2, DollarSign, MoreVertical, Users, Lock } from "lucide-react";
 import type { Prompt, Community } from "@shared/schema";
+import { LICENSES, normalizeLicense, licenseLabel } from "@shared/licenses";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -26,7 +27,6 @@ import { AddExampleImagesDialog } from "./AddExampleImagesDialog";
 import { AddToCollectionDialog } from "./AddToCollectionDialog";
 import { ImageLightbox } from "./ImageLightbox";
 import { PromptContent } from "./PromptContent";
-import { useMarketplaceEnabled } from "@/config/features";
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -58,7 +58,6 @@ export function PromptCard({
   isProfilePage = false,
   compact = false
 }: PromptCardProps) {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -482,6 +481,12 @@ export function PromptCard({
       });
     },
   });
+
+  // License gating: "arr" (All Rights Reserved) disables copying another user's
+  // prompt into your own library. The owner's own prompts are unaffected.
+  const isOwnPrompt = !!typedUser?.id && String(typedUser.id) === String(prompt.userId);
+  const licenseAllowsCopy = LICENSES[normalizeLicense(prompt.license)].allowsCopy;
+  const canBranch = isOwnPrompt || licenseAllowsCopy;
 
   const branchMutation = useMutation({
     mutationFn: async () => {
@@ -1489,20 +1494,6 @@ export function PromptCard({
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-
-                    {/* List for Sale Button - Dollar sign icon - Only show in library, not on community page */}
-                    {MARKETPLACE_ENABLED && !isCommunityPage && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => window.location.href = '/seller/dashboard'}
-                        className="h-8 w-8 p-0 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all duration-200 hover:scale-110 active:scale-95"
-                        data-testid={`button-list-sale-${prompt.id}`}
-                        title="List this prompt for sale"
-                      >
-                        <DollarSign className="h-4 w-4" />
-                      </Button>
-                    )}
                 
                     {/* 3. Collections - Yellow folder with dropdown */}
                     <DropdownMenu>
@@ -1576,17 +1567,31 @@ export function PromptCard({
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* 6. Branch - Branch icon (existing) */}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => branchMutation.mutate()}
-                  disabled={branchMutation.isPending}
-                  className="h-8 w-8 p-0 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-all duration-200 hover:scale-110 active:scale-95"
-                  data-testid={`button-branch-${prompt.id}`}
-                >
-                  <GitBranch className="h-4 w-4" />
-                </Button>
+                {/* 6. Branch - Branch icon (existing); disabled when the license reserves all rights */}
+                {canBranch ? (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => branchMutation.mutate()}
+                    disabled={branchMutation.isPending}
+                    className="h-8 w-8 p-0 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-all duration-200 hover:scale-110 active:scale-95"
+                    data-testid={`button-branch-${prompt.id}`}
+                  >
+                    <GitBranch className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <span title="The author reserved all rights — copying is disabled.">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      disabled
+                      className="h-8 w-8 p-0 text-purple-600 opacity-50"
+                      data-testid={`button-branch-${prompt.id}`}
+                    >
+                      <GitBranch className="h-4 w-4" />
+                    </Button>
+                  </span>
+                )}
 
                 {/* 7. Featured - Star for super admin on community page */}
                 {isSuperAdmin && isCommunityPage && (
@@ -2206,12 +2211,21 @@ export function PromptCard({
             <div>
               <span className="font-medium text-muted-foreground">License:</span>
               <div className="mt-1">
-                {prompt.license ? (
-                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
-                    {prompt.license}
-                  </Badge>
+                {LICENSES[normalizeLicense(prompt.license)].url !== "" ? (
+                  <a
+                    href={LICENSES[normalizeLicense(prompt.license)].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200 hover:underline">
+                      {licenseLabel(prompt.license)}
+                    </Badge>
+                  </a>
                 ) : (
-                  <span className="text-muted-foreground text-xs">Not specified</span>
+                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                    {licenseLabel(prompt.license)}
+                  </Badge>
                 )}
               </div>
             </div>

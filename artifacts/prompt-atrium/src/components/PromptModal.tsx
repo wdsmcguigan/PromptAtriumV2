@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { Plus, ImageIcon } from "lucide-react";
 import type { Prompt, Collection } from "@shared/schema";
+import { LICENSE_LIST, DEFAULT_LICENSE, normalizeLicense } from "@shared/licenses";
 import { PromptImageUploader } from "./PromptImageUploader";
 import { PromptAIExtractor } from "./PromptAIExtractor";
 import { PromptAutoFill } from "./PromptAutoFill";
@@ -74,7 +75,7 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
         isPublic: false,
         isNsfw: false,
         collectionId: defaultCollectionId || "none",
-        license: "CC0 (Public Domain)",
+        license: DEFAULT_LICENSE,
         status: "published",
         exampleImages: [] as string[],
         notes: "",
@@ -102,7 +103,7 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
         isPublic: prompt.isPublic ?? true,
         isNsfw: prompt.isNsfw ?? false,
         collectionId: prompt.collectionId || "none",
-        license: prompt.license || "CC0 (Public Domain)",
+        license: normalizeLicense(prompt.license),
         status: prompt.status || "published",
         exampleImages: prompt.exampleImagesUrl || [],
         notes: prompt.notes || "",
@@ -128,7 +129,7 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
       isPublic: false,
       isNsfw: false,
       collectionId: defaultCollectionId || "none",
-      license: "CC0 (Public Domain)",
+      license: DEFAULT_LICENSE,
       status: "published",
       exampleImages: [] as string[],
       notes: "",
@@ -187,7 +188,7 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
           isPublic: prompt.isPublic ?? true,
           isNsfw: prompt.isNsfw ?? false,
           collectionId: prompt.collectionId || "none",
-          license: prompt.license || "CC0 (Public Domain)",
+          license: normalizeLicense(prompt.license),
           status: prompt.status || "published",
           exampleImages: prompt.exampleImagesUrl || [],
           notes: prompt.notes || "",
@@ -213,7 +214,7 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
           isPublic: false,
           isNsfw: false,
           collectionId: defaultCollectionId || "none",
-          license: "CC0 (Public Domain)",
+          license: DEFAULT_LICENSE,
           status: "published",
           exampleImages: [],
           notes: "",
@@ -604,7 +605,7 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
       isPublic: true,
       isNsfw: false,
       collectionId: "none",
-      license: "CC0 (Public Domain)",
+      license: DEFAULT_LICENSE,
       status: "published",
       exampleImages: [],
       notes: "",
@@ -978,15 +979,17 @@ export function PromptModal({ open, onOpenChange, prompt, mode, defaultCollectio
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="license">License</Label>
-                <Select value={formData.license} onValueChange={(value) => setFormData({ ...formData, license: value })}>
+                <Select value={normalizeLicense(formData.license)} onValueChange={(value) => setFormData({ ...formData, license: normalizeLicense(value) })}>
                   <SelectTrigger data-testid="select-license">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="CC0 (Public Domain)">CC0 (Public Domain)</SelectItem>
-                    <SelectItem value="CC BY (Attribution)">CC BY (Attribution)</SelectItem>
-                    <SelectItem value="CC BY-SA (Share Alike)">CC BY-SA (Share Alike)</SelectItem>
-                    <SelectItem value="All Rights Reserved">All Rights Reserved</SelectItem>
+                    {LICENSE_LIST.map((l) => (
+                      <SelectItem key={l.code} value={l.code}>
+                        <span className="font-medium">{l.label}</span>
+                        <span className="block text-xs text-muted-foreground">{l.blurb}</span>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

@@ -1,50 +1,22 @@
 import { google } from 'googleapis';
 
-let connectionSettings: any;
-
-async function getAccessToken() {
-  if (connectionSettings && connectionSettings.settings.expires_at && new Date(connectionSettings.settings.expires_at).getTime() > Date.now()) {
-    return connectionSettings.settings.access_token;
-  }
-  
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME
-  const xReplitToken = process.env.REPL_IDENTITY 
-    ? 'repl ' + process.env.REPL_IDENTITY 
-    : process.env.WEB_REPL_RENEWAL 
-    ? 'depl ' + process.env.WEB_REPL_RENEWAL 
-    : null;
-
-  if (!xReplitToken) {
-    throw new Error('X_REPLIT_TOKEN not found for repl/depl');
+// Read-only Sheets access via standard Google credentials:
+// - GOOGLE_SHEETS_API_KEY for public sheets, or
+// - a service account (GOOGLE_SERVICE_ACCOUNT_KEY / Application Default
+//   Credentials) — share the sheet with the service account's client_email.
+export async function getGoogleSheetClient() {
+  const apiKey = process.env.GOOGLE_SHEETS_API_KEY;
+  if (apiKey) {
+    return google.sheets({ version: 'v4', auth: apiKey });
   }
 
-  connectionSettings = await fetch(
-    'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=google-sheet',
-    {
-      headers: {
-        'Accept': 'application/json',
-        'X_REPLIT_TOKEN': xReplitToken
-      }
-    }
-  ).then(res => res.json()).then(data => data.items?.[0]);
-
-  const accessToken = connectionSettings?.settings?.access_token || connectionSettings.settings?.oauth?.credentials?.access_token;
-
-  if (!connectionSettings || !accessToken) {
-    throw new Error('Google Sheet not connected');
-  }
-  return accessToken;
-}
-
-export async function getUncachableGoogleSheetClient() {
-  const accessToken = await getAccessToken();
-
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({
-    access_token: accessToken
+  const inlineKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+  const auth = new google.auth.GoogleAuth({
+    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    ...(inlineKey ? { credentials: JSON.parse(inlineKey) } : {}),
   });
 
-  return google.sheets({ version: 'v4', auth: oauth2Client });
+  return google.sheets({ version: 'v4', auth });
 }
 
 export interface AIService {
@@ -60,7 +32,7 @@ export interface AIService {
 
 export async function fetchAIServices(): Promise<AIService[]> {
   try {
-    const sheets = await getUncachableGoogleSheetClient();
+    const sheets = await getGoogleSheetClient();
     const spreadsheetId = '1tfOk1b_ygQfKJlLCXOS2VYH1Y8AiAAodhvvMHmDIMtg';
     
     // Get spreadsheet metadata to find the first sheet's name

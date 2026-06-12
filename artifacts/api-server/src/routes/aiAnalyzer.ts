@@ -8,7 +8,7 @@ import {
   extractPromptFromImage,
   generatePromptMetadata
 } from '../aiFieldAnalyzer';
-import { isAuthenticated } from '../replitAuth';
+import { isAuthenticated } from '../auth';
 import { strictApiLimiter } from '../rateLimit';
 
 const router = Router();

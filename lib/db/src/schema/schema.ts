@@ -18,8 +18,9 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
+import { LICENSE_CODES } from "./licenses";
 
-// Session storage table for Replit Auth
+// Session storage table (express-session via connect-pg-simple)
 export const sessions = pgTable(
   "sessions",
   {
@@ -30,7 +31,7 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// User storage table for Replit Auth
+// User storage table
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),
@@ -507,7 +508,10 @@ export const prompts = pgTable("prompts", {
   collectionId: varchar("collection_id").references(() => collections.id),
   collectionIds: text("collection_ids").array(),
   relatedPrompts: text("related_prompts").array(),
-  license: varchar("license"),
+  // Keep this literal tuple in sync with LICENSE_CODES in ./licenses.ts
+  license: varchar("license", {
+    enum: ["cc0", "cc-by-4.0", "cc-by-sa-4.0", "mit", "arr"],
+  }).notNull().default("cc0"),
   lastUsedAt: timestamp("last_used_at"),
   userId: varchar("user_id").notNull().references(() => users.id),
   subCommunityId: varchar("sub_community_id").references(() => communities.id),
@@ -1726,7 +1730,7 @@ export const bulkEditPromptSchema = z.object({
   isPublic: z.boolean().optional(),
   status: z.enum(["draft", "published", "archived"]).optional(),
   collectionIds: z.array(z.string()).optional(),
-  license: z.string().optional(),
+  license: z.enum(LICENSE_CODES).optional(),
   intendedGenerators: z.array(z.string()).optional(),
   recommendedModels: z.array(z.string()).optional(),
   // Fields that will be auto-updated

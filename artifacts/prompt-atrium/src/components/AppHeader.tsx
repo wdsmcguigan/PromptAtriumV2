@@ -22,13 +22,12 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { User, UserCommunity } from "@shared/schema";
-import { useMarketplaceEnabled } from "@/config/features";
 
 interface AppHeaderProps {
   location: string;
   user: User | null;
   userCommunityMemberships: UserCommunity[];
-  navRef: React.RefObject<HTMLDivElement>;
+  navRef: React.RefObject<HTMLDivElement | null>;
   linkRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
   underline: { left: number; width: number; opacity: number; gradient: string };
   isActiveRoute: (path: string) => boolean;
@@ -58,7 +57,6 @@ export function AppHeader({
   sidebarOpen,
   onToggleSidebar,
 }: AppHeaderProps) {
-  const MARKETPLACE_ENABLED = useMarketplaceEnabled();
   const setLinkRef = (key: string) => (el: HTMLDivElement | null) => {
     linkRefs.current[key] = el;
   };
@@ -116,7 +114,6 @@ export function AppHeader({
         onMouseLeave={() => {
           const activeKey = location.startsWith('/community') ? '/community' 
             : location.startsWith('/library') ? '/library'
-            : location.startsWith('/marketplace') ? '/marketplace' 
             : location.startsWith('/admin') ? '/admin' 
             : '/';
           positionTo(linkRefs.current[activeKey], activeKey);
@@ -146,20 +143,6 @@ export function AppHeader({
             My Library
           </Link>
         </div>
-        {MARKETPLACE_ENABLED && (
-          <div 
-            ref={setLinkRef('/marketplace')}
-            onMouseEnter={(e) => positionTo(e.currentTarget as HTMLElement, '/marketplace')}
-          >
-            <Link 
-              href="/marketplace" 
-              className={isActiveRoute("/marketplace") ? "nav-gradient-marketplace px-4 py-2 rounded-md bg-purple-400/10 border border-transparent inline-block whitespace-nowrap" : "text-gray-300 px-4 py-2 rounded-md transition-all duration-200 inline-block hover:bg-purple-400/00 whitespace-nowrap"} 
-              data-testid="nav-marketplace"
-            >
-              Marketplace
-            </Link>
-          </div>
-        )}
         <div 
           ref={setLinkRef('/community')}
           onMouseEnter={(e) => positionTo(e.currentTarget as HTMLElement, '/community')}
@@ -214,8 +197,6 @@ export function AppHeader({
             opacity: underline.opacity,
             background: underline.gradient === 'library' 
               ? 'linear-gradient(135deg, #028ec6 0%, #9175ff 30%, #9175ff 70%, #028ec6 100%)'
-              : underline.gradient === 'marketplace'
-              ? 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #8b5cf6 100%)'
               : underline.gradient === 'community'
               ? 'linear-gradient(135deg, #ffc800 0%, #ff7300 50%, #ffc802 100%)'
               : underline.gradient === 'admin'

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { randomUUID } from "crypto";
 import { strictApiLimiter } from "../rateLimit";
-import { isAuthenticated } from "../replitAuth";
+import { isAuthenticated } from "../auth";
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 
 const router = Router();

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { nanoid } from 'nanoid';
 import OpenAI from 'openai';
-import { isAuthenticated } from '../replitAuth';
+import { isAuthenticated } from '../auth';
 import { strictApiLimiter } from '../rateLimit';
 
 const router = Router();

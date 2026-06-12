@@ -528,7 +528,8 @@ export default function QuickPromptPlay() {
   // Character preset mutation with custom success/error handling
   const createCharacterPresetMutation = useCreateCharacterPreset();
   const saveCharacterMutation = useMutation({
-    mutationFn: createCharacterPresetMutation.mutateAsync,
+    mutationFn: (preset: { name: string; [key: string]: any }) =>
+      createCharacterPresetMutation.mutateAsync(preset),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['/api/character-presets'] });
       setCustomCharacterInput("");

@@ -196,47 +196,6 @@ const toolSections: ToolSection[] = [
       "Community contributions"
     ]
   },
-  {
-    id: "marketplace",
-    title: "Prompt Marketplace",
-    subtitle: "Buy, Sell, and Trade Premium Prompts",
-    description: "Discover high-quality prompts from talented creators or monetize your own creations. Our secure marketplace supports both credit and money transactions.",
-    icon: <ShoppingCart className="h-6 w-6" />,
-    gradient: "from-orange-500/20 to-red-500/20",
-    features: [
-      {
-        icon: <DollarSign className="h-4 w-4" />,
-        title: "Flexible Pricing",
-        description: "Set prices in credits or real money with Stripe integration"
-      },
-      {
-        icon: <Globe className="h-4 w-4" />,
-        title: "Global Reach",
-        description: "Connect with buyers and sellers worldwide"
-      },
-      {
-        icon: <Lock className="h-4 w-4" />,
-        title: "Secure Transactions",
-        description: "Protected payments and intellectual property rights"
-      },
-      {
-        icon: <TrendingUp className="h-4 w-4" />,
-        title: "Analytics Dashboard",
-        description: "Track sales, views, and performance metrics"
-      }
-    ],
-    primaryAction: {
-      label: "Visit Marketplace",
-      href: "/api/login"
-    },
-   
-    highlights: [
-      "Low commission rates",
-      "Instant payouts",
-      "Copyright protection",
-      "Featured listings"
-    ]
-  }
 ];
 
 export default function Landing() {
@@ -515,9 +474,9 @@ export default function Landing() {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
                 <span className="text-2xl font-bold text-green-500">3</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Share & Monetize</h3>
+              <h3 className="text-xl font-semibold mb-2">Share & Grow</h3>
               <p className="text-muted-foreground">
-                Share with the community or sell your best prompts in the marketplace. Build your reputation.
+                Share with the community and build your reputation as your library grows.
               </p>
             </div>
           </div>

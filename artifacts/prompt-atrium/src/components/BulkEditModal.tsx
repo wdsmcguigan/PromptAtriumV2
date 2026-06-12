@@ -15,6 +15,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { X, Plus, Check, ChevronDown } from "lucide-react";
 import { bulkEditPromptSchema, type BulkEditPrompt } from "@shared/schema";
+import { LICENSE_CODES, LICENSE_LIST } from "@shared/licenses";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +28,7 @@ const modalBulkEditSchema = z.object({
   isPublic: z.boolean().optional(),
   status: z.enum(["draft", "published", "archived"]).optional(),
   collectionIds: z.array(z.string()).optional(),
-  license: z.string().optional(),
+  license: z.enum(LICENSE_CODES).optional(),
   intendedGenerators: z.array(z.string()).optional(),
   recommendedModels: z.array(z.string()).optional(),
 });
@@ -877,10 +878,12 @@ export function BulkEditModal({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="CC0 (Public Domain)">CC0 (Public Domain)</SelectItem>
-                      <SelectItem value="CC BY (Attribution)">CC BY (Attribution)</SelectItem>
-                      <SelectItem value="CC BY-SA (Share Alike)">CC BY-SA (Share Alike)</SelectItem>
-                      <SelectItem value="All Rights Reserved">All Rights Reserved</SelectItem>
+                      {LICENSE_LIST.map((l) => (
+                        <SelectItem key={l.code} value={l.code}>
+                          <span className="font-medium">{l.label}</span>
+                          <span className="block text-xs text-muted-foreground">{l.blurb}</span>
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

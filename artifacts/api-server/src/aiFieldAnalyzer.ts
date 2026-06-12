@@ -1,11 +1,20 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Initialize Gemini AI with API key from environment
-// Using gemini-1.5-flash for fast responses and gemini-1.5-pro for complex tasks
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("GEMINI_API_KEY is not set in environment variables");
-}
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Lazy Gemini client: a module-level throw here would crash the whole server
+// at import time when GEMINI_API_KEY is missing. Only the AI-analysis
+// features should fail in that case.
+let _genAI: GoogleGenerativeAI | null = null;
+const genAI = {
+  getGenerativeModel(...args: Parameters<GoogleGenerativeAI["getGenerativeModel"]>) {
+    if (!_genAI) {
+      if (!process.env.GEMINI_API_KEY) {
+        throw new Error("GEMINI_API_KEY is not set in environment variables");
+      }
+      _genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    }
+    return _genAI.getGenerativeModel(...args);
+  },
+};
 
 export interface FieldAnalysisResult {
   fieldMappings: {
