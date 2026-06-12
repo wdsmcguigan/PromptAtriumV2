@@ -3,6 +3,28 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-12 (evening) — PR #12 verified, ratified & MERGED; operating rules codified
+
+- **Gardener's PR #12** (import-seed.ts + CI audit gate + sources.json +
+  staleness check) independently verified on scratch Postgres 16: run 1
+  `created: 52`, run 2 all no-ops, update-probe → immutable v1 preserved +
+  head moves to v2; CI audit script 113/113 green on the real corpus and
+  exit-1 on a one-byte tamper. Review posted on the PR with counts;
+  **merged by the Owner 2026-06-12 ~16:30 UTC.**
+- **Both Steward decisions ratified on the PR:** (a) inline-text bundles
+  accepted as the storage shape (GCS manifests = future large/binary path;
+  follow-up: declare the inline form in `store.ts`'s `ContentFile` union);
+  (b) no auto-scheduled harvests — cron detects, never ingests.
+- **Required follow-up:** the CI gate checks byte-faithfulness but not
+  *completeness* (missing-file detection is how the LICENSE.txt omission was
+  caught). Until a tree-diff lands in `audit-upstream.mjs`, the Steward's
+  manual audit per `.agents/memory/seed-harvesting.md` stays authoritative.
+- ⚠️ **Branch protection:** `seed-audit.yml` only blocks merges if the Owner
+  enables required status checks on `main` (Settings → Branches).
+- **Operating rules codified** in `.agents/memory/agent-roles.md` (INVARIANTS
+  + disposable roster; supersedes the agent-team.md draft that never reached
+  main). Steward succession: PRIME → **PLUMB** (this session).
+
 ## 2026-06-12 (Gardener session) — Harvest-to-database pipeline built
 
 ### What was built (branch `claude/harvest-database-pipeline-jihn1o`)
