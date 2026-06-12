@@ -18,6 +18,7 @@ async function buildAll() {
     entryPoints: [
       path.resolve(artifactDir, "src/index.ts"),
       path.resolve(artifactDir, "src/scripts/backfill-v2.ts"),
+      path.resolve(artifactDir, "src/scripts/import-seed.ts"),
     ],
     platform: "node",
     bundle: true,

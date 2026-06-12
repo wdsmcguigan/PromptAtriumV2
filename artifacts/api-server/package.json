@@ -8,6 +8,7 @@
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "backfill:v2": "pnpm run build && node --enable-source-maps ./dist/scripts/backfill-v2.mjs",
+    "import:seed": "pnpm run build && node --enable-source-maps ./dist/scripts/import-seed.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
