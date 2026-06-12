@@ -1,5 +1,70 @@
 # Seed Corpus Sources
 
+## anthropics/skills
+
+- **URL**: https://github.com/anthropics/skills
+- **Repo-level license**: None (license-detector exit 2 — `arr`)
+- **Per-skill license**: Apache-2.0 per `LICENSE.txt` in each eligible skill directory
+- **Commit pinned**: `57546260929473d4e0d1c1bb75297be2fdfa1949`
+- **Fetched**: 2026-06-12
+
+### Eligibility determination
+
+The repo itself carries no LICENSE file; `license-detector.mjs` returns exit 2 at the repo level.
+However, the README states "Many skills in this repo are open source (Apache 2.0)," and each
+skill directory that is open source carries its own `LICENSE.txt` (Apache-2.0). Under the
+borderline rule (per-file license), skills with Apache-2.0 `LICENSE.txt` files were treated as
+eligible. Apache-2.0 maps to `mit` output code (SPDX preserved as `Apache-2.0` in
+`provenance.upstream_license`).
+
+### Assets taken: 11 skills
+
+| Skill | Files in bundle |
+|---|---|
+| algorithmic-art | SKILL.md + templates/generator_template.js + templates/viewer.html |
+| brand-guidelines | SKILL.md |
+| canvas-design | SKILL.md (binary TTF fonts excluded) |
+| frontend-design | SKILL.md |
+| internal-comms | SKILL.md + examples/ (4 files) |
+| mcp-builder | SKILL.md + reference/ (4 files) + scripts/ (4 files) |
+| skill-creator | SKILL.md + agents/ + scripts/ + eval-viewer/ + references/ + assets/ (16 files total) |
+| slack-gif-creator | SKILL.md + core/ (4 files) + requirements.txt |
+| theme-factory | SKILL.md + themes/ (10 files) |
+| web-artifacts-builder | SKILL.md + scripts/init-artifact.sh + scripts/bundle-artifact.sh |
+| webapp-testing | SKILL.md + scripts/with_server.py + examples/ (3 files) |
+
+### Assets skipped / wishlisted
+
+| Item | Reason |
+|---|---|
+| `docx` | Proprietary — "© 2025 Anthropic, PBC. All rights reserved." |
+| `pdf` | Same proprietary license |
+| `pptx` | Same proprietary license |
+| `xlsx` | Same proprietary license |
+| `doc-coauthoring` | No `LICENSE.txt` found in skill directory |
+| `claude-api` | Apache-2.0 eligible but bundle too large (~500KB): 42KB SKILL.md + shared/ reference docs including 118KB model-migration.md |
+
+### Anomalies / Binary exclusions
+
+- `canvas-design/canvas-fonts/`: 80+ binary TTF files (OFL-licensed fonts). Not includable in JSONL
+  `content_files` (binary). SKILL.md references them as `./canvas-fonts/` at runtime. Noted in
+  bundle description; fonts must be installed separately.
+- `web-artifacts-builder/scripts/shadcn-components.tar.gz`: Binary tarball (~20KB). Excluded.
+  `init-artifact.sh` installs shadcn components at runtime; the tarball is a local cache only.
+- `theme-factory/theme-showcase.pdf`: Binary PDF (124KB). Excluded. SKILL.md references it for
+  display only; themes are defined in `themes/*.md` text files which are included.
+
+## jujumilk3/leaked-system-prompts (NEGATIVE TEST)
+
+- **URL**: https://github.com/jujumilk3/leaked-system-prompts
+- **License**: None (license-detector exit 2 — `arr`)
+- **Outcome**: Wishlisted only; no content copied. This confirms the license gate works correctly
+  for repos with no LICENSE file — `arr` default, ingest stopped immediately.
+
+---
+
+
+
 ## PatrickJS/awesome-cursorrules
 
 - **URL**: https://github.com/PatrickJS/awesome-cursorrules
