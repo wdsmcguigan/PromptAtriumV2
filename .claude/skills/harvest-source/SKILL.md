@@ -160,9 +160,16 @@ cc0: N  |  mit: N  |  cc-by-4.0: N  |  arr (rejected): N
 N items recorded (ineligible-but-valuable, no content copied)
 ```
 
-### 9. Commit and push
+### 9. Update sources.json and commit
+
+After validating, update `data/seed/sources.json` to record the harvest:
+- Set `last_harvested_sha` to the pinned commit SHA used in this run.
+- Update `cap` if the total asset count for this source changed.
+- Add a new entry for the source if it does not already exist (set `status: "active"`).
 
 ```bash
+# Update sources.json in your editor or via a targeted sed/node command, then:
+
 # Fresh branch off current main, named for the run (never reuse an old branch)
 git fetch origin main && git checkout -B "claude/harvest-<source>-$(date +%Y%m%d)" origin/main
 git add data/seed/

@@ -1,0 +1,25 @@
+name: Seed corpus audit
+
+on:
+  pull_request:
+    paths:
+      - 'data/seed/assets-*.jsonl'
+
+jobs:
+  audit:
+    name: Validate and audit seed corpus
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate JSONL schema
+        run: node .claude/skills/harvest-source/validate-jsonl.mjs data/seed/assets-*.jsonl
+
+      - name: Audit upstream byte-exactness
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node .claude/skills/harvest-source/audit-upstream.mjs data/seed/assets-*.jsonl

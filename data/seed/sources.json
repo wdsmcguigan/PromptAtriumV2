@@ -1,0 +1,34 @@
+[
+  {
+    "repo": "PatrickJS/awesome-cursorrules",
+    "kinds": ["rule"],
+    "status": "active",
+    "last_harvested_sha": "b044f956f021b6e8877f16781bcfc466a6a120e9",
+    "cap": 41,
+    "notes": "CC0-1.0. 257 .mdc files; 41 taken 2026-06-12, ~216 deferred for future runs."
+  },
+  {
+    "repo": "anthropics/skills",
+    "kinds": ["skill"],
+    "status": "active",
+    "last_harvested_sha": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+    "cap": 11,
+    "notes": "No repo-level license; per-skill Apache-2.0 via LICENSE.txt. 11 eligible skills taken; 6 skipped (proprietary/no-license/oversized). Future runs: check new skills for per-dir LICENSE.txt before ingesting."
+  },
+  {
+    "repo": "f/awesome-chatgpt-prompts",
+    "kinds": ["prompt"],
+    "status": "active",
+    "last_harvested_sha": null,
+    "cap": 30,
+    "notes": "CC0-1.0. Large CSV/markdown collection of user-facing chat prompts. Not yet harvested — next run should curate the most distinctive prompts, deduplicating against any existing corpus entries."
+  },
+  {
+    "repo": "modelcontextprotocol/registry",
+    "kinds": ["mcp-server"],
+    "status": "active",
+    "last_harvested_sha": null,
+    "cap": null,
+    "notes": "Structured JSON registry at registry.modelcontextprotocol.io — ingest via dedicated script, not agent (records are pointer-style: name, description, package id, transport, env var names only — never values). Staleness check still applies to detect new registry entries."
+  }
+]

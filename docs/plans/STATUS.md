@@ -3,6 +3,67 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-12 (Gardener session) — Harvest-to-database pipeline built
+
+### What was built (branch `claude/harvest-database-pipeline-jihn1o`)
+
+All four pipeline components are complete. Full typecheck passes.
+
+1. **`import-seed.ts`** (`artifacts/api-server/src/scripts/import-seed.ts`) —
+   the keystone. Reads `data/seed/assets-*.jsonl`, upserts into v2 tables.
+   - Owner: singleton `curation` principal (`kind='curation', user_id null`).
+   - Identity: `metadata.source.repo + metadata.source.path`.
+   - Change detection: `provenance.content_hash` vs stored → no-op or new version.
+   - New version path mirrors `store.ts createVersion` (FOR UPDATE pattern).
+   - Added entry in `build.mjs`; `import:seed` package script added.
+
+2. **CI audit gate** — `.github/workflows/seed-audit.yml` on PRs touching
+   `data/seed/assets-*.jsonl`. Two steps: schema validation (`validate-jsonl.mjs`)
+   then upstream byte-comparison (`audit-upstream.mjs` — new script in
+   `.claude/skills/harvest-source/`). Automates the manual audits that caught 8
+   corrupted assets in the pilot.
+
+3. **`data/seed/sources.json`** — source queue with 4 entries: PatrickJS/
+   awesome-cursorrules (active, harvested), anthropics/skills (active, harvested),
+   f/awesome-chatgpt-prompts (active, not yet harvested), modelcontextprotocol/
+   registry (active, script not agent). SKILL.md step 9 updated to update this
+   file after each run.
+
+4. **`seed-staleness.yml`** — weekly cron (Monday 09:00 UTC); for each active
+   source with `last_harvested_sha`, fetches GitHub HEAD, creates/updates single
+   issue "Stale harvest sources" listing what moved. No auto-harvesting.
+
+**scoutService.ts** scrutinized (see `.agents/memory/harvest-pipeline.md`):
+live Gemini+grounding search for trending prompts; feeds a legacy discovery
+feature in `legacyRoutes.ts`; no overlap or conflict with this pipeline.
+
+### Two open decisions for the Steward (block production use of import:seed)
+
+1. **Inline-bundle fast path** — JSONL `content_files` are `{path, text}` but
+   the v2 `ContentFile` type expects GCS manifests. import-seed.ts stores inline
+   form directly in jsonb. Ratify as supported fast path, OR mandate a GCS
+   upload step. See `.agents/memory/harvest-pipeline.md` §INLINE-BUNDLE DEVIATION.
+
+2. **Auto-harvest scheduling** — staleness.yml opens an issue but does NOT
+   trigger harvests. A future decision: allow scheduled harvest via Claude API.
+   Requires API keys in CI + budget policy + PR-auto-merge gate. Intentionally
+   not built here.
+
+### Verification needed before merge
+Run on a scratch Postgres (per `.agents/memory/v2-asset-api.md` procedure):
+```
+pnpm --filter @workspace/api-server run import:seed   # run 1
+pnpm --filter @workspace/api-server run import:seed   # run 2 — must be all no-ops
+```
+Paste counts in the PR: expected `{created: 52, updated: 0, noop: 0}` then
+`{created: 0, updated: 0, noop: 52}`.
+
+### Still blocked on the owner (unchanged from previous session)
+1. Deploy gate for PR #6 (migrate:v2 + 31-license-codes.sql on dev+prod).
+2. Principal handles decision (gates Phase 2 MCP scaffold).
+3. DMCA designated agent.
+4. Brand voice.
+
 ## 2026-06-12 (later) — Reconciliation: PRs #6–#10 merged, harvest audited, fan-out approved
 
 ### PR landscape (all verified against GitHub, not memory)
