@@ -1,0 +1,9 @@
+[
+  {
+    "content_hash": "9d29e27cba8dbb64854e606a868d3ed4c132ce194fdacaebba313ca2c2ca0b9e",
+    "check": "injection-phrase",
+    "reason": "SKILL.md 'Principle of Lack of Surprise' section PROHIBITS creating skills for unauthorized access/data exfiltration — defensive mention, full sentence read in upstream context at pinned SHA 5754626.",
+    "reviewed_by": "Steward PLUMB",
+    "date": "2026-06-12"
+  }
+]

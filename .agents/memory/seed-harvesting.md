@@ -35,6 +35,13 @@ The run's own validator passing is NOT the audit. Independently:
 5. License: verify the LICENSE file content at the pinned SHA yourself, check
    the registry code is the *actual* license (see license-registry.md), and
    verify wishlist-only for negative entries (grep assets files for leakage).
+6. **Blight** (content safety — faithfulness and license say nothing about
+   intent): run `blight-check.mjs`; every finding gets the full matched
+   content read in upstream context before allowlist or drop. For new sources,
+   adversarial read (do files do more than their descriptions admit?). For
+   re-harvest/update PRs, the upstream diff must be displayed in the PR and
+   unusual diffs get human eyes — a trusted source compromised *after* first
+   harvest propagates through the refresh loop as a clean-looking update.
 
 ## Rules learned the hard way
 
