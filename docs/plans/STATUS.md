@@ -3,6 +3,25 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-12 (late night) — Owner decisions: handles APPROVED, budget set; board clean
+
+- **PRs #13–#18 all MERGED** (operating rules, seed-audit required-check fix,
+  almanac, blight screening, DMCA runbook, OWNER-TODO). Branch protection
+  ruleset active on main: required check `Validate and audit seed corpus` +
+  PR-before-merge, approvals 0 (single-account — self-approval impossible).
+- **Principal handles: APPROVED by the Owner** (2026-06-12 ~21:48 UTC) —
+  required unique `handle` on `principals`, backfill from `users.username`,
+  generated fallbacks for nulls. **The Phase 2 MCP scaffold is now fully
+  unblocked**; seam §1 in `docs/plans/phase-2-mcp-server.md` marked resolved.
+  Note: the gap wasn't Replit's doing — Phase 1 deliberately kept principals
+  minimal (kind + user_id); Replit-era auth only explains why legacy
+  `users.username` is nullable, hence the backfill fallbacks.
+- **Agent/token budget set:** $0 today (nothing runs unattended; interactive
+  sessions ride the Owner's plan). When scheduled automation first lands,
+  starting cap **$25–50/month**, reviewed at first real invoice.
+- Remaining owner items (see OWNER-TODO.md): deploy gate, DMCA filing, brand
+  voice, auto-delete-branches toggle (debating).
+
 ## 2026-06-12 (night) — Blight screening added to the phytosanitary gate
 
 - **New inspection: blight** (byte-perfect, properly-licensed copies of
