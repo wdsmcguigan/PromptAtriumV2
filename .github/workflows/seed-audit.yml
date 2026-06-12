@@ -1,9 +1,12 @@
 name: Seed corpus audit
 
+# Runs on every PR (no paths: filter) so it can be a REQUIRED status check —
+# a path-filtered workflow never reports on non-matching PRs, which would
+# leave them stuck on "Expected" forever. Instead, the job detects seed
+# changes itself and passes immediately when there are none.
+
 on:
   pull_request:
-    paths:
-      - 'data/seed/assets-*.jsonl'
 
 jobs:
   audit:
@@ -11,15 +14,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect seed corpus changes
+        id: changes
+        run: |
+          if git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+              | grep -E '^data/seed/assets-.*\.jsonl$'; then
+            echo "seed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "seed=false" >> "$GITHUB_OUTPUT"
+            echo "No seed corpus changes — audit not required for this PR."
+          fi
 
       - uses: actions/setup-node@v4
+        if: steps.changes.outputs.seed == 'true'
         with:
           node-version: '22'
 
       - name: Validate JSONL schema
+        if: steps.changes.outputs.seed == 'true'
         run: node .claude/skills/harvest-source/validate-jsonl.mjs data/seed/assets-*.jsonl
 
       - name: Audit upstream byte-exactness
+        if: steps.changes.outputs.seed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .claude/skills/harvest-source/audit-upstream.mjs data/seed/assets-*.jsonl
