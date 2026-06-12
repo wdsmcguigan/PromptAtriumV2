@@ -1,8 +1,9 @@
 import type { RequestHandler } from "express";
 import { eq } from "drizzle-orm";
-import { apiTokens, principals, type Principal } from "@workspace/db";
+import { apiTokens, principals, users, type Principal } from "@workspace/db";
 import { db } from "../db";
 import { hashToken } from "./ids";
+import { generateUniqueHandle } from "./handles";
 
 // Everything in v2 acts as a principal (ownership indirection — see
 // docs/plans/phase-1-schema-v2.md). A request is authenticated either by the
@@ -32,9 +33,19 @@ export async function getOrCreatePrincipalForUser(
     .where(eq(principals.userId, userId));
   if (existing) return existing;
 
+  // handle is required (Phase 2 seam #1): derive it from the legacy username
+  // with a `user-<short-id>` fallback when there is none, matching migration
+  // 0003's backfill.
+  const [user] = await db
+    .select({ username: users.username })
+    .from(users)
+    .where(eq(users.id, userId));
+  const base = user?.username || `user-${userId.replace(/[^a-z0-9]/gi, "").slice(0, 8)}`;
+  const handle = await generateUniqueHandle(base);
+
   const [created] = await db
     .insert(principals)
-    .values({ kind: "user", userId })
+    .values({ kind: "user", userId, handle })
     .onConflictDoNothing({ target: principals.userId })
     .returning();
   if (created) return created;

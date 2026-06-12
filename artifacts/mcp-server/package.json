@@ -1,0 +1,42 @@
+{
+  "name": "promptatrium-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for PromptAtrium — pull your versioned AI assets (rules, skills, commands, prompts, mcp-server configs) into Claude Code, Cursor, and VS Code.",
+  "license": "MIT",
+  "type": "module",
+  "mcpName": "io.github.wdsmcguigan/promptatrium",
+  "bin": {
+    "promptatrium-mcp": "dist/transport/stdio.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "server.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/transport/stdio.js",
+    "serve:http": "node dist/transport/serve-http.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "express": "^5.2.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "catalog:"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

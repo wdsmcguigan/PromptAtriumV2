@@ -64,9 +64,33 @@ async function main() {
   };
 
   // -- 1. principals 1:1 from users --------------------------------------
+  // handle is required (Phase 2 seam #1); derive it from username with a
+  // `user-<short-id>` fallback and an id-suffix on collisions, mirroring
+  // migration 0003's backfill. Stays idempotent: only users without a
+  // principal are considered.
   await db.execute(sql`
-    INSERT INTO principals (kind, user_id)
-    SELECT 'user', id FROM users
+    WITH candidates AS (
+      SELECT
+        u.id AS uid,
+        COALESCE(
+          NULLIF(trim(BOTH '-' FROM regexp_replace(lower(u.username), '[^a-z0-9]+', '-', 'g')), ''),
+          'user-' || substr(md5(u.id), 1, 8)
+        ) AS base_h
+      FROM users u
+      WHERE NOT EXISTS (SELECT 1 FROM principals p WHERE p.user_id = u.id)
+    ),
+    ranked AS (
+      SELECT uid, base_h, row_number() OVER (PARTITION BY base_h ORDER BY uid) AS rn
+      FROM candidates
+    )
+    INSERT INTO principals (kind, user_id, handle)
+    SELECT 'user', uid,
+      CASE
+        WHEN rn = 1 AND NOT EXISTS (SELECT 1 FROM principals p WHERE p.handle = base_h)
+          THEN base_h
+        ELSE base_h || '-' || substr(md5(uid), 1, 12)
+      END
+    FROM ranked
     ON CONFLICT (user_id) DO NOTHING
   `);
   const principalByUser = new Map<string, string>();

@@ -6,6 +6,7 @@ import {
   assets,
   assetVersions,
   events,
+  principals,
   stars,
   DEFAULT_LICENSE,
   type LicenseCode,
@@ -74,6 +75,32 @@ export async function getAssetByPublicId(
     .from(assets)
     .where(eq(assets.publicId, publicId));
   return asset;
+}
+
+// Resolve an asset by its public address `handle/slug` (Phase 2 seam #1).
+// Used for MCP `asset://{handle}/{slug}` reads; readability is enforced by the
+// caller via canRead (404, not 403, for invisible assets).
+export async function getAssetByHandleAndSlug(
+  handle: string,
+  slug: string,
+): Promise<Asset | undefined> {
+  const [row] = await db
+    .select({ asset: assets })
+    .from(assets)
+    .innerJoin(principals, eq(assets.ownerId, principals.id))
+    .where(and(eq(principals.handle, handle), eq(assets.slug, slug)));
+  return row?.asset;
+}
+
+// The owner handle for an asset — the `{handle}` half of its public address.
+export async function getOwnerHandle(
+  ownerId: string,
+): Promise<string | undefined> {
+  const [row] = await db
+    .select({ handle: principals.handle })
+    .from(principals)
+    .where(eq(principals.id, ownerId));
+  return row?.handle;
 }
 
 export function canRead(asset: Asset, principalId: string): boolean {

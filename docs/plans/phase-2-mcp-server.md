@@ -48,14 +48,13 @@ spec-land; these are the three places it meets the real schema (from the PR #8
 review, reconciled here so the build session doesn't have to find a buried
 comment). None change the locked decisions.
 
-1. **`{owner}` doesn't exist yet — DECIDED (Owner approved, 2026-06-12):**
-   add a required unique `handle` to `principals`, backfilled from
-   `users.username` (nullable — generate fallbacks for nulls, e.g.
-   `user-<short-id>`), URL-safe (slugify rules), with a uniqueness index.
-   The scaffold session implements this migration first, then builds
-   `asset://{handle}/{slug}` addressing on top. Handle changes should be
-   possible but rare (assets are addressed through them); don't build a
-   rename flow in v1.
+1. **`{owner}` doesn't exist yet — DONE (scaffold session, 2026-06-12):**
+   added a required unique `handle` to `principals` (migration
+   `0003_principal-handles.sql`, backfilled from `users.username` with
+   `user-<short-id>` fallbacks + id-suffix dedup, PG-validated). All principal
+   inserts now set it (auth/import-seed/backfill). `asset://{handle}/{slug}`
+   addressing built on top via `GET /api/v2/handles/:handle/assets/:slug`. No
+   rename flow in v1, as directed. See `.agents/memory/phase-2-mcp-server.md`.
 2. **Versions are integers, not semver.** `asset_versions.version_number` is a
    monotonic int with no label system. `get_asset.version` is an integer
    (`/v/3`), and `asset://{owner}/{slug}/v/{version}` takes the integer. The
@@ -95,12 +94,20 @@ until plan 30 lands, then adds compiled variants).
 
 ## Build order
 
-1. Package scaffold + pinned v1 SDK; `createMcpServer` with `list_assets` /
-   `get_asset` tools backed by the v2 store (smallest useful server).
-2. stdio transport + bin; verify in Claude Code via `npx` locally.
-3. Streamable HTTP transport + PAT middleware + RFC 9728 stub; mount in
-   api-server; verify in Claude Code (`--header`) and Cursor.
-4. Resources + templates + `listChanged`; `skill://` for skill-kind assets.
-5. `server.json` + `mcpName`; open-source the package; submit to community
-   registries.
-6. (After plan 30) compiled per-tool variants as additional resources.
+1. ✅ Package scaffold + pinned v1 SDK; `createMcpServer` with `list_assets` /
+   `get_asset` tools backed by the v2 API (smallest useful server).
+2. ✅ stdio transport + bin; smoke-verified (initialize + tools/list over stdio).
+3. ✅ Streamable HTTP transport + PAT middleware + RFC 9728 stub +
+   `mountMcpServer` for api-server; smoke-verified with the real MCP SDK client
+   (initialize, tools, resources, prompts, 401+`WWW-Authenticate`). **Live
+   verification in Claude Code (`--header`) / Cursor pending a deployed endpoint.**
+4. ✅ Resources + templates + `listChanged`; `skill://` for skill-kind assets.
+5. ◐ `server.json` + `mcpName` checked in (unpublished). Open-sourcing the
+   package + registry submission is the remaining step (checklist in the
+   package README).
+6. ⬜ (After plan 30) compiled per-tool variants as additional resources.
+
+Scaffold built 2026-06-12 — `artifacts/mcp-server` (`promptatrium-mcp`); details
+in `.agents/memory/phase-2-mcp-server.md`. Remaining before production: deploy
+the hosted endpoint + run the deploy gate (migrate:v2 now includes 0003), then
+live-verify in the clients and publish the npm package.
