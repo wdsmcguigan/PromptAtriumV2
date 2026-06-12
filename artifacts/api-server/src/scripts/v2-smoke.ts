@@ -75,6 +75,7 @@ async function main() {
     content: { text: "Never deploy on Fridays." },
   });
   check("create asset + v1", r.status === 201 && r.body.headVersion?.versionNumber === 1, r);
+  check("default license is cc0", r.body.license === "cc0", r);
   const publicId = r.body.publicId as string;
 
   r = await call("POST", "/assets", { kindId: "nope", name: "x" });
@@ -92,8 +93,10 @@ async function main() {
   r = await call("GET", `/assets/${publicId}/versions`);
   check("versions listed desc", r.status === 200 && r.body[0].versionNumber === 2 && r.body.length === 2, r);
 
-  r = await call("PATCH", `/assets/${publicId}`, { license: "CC0" });
-  check("patch license", r.status === 200 && r.body.license === "CC0", r);
+  r = await call("PATCH", `/assets/${publicId}`, { license: "arr" });
+  check("patch license", r.status === 200 && r.body.license === "arr", r);
+  r = await call("PATCH", `/assets/${publicId}`, { license: "GPL-9" });
+  check("unknown license rejected", r.status === 400, r);
 
   r = await call("PUT", `/assets/${publicId}/star`);
   check("star", r.status === 200 && r.body.starCount === 1, r);

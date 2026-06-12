@@ -7,6 +7,8 @@ import {
   assetVersions,
   events,
   stars,
+  DEFAULT_LICENSE,
+  type LicenseCode,
   type Asset,
   type AssetEdge,
   type AssetVersion,
@@ -103,7 +105,7 @@ export interface CreateAssetInput {
   name: string;
   description?: string | undefined;
   visibility?: "private" | "unlisted" | "public" | undefined;
-  license?: string | undefined;
+  license?: LicenseCode | undefined;
   tags?: string[] | undefined;
   metadata?: Record<string, unknown> | undefined;
   content?: ContentInput | undefined;
@@ -134,7 +136,7 @@ export async function createAsset(
         slug,
         description: input.description ?? null,
         visibility: input.visibility ?? "private",
-        license: input.license ?? null,
+        license: input.license ?? DEFAULT_LICENSE,
         tags: input.tags ?? [],
         metadata: input.metadata ?? {},
       })
@@ -203,7 +205,7 @@ export interface UpdateAssetInput {
   name?: string | undefined;
   description?: string | null | undefined;
   visibility?: "private" | "unlisted" | "public" | undefined;
-  license?: string | null | undefined;
+  license?: LicenseCode | null | undefined;
   tags?: string[] | undefined;
   metadata?: Record<string, unknown> | undefined;
 }

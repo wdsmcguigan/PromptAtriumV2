@@ -20,6 +20,8 @@ import {
   promptLikes,
   prompts,
   stars,
+  isLicenseCode,
+  normalizeLicense,
   type Asset,
 } from "@workspace/db";
 import { db, pool } from "../db";
@@ -123,6 +125,8 @@ async function main() {
     const visibility = p.isPublic && !p.isHidden ? "public" : "private";
     const metadata = compact({
       legacy_prompt_id: p.id,
+      // pre-plan-31 rows may still hold display strings; keep the original
+      legacy_license: p.license && !isLicenseCode(p.license) ? p.license : undefined,
       negative_prompt: p.negativePrompt,
       category: p.category,
       categories: p.categories,
@@ -159,7 +163,7 @@ async function main() {
           slug: claimSlug(ownerId, p.name),
           description: p.description,
           visibility,
-          license: p.license,
+          license: normalizeLicense(p.license),
           tags: p.tags ?? [],
           metadata,
           createdAt: p.createdAt ?? undefined,
@@ -251,6 +255,7 @@ async function main() {
           slug: claimSlug(ownerId, c.name),
           description: c.description,
           visibility: c.isPublic ? "public" : "private",
+          license: normalizeLicense(null),
           metadata: { legacy_collection_id: c.id },
           createdAt: c.createdAt ?? undefined,
           updatedAt: c.updatedAt ?? undefined,

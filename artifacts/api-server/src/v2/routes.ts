@@ -6,7 +6,7 @@ import {
   type Response,
 } from "express";
 import { z } from "zod/v4";
-import type { Asset } from "@workspace/db";
+import { LICENSE_CODES, type Asset } from "@workspace/db";
 import {
   requirePrincipal,
   requireScope,
@@ -65,6 +65,7 @@ const contentSchema = z
     message: "content requires exactly one of text or files",
   });
 
+const licenseSchema = z.enum(LICENSE_CODES);
 const tagsSchema = z.array(z.string().min(1).max(64)).max(32);
 const metadataSchema = z.record(z.string(), z.unknown());
 
@@ -73,7 +74,7 @@ const createAssetSchema = z.object({
   name: z.string().min(1).max(200),
   description: z.string().max(5000).optional(),
   visibility: visibilitySchema.optional(),
-  license: z.string().max(64).optional(),
+  license: licenseSchema.optional(),
   tags: tagsSchema.optional(),
   metadata: metadataSchema.optional(),
   content: contentSchema.optional(),
@@ -85,7 +86,7 @@ const updateAssetSchema = z
     name: z.string().min(1).max(200).optional(),
     description: z.string().max(5000).nullable().optional(),
     visibility: visibilitySchema.optional(),
-    license: z.string().max(64).nullable().optional(),
+    license: licenseSchema.nullable().optional(),
     tags: tagsSchema.optional(),
     metadata: metadataSchema.optional(),
   })

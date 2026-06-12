@@ -19,4 +19,5 @@
 
 export * from "./schema";
 export * from "./v2";
+export * from "./licenses";
 
