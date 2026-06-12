@@ -33,7 +33,8 @@ import systemDataRouter from "./routes/system-data";
 import adminRouter from "./routes/admin";
 import promptRefinementRouter from "./routes/prompt-refinement";
 import promptExtractionRouter from "./routes/prompt-extraction";
-import { 
+import v2Router from "./v2/routes";
+import {
   authLimiter, 
   apiLimiter, 
   strictApiLimiter, 
@@ -150,6 +151,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // v2 asset API (session or PAT bearer auth) — see src/v2/
+  app.use("/api/v2", apiLimiter, v2Router);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
