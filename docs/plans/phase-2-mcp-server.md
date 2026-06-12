@@ -48,14 +48,14 @@ spec-land; these are the three places it meets the real schema (from the PR #8
 review, reconciled here so the build session doesn't have to find a buried
 comment). None change the locked decisions.
 
-1. **`{owner}` doesn't exist yet.** `asset://{owner}/{slug}` assumes a URL-safe
-   owner handle, but v2 `principals` are bare uuids (kind + user_id) — no
-   slug/username, and legacy `users.username` is nullable. **Decision needed
-   from the owner before the scaffold bakes in addressing** (parked with him):
-   either add a required `handle` to principals (backfill from username with
-   generated fallbacks) — recommended, `owner/slug` is much better model-facing
-   UX — or make the canonical URI `asset://{public_id}` and treat `owner/slug`
-   as a friendly alias later.
+1. **`{owner}` doesn't exist yet — DECIDED (Owner approved, 2026-06-12):**
+   add a required unique `handle` to `principals`, backfilled from
+   `users.username` (nullable — generate fallbacks for nulls, e.g.
+   `user-<short-id>`), URL-safe (slugify rules), with a uniqueness index.
+   The scaffold session implements this migration first, then builds
+   `asset://{handle}/{slug}` addressing on top. Handle changes should be
+   possible but rare (assets are addressed through them); don't build a
+   rename flow in v1.
 2. **Versions are integers, not semver.** `asset_versions.version_number` is a
    monotonic int with no label system. `get_asset.version` is an integer
    (`/v/3`), and `asset://{owner}/{slug}/v/{version}` takes the integer. The
