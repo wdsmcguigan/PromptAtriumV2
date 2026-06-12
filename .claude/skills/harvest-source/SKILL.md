@@ -5,7 +5,7 @@ description: Harvest AI context assets (rules, skills, commands, prompts, MCP se
 
 # /harvest-source
 
-Harvests AI context assets from a permissively-licensed GitHub repo and writes them to `data/seed/assets-<kind>.jsonl` on the `claude/seed-corpus` branch.
+Harvests AI context assets from a permissively-licensed GitHub repo and writes them to `data/seed/assets-<kind>.jsonl` on a **fresh per-run branch off current main** (`claude/harvest-<source>-<yyyymmdd>`). Never reuse a previous harvest branch: a stale branch means a stale skill and stale data. Branches are short-lived — PR'd to main and deleted on merge.
 
 **Invoke as:** `/harvest-source on PatrickJS/awesome-cursorrules [kind: rule]`
 
@@ -155,10 +155,11 @@ N items recorded (ineligible-but-valuable, no content copied)
 ### 9. Commit and push
 
 ```bash
-git checkout -b claude/seed-corpus 2>/dev/null || git checkout claude/seed-corpus
+# Fresh branch off current main, named for the run (never reuse an old branch)
+git fetch origin main && git checkout -B "claude/harvest-<source>-$(date +%Y%m%d)" origin/main
 git add data/seed/
 git commit -m "harvest: <source-repo> — <N> <kind> assets"
-git push -u origin claude/seed-corpus
+git push -u origin "claude/harvest-<source>-$(date +%Y%m%d)"
 ```
 
 ---
