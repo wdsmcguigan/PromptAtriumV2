@@ -15,3 +15,4 @@
 - [Seed harvesting](seed-harvesting.md) — /harvest-source pipeline state, the independent byte-audit procedure every harvest PR gets, bundle LICENSE.txt rule, WebFetch ban; fan-out approved 2026-06-12.
 - [Harvest pipeline](harvest-pipeline.md) — import-seed.ts keystone (idempotent JSONL→v2 upsert), CI audit gate, sources.json queue, staleness workflow; both open decisions since ratified by the Steward on PR #12 (inline bundles accepted; no auto-harvests).
 - [Agent roles](agent-roles.md) — the operating INVARIANTS (PR-only corpus writes, byte-exact pinned content, judgment down/artifacts up, fail closed, automate repetition) + the disposable role roster. Invariants change only with Owner sign-off.
+- [Almanac](almanac.md) — the project's working vocabulary (water table, quarantine greenhouse, phytosanitary gate, cold frame, pollen doesn't re-enter, cuttings, the no-trees rule). Terms enter only after changing real decisions; ornamental entries get pruned.
