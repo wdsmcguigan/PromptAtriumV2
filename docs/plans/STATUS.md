@@ -3,6 +3,26 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-12 (night) — Blight screening added to the phytosanitary gate
+
+- **New inspection: blight** (byte-perfect, properly-licensed copies of
+  *malicious* content passed every existing gate). `blight-check.mjs` is the
+  deterministic layer — invisible/bidi unicode, piped-shell installs,
+  encoded-exec, long base64 blobs, injection phrasing, raw-IP URLs — wired as
+  step 3 of `seed-audit.yml`. Findings are fatal unless allowlisted in
+  `data/seed/blight-allowlist.json` (per content_hash × check, with reason +
+  reviewer + date; never allowlist unread content).
+- Corpus screened: 52 records, one finding — skill-creator's *defensive*
+  mention of exfiltration — read in upstream context and allowlisted.
+  Negative test: five planted blight classes all detected, exit 1.
+- **Procedural layer** (SKILL.md + seed-harvesting.md): adversarial read of
+  every new source; re-harvest PRs must display the upstream diff (a trusted
+  source compromised after first harvest propagates via the refresh loop).
+- **DMCA runbook** researched & landing as `docs/runbooks/dmca-designated-agent.md`
+  (separate PR): $6 Copyright Office filing, 3-year renewal, ToS patch,
+  §512(c)(3)/(g)(3) takedown + counter-notice procedures. Owner files from
+  desktop — recommendation: virtual business address, never the home address.
+
 ## 2026-06-12 (evening) — PR #12 verified, ratified & MERGED; operating rules codified
 
 - **Gardener's PR #12** (import-seed.ts + CI audit gate + sources.json +

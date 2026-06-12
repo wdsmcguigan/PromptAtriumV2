@@ -63,6 +63,15 @@ exact bytes of the upstream file. **Curate — do not dump.** An asset earns
 inclusion if a Claude Code / Cursor power user would actually install it. When
 a collection has 50 variants of the same rule, take the best 1-3.
 
+**Adversarial read (blight).** Byte-perfect + licensed ≠ safe: harvested
+content becomes *instructions inside other people's agents*. For every asset
+from a **new source**, read it asking "does it do more than its description
+admits?" — helper scripts vs what SKILL.md claims, install commands, network
+calls, odd encodings. For **re-harvests**, diff against the previously pinned
+content and read any suspicious change. The deterministic layer
+(`blight-check.mjs`, step 5) catches known patterns; your read catches the
+rest. When in doubt: wishlist, don't ingest.
+
 ### 4. Write JSONL
 
 Write one JSONL file per kind. One JSON object per line, no trailing commas:
@@ -103,13 +112,19 @@ that. Binary files can't ride in JSONL: exclude them, list each exclusion in
 SOURCES.md with its runtime impact, and skip the asset entirely if the binaries
 are essential to it working.
 
-### 5. Validate
+### 5. Validate + blight-screen
 
 ```bash
 node .claude/skills/harvest-source/validate-jsonl.mjs data/seed/assets-rule.jsonl
+node .claude/skills/harvest-source/blight-check.mjs data/seed/assets-*.jsonl
 ```
 
-Fix all errors before proceeding. The validator catches: missing fields, branch-name URLs, short SHAs, ambiguous content, non-standard license codes.
+Fix all validator errors before proceeding (missing fields, branch-name URLs,
+short SHAs, ambiguous content, non-standard license codes). For each blight
+finding: read the **full** matched content in upstream context; if malicious or
+suspicious, drop the asset (wishlist with reason "blight"); only if verified
+benign, add a `(content_hash, check)` entry to `data/seed/blight-allowlist.json`
+with reason + reviewer + date. Never allowlist content you haven't read.
 
 ### 6. Deduplicate
 

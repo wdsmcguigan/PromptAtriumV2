@@ -42,3 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .claude/skills/harvest-source/audit-upstream.mjs data/seed/assets-*.jsonl
+
+      - name: Blight screening (content safety)
+        if: steps.changes.outputs.seed == 'true'
+        run: node .claude/skills/harvest-source/blight-check.mjs data/seed/assets-*.jsonl
