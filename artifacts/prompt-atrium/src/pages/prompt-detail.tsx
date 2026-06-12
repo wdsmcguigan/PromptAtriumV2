@@ -15,6 +15,7 @@ import { redirectToLogin } from "@/utils/auth-redirect";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import type { Prompt, User } from "@shared/schema";
+import { LICENSES, normalizeLicense, licenseLabel } from "@shared/licenses";
 import {
   Dialog,
   DialogContent,
@@ -680,12 +681,20 @@ export default function PromptDetail() {
                 <div>
                   <span className="font-medium text-muted-foreground">License:</span>
                   <div className="mt-1">
-                    {(prompt as any).license ? (
-                      <Badge variant="outline" className="text-xs bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800">
-                        {(prompt as any).license}
-                      </Badge>
+                    {LICENSES[normalizeLicense((prompt as any).license)].url !== "" ? (
+                      <a
+                        href={LICENSES[normalizeLicense((prompt as any).license)].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Badge variant="outline" className="text-xs bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 hover:underline">
+                          {licenseLabel((prompt as any).license)}
+                        </Badge>
+                      </a>
                     ) : (
-                      <span className="text-muted-foreground text-xs">Not specified</span>
+                      <Badge variant="outline" className="text-xs bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800">
+                        {licenseLabel((prompt as any).license)}
+                      </Badge>
                     )}
                   </div>
                 </div>
@@ -721,14 +730,29 @@ export default function PromptDetail() {
                 </div>
               </div>
               {user && (
-                <Button 
-                  onClick={handleBranch} 
-                  variant="outline" 
-                  data-testid="button-branch"
-                >
-                  <GitBranch className="h-4 w-4 mr-2" />
-                  Branch Prompt
-                </Button>
+                // License gating: "arr" disables copying another user's prompt
+                // into your own library; the owner's own prompts are unaffected.
+                user.id === prompt.userId || LICENSES[normalizeLicense((prompt as any).license)].allowsCopy ? (
+                  <Button
+                    onClick={handleBranch}
+                    variant="outline"
+                    data-testid="button-branch"
+                  >
+                    <GitBranch className="h-4 w-4 mr-2" />
+                    Branch Prompt
+                  </Button>
+                ) : (
+                  <span title="The author reserved all rights — copying is disabled.">
+                    <Button
+                      variant="outline"
+                      disabled
+                      data-testid="button-branch"
+                    >
+                      <GitBranch className="h-4 w-4 mr-2" />
+                      Branch Prompt
+                    </Button>
+                  </span>
+                )
               )}
             </div>
 

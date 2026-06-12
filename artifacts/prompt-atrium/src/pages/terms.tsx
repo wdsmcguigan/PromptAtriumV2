@@ -122,9 +122,15 @@ export default function TermsAndConditions() {
                 <ul className="list-disc list-inside space-y-1 ml-4">
                   <li>Retain ownership of content you create</li>
                   <li>Grant us a license to display, distribute, and promote your public content</li>
-                  <li>Confirm you have the right to share the content</li>
+                  <li>Represent and warrant that you own or have all necessary rights to the content you publish, and agree to indemnify PromptAtrium against claims arising from it</li>
                   <li>Accept responsibility for the content's legality and appropriateness</li>
                 </ul>
+                <p className="mt-2">
+                  Each prompt you publish carries a license you choose (CC0, CC BY 4.0,
+                  CC BY-SA 4.0, MIT, or All Rights Reserved). If you don't choose one, it
+                  defaults to CC0 (Public Domain). The license you choose governs what other
+                  users may do with that prompt.
+                </p>
               </div>
 
               <div>
@@ -198,6 +204,11 @@ export default function TermsAndConditions() {
                   <li>You may modify the branched content</li>
                   <li>The branch creates a new work that you own</li>
                 </ul>
+                <p className="mt-2">
+                  Copying a public prompt into your library, or creating a version of it,
+                  is permitted under that prompt's license. Copies others have already made
+                  remain valid even if you later unpublish the original.
+                </p>
               </div>
 
               <div>
@@ -214,6 +225,12 @@ export default function TermsAndConditions() {
                   <li>A statement of good faith belief</li>
                   <li>A statement of accuracy under penalty of perjury</li>
                 </ul>
+                {/* TODO: Product owner must supply the real designated-agent contact and
+                    register the agent with the U.S. Copyright Office (17 U.S.C. §512). */}
+                <p className="mt-2">
+                  Send DMCA notices to our designated agent: <strong>dmca@promptatrium.com</strong> (DMCA
+                  Designated Agent, PromptAtrium, [Your Business Address]).
+                </p>
               </div>
             </CardContent>
           </Card>
