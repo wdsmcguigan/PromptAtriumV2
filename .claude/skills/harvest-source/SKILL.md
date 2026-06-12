@@ -121,7 +121,31 @@ The deduper normalizes content (trim, CRLF→LF, strip trailing whitespace per l
 - How many assets taken / skipped and why
 - Any anomalies (per-file license, borderline cases)
 
-### 8. Commit and push
+### 8. Write the end-of-run summary
+
+Before committing, print (and save as `data/seed/SUMMARY.md`) a structured report:
+
+```
+## Harvest summary — <source-repo> — <date>
+
+| Kind          | Count |
+|---------------|-------|
+| rule          | N     |
+| skill         | N     |
+| ...           |       |
+| **Total**     | N     |
+
+### License distribution
+cc0: N  |  mit: N  |  cc-by-4.0: N  |  arr (rejected): N
+
+### Top sources by yield
+1. owner/repo — N assets
+
+### Wishlist
+N items recorded (ineligible-but-valuable, no content copied)
+```
+
+### 9. Commit and push
 
 ```bash
 git checkout -b claude/seed-corpus 2>/dev/null || git checkout claude/seed-corpus
@@ -149,6 +173,8 @@ git push -u origin claude/seed-corpus
 | Unknown redistributable | SPDX id | **Needs human review** (exit 3) |
 
 When a repo has no `license` field in the GitHub API response (`NOASSERTION`), treat as `arr` and add to wishlist only.
+
+**ToS-based ineligibility (separate from license):** even if a site has permissive content, do not scrape platforms that prohibit it in their Terms of Service. Do not bulk-rip PromptBase, FlowGPT, or any vendor's paid prompt library. These go on the wishlist with reason "ToS forbids bulk collection" — never ingest content from them.
 
 **Borderline rule:** if an individual file inside an otherwise unlicensed repo carries its own permissive license header, you may ingest that file only — record the per-file license in `provenance.upstream_license` and note it in SOURCES.md.
 
