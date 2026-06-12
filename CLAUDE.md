@@ -10,6 +10,8 @@ An AI prompt library and community platform for managing, sharing, and refining 
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only — see Gotchas)
+- `pnpm --filter @workspace/db run migrate:v2` — apply v2-schema migrations (additive; legacy tables untouched)
+- `pnpm --filter @workspace/api-server run backfill:v2` — idempotent legacy→v2 data backfill (safe to re-run)
 - Copy `.env.example` to `.env` and fill in values; `DATABASE_URL`, `SESSION_SECRET`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` are required (plus `APP_URL` in production)
 
 ## Stack
@@ -28,7 +30,12 @@ An AI prompt library and community platform for managing, sharing, and refining 
 - `artifacts/api-server/src/legacyRoutes.ts` — all backend routes (migrated from Express 4 monolith, ~8k lines)
 - `artifacts/api-server/src/index.ts` — server entry: routes, static serving (prod), graceful shutdown
 - `artifacts/api-server/src/auth.ts` — OIDC auth; session shape is `{ claims: { sub: <users.id> }, expires_at }` and ~135 call sites read `req.user.claims.sub` as the DB user id
-- `lib/db/src/schema/schema.ts` — source of truth for DB schema and Drizzle types
+- `lib/db/src/schema/schema.ts` — source of truth for the legacy DB schema and Drizzle types
+- `lib/db/src/schema/v2.ts` + `lib/db/migrations/` — v2 asset schema (principals/assets/versions/stars/events/api_tokens), real migrations via `drizzle-v2.config.ts`; design in `docs/plans/phase-1-schema-v2.md`
+- `artifacts/api-server/src/v2/` — v2 asset API mounted at `/api/v2` (session or PAT bearer auth); see `.agents/memory/v2-asset-api.md`
+- `lib/db/src/schema/licenses.ts` — canonical license registry (stable codes, `cc0` default); frontend imports as `@shared/licenses`; see `.agents/memory/license-registry.md`
+- `docs/plans/` — implementation plans (phase-1 schema, phase-2 MCP server, numbered task plans); `docs/plans/STATUS.md` — rolling project status & open threads
+- `docs/research/` — research memos (MCP survey, GTM playbook, licensing, context formats, market/brand)
 - `artifacts/prompt-atrium/src/` — React frontend (pages, components, hooks)
 - `artifacts/prompt-atrium/vite.config.ts` — Vite config; `@shared` alias → `lib/db/src/schema`
 - `artifacts/prompt-atrium-mobile/` — Expo mobile app (PromptAtriumLite)
@@ -53,3 +60,5 @@ PromptAtrium is "the home for your AI working set" — a library and community f
 - **Express 5 route syntax** — never use `:param(*)` or `:param(.*)`. Use `/*name` for named wildcards; access via `req.path` in handlers.
 - **WebGL errors in headless preview** — Three.js particle system fails without a GPU. Expected in sandboxed dev environments; does not affect production.
 - **Health checks** — `GET /api/health` probes the DB (readiness); `GET /api/healthz` is liveness only. Both are registered before the session middleware so probes never create sessions.
+- **Deploy gate (PR #6 era)** — before deploying a build containing the v2/license work: run `migrate:v2` and `psql -f lib/db/sql/31-license-codes.sql` on dev (verify counts), then prod. The schema and frontend assume both have run. Remove this line once done.
+- **License values are stable codes** — `cc0 | cc-by-4.0 | cc-by-sa-4.0 | mit | arr`, never display strings. Validate/normalize via `@shared/licenses`.

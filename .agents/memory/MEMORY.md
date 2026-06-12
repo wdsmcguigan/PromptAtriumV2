@@ -10,3 +10,5 @@
 - [Schema reconciliation TODO](schema-reconciliation-todo.md) — schema.ts missing real tables + has legacy duplicate columns; deferred; full detail in docs/schema-reconciliation-todo.md; do NOT run db:push until reconciled.
 - [Expo native-only APIs crash web preview](expo-web-preview-native-apis.md) — unguarded native calls (e.g. expo-notifications) redbox the whole web dev preview; Platform-guard them.
 - [Lite features architecture](lite-features-architecture.md) — Lite (curated/teaser + local CRUD) lives INSIDE prompt-atrium-mobile; extend SavedProvider, do NOT consume lib/prompt-crud.
+- [v2 asset API](v2-asset-api.md) — Phase 1 schema/API/PAT/backfill at `/api/v2`; immutable versions, principals not users, 404-not-403; DEPLOY GATE: migrate:v2 + 31-license-codes.sql must run on dev+prod before deploying main past PR #6.
+- [License registry](license-registry.md) — stable codes only (`cc0` default), `@shared/licenses` is the single source of truth; `arr` blocks copy-to-library; never store display strings; DMCA agent in ToS is a placeholder.
