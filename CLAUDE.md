@@ -7,14 +7,16 @@ An AI prompt library and community platform for managing, sharing, and refining 
 Current project state and accumulated gotchas (auto-imported):
 
 @docs/plans/STATUS.md
+@docs/plans/OWNER-TODO.md
 @.agents/memory/MEMORY.md
 
 Follow the links in the memory index when your task touches that area. Before
 ending a session in which you made decisions, hit surprises, or completed a
 workstream: update `docs/plans/STATUS.md` (newest at top) and, for durable
 non-obvious facts, add a topic file under `.agents/memory/` plus an index line
-in `MEMORY.md`. A future session must be able to continue your work from these
-docs alone.
+in `MEMORY.md`. When work blocks on the Owner, add the item to
+`docs/plans/OWNER-TODO.md` with a how-to; delete items once done. A future
+session must be able to continue your work from these docs alone.
 
 ## Run & Operate
 
