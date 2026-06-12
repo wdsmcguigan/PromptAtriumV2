@@ -13,6 +13,7 @@
 
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
+import { createHash } from 'node:crypto';
 
 const VALID_KINDS    = ['prompt', 'system_prompt', 'rule', 'skill', 'command', 'mcp-server', 'stack'];
 const VALID_LICENSES = ['cc0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'arr'];
@@ -103,6 +104,19 @@ for (const file of files) {
       if (url && typeof url === 'string') {
         if (/\/blob\/(HEAD|main|master|develop)\//i.test(url)) {
           errs.push('provenance.source_url references a branch name — pin to a commit SHA');
+        }
+      }
+      // Integrity: content_hash must be sha256 of the EXACT stored content,
+      // so any post-hash edit (or a lossy fetch) is caught here.
+      const ch = obj.provenance.content_hash;
+      if (ch && typeof ch === 'string') {
+        const exact = typeof obj.content_text === 'string'
+          ? obj.content_text
+          : (Array.isArray(obj.content_files) ? obj.content_files : [])
+              .map((f) => `${f.path}\n${f.text}`).join('\n');
+        const actual = createHash('sha256').update(exact).digest('hex');
+        if (ch !== actual) {
+          errs.push(`content_hash mismatch — recorded ${ch.slice(0, 12)}…, content is ${actual.slice(0, 12)}… (content edited after hashing, or lossy fetch)`);
         }
       }
     } else if ('provenance' in obj) {

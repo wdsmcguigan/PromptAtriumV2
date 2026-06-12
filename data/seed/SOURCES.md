@@ -49,3 +49,13 @@ react-router-v7, playwright-e2e.
   verbatim content — those were excluded in run 1 and correctly fetched in run 2.
 - Run 2 had GITHUB_TOKEN available; all content fetched from pinned raw.githubusercontent.com
   URLs via authenticated curl — byte-faithful.
+
+### Repair (2026-06-12, post-merge audit)
+
+A byte-faithfulness audit against the pinned SHA found 8 run-1 assets whose
+content diverged from upstream (WebFetch had summarized/truncated them) and 13
+with trailing-newline drift; `provenance.content_hash` was also being recorded
+as the deduper's *normalized* hash rather than an integrity hash. All 41 assets
+were refetched verbatim from raw.githubusercontent.com at the pinned commit;
+`content_hash` is now sha256 of the exact stored `content_text` and is enforced
+by validate-jsonl.mjs. The skill now forbids WebFetch for content.
