@@ -21,7 +21,7 @@ jobs:
         id: changes
         run: |
           if git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
-              | grep -E '^data/seed/assets-.*\.jsonl$'; then
+              | grep -E '^data/seed/(assets-.*\.jsonl|blight-allowlist\.json)$'; then
             echo "seed=true" >> "$GITHUB_OUTPUT"
           else
             echo "seed=false" >> "$GITHUB_OUTPUT"
