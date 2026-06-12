@@ -14,6 +14,25 @@ export function slugifyHandle(input: string | null | undefined): string {
   return slugify(input ?? "") || "user";
 }
 
+// Brand/system namespace users must not claim. Migration 0003 assigns
+// `promptatrium` to the curation principal; the rest are held for future
+// system surfaces. Reserved roots are skipped, not errored — the claimer
+// just gets a suffixed handle.
+export const RESERVED_HANDLES: ReadonlySet<string> = new Set([
+  "promptatrium",
+  "curation",
+  "admin",
+  "administrator",
+  "api",
+  "www",
+  "support",
+  "system",
+  "official",
+  "staff",
+  "mcp",
+  "assets",
+]);
+
 // Find a free handle from a desired base, suffixing on collision. The unique
 // index on principals.handle is the ultimate guard; this just avoids predictable
 // clashes (and the insert retries on the rare race).
@@ -25,6 +44,7 @@ export async function generateUniqueHandle(
   const candidates = [root];
   for (let i = 2; i <= 9; i++) candidates.push(`${root}-${i}`);
   for (const candidate of candidates) {
+    if (RESERVED_HANDLES.has(candidate)) continue;
     const [existing] = await conn
       .select({ id: principals.id })
       .from(principals)
