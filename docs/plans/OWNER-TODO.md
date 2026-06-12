@@ -5,13 +5,7 @@
 > keeps the history). Ordered by urgency. Auto-imported into session context
 > via CLAUDE.md.
 
-## 1. Merge taps (mobile-friendly)
-
-- [ ] **PR #16 — blight screening** (CI green, full gate exercised)
-- [ ] **PR #17 — DMCA runbook** (docs-only, check green)
-- [ ] **PR for this file** (you're reading it, so probably done)
-
-## 2. Deploy gate for PR #6 (desktop, ~15 min) — the live landmine
+## 1. Deploy gate for PR #6 (desktop, ~15 min) — the live landmine
 
 Production code past PR #6 assumes these have run. **Dev first, verify, then prod. Never `db:push`.**
 
@@ -38,7 +32,7 @@ pnpm --filter @workspace/api-server run import:seed   # 52-asset seed corpus →
 that DB. The legacy frontend doesn't surface v2 assets yet, so user impact is
 nil — but it's a deliberate step, not part of the gate.
 
-## 3. DMCA designated agent (desktop, ~15 min + one decision)
+## 2. DMCA designated agent (desktop, ~15 min + one decision)
 
 Follow `docs/runbooks/dmca-designated-agent.md` (lands with PR #17).
 Decision first: get a **virtual business address** (~$10–25/mo — iPostal1,
@@ -47,7 +41,7 @@ and permanent.** Then: dmca.copyright.gov → register ($6, card) → calendar
 reminder at +2y10m → make `dmca@promptatrium.com` a real monitored mailbox →
 apply the ToS patch in runbook §4.
 
-## 4. Two decisions blocking builds (just tell the Steward)
+## 3. Two decisions blocking builds (just tell the Steward)
 
 - [ ] **Principal handles** — gates the Phase 2 MCP scaffold.
       Recommendation: add required unique `handle` to `principals`, backfill
@@ -57,7 +51,7 @@ apply the ToS patch in runbook §4.
       (`PromptAtriumBrandStrategyv1.md` = restrained vs `Brand Strategy for
       PromptAtrium.md` = grander). Read both, pick one; downstream copy waits.
 
-## 5. Low-urgency toggles & numbers
+## 4. Low-urgency toggles & numbers
 
 - [ ] Repo setting: **Settings → General → "Automatically delete head
       branches"** (turns the thing that saved harvest run #2 into policy).
