@@ -4,9 +4,17 @@
 yet run on dev/prod (see deploy gate in v2-asset-api.md).
 
 - Single source of truth: `lib/db/src/schema/licenses.ts` — stable codes
-  `cc0 | cc-by-4.0 | cc-by-sa-4.0 | mit | arr`, **default `cc0`** (product
-  decision in `docs/plans/31-license-picker-and-terms.md` §0 — do not
+  `cc0 | cc-by-4.0 | cc-by-sa-4.0 | mit | apache-2.0 | arr`, **default `cc0`**
+  (product decision in `docs/plans/31-license-picker-and-terms.md` §0 — do not
   re-litigate). Frontend imports as `@shared/licenses`.
+- **The code must be the asset's actual license — never relabel to a "close
+  enough" code.** `apache-2.0` was added 2026-06-12 after the anthropics/skills
+  harvest shipped Apache-2.0 assets labeled `mit` (misstates patent grant +
+  notice obligations). BSD/ISC have no code yet; the harvest license-detector
+  exits 3 (human review) for them — add a registry code before ingesting.
+  Adding a code touches: licenses.ts, schema.ts prompts.license enum,
+  31-license-codes.sql (both lists), harvest-source SKILL.md +
+  validate-jsonl.mjs + license-detector.mjs.
 - **Store codes, never display strings.** `normalizeLicense()` maps legacy
   display strings ("CC0 (Public Domain)" etc.) and unknowns → codes;
   `licenseLabel()` renders. Pickers map `LICENSE_LIST`.

@@ -95,6 +95,14 @@ For skill bundles use `content_files` instead of `content_text`:
 ]
 ```
 
+**Bundles must carry their license text.** If the harvested directory has its
+own `LICENSE`/`LICENSE.txt`/`NOTICE` file, include it in `content_files`
+byte-exact — Apache-2.0 and BSD-family licenses require redistributions to
+ship the license text, and `provenance.upstream_license` alone doesn't satisfy
+that. Binary files can't ride in JSONL: exclude them, list each exclusion in
+SOURCES.md with its runtime impact, and skip the asset entirely if the binaries
+are essential to it working.
+
 ### 5. Validate
 
 ```bash
@@ -172,8 +180,8 @@ git push -u origin "claude/harvest-<source>-$(date +%Y%m%d)"
 | CC-BY-4.0 | `cc-by-4.0` | Yes |
 | CC-BY-SA-4.0 | `cc-by-sa-4.0` | Yes |
 | MIT, MIT-0 | `mit` | Yes |
-| Apache-2.0 | `mit` (keep SPDX in upstream_license) | Yes |
-| BSD-2/3-Clause, ISC | `mit` (keep SPDX in upstream_license) | Yes |
+| Apache-2.0 | `apache-2.0` | Yes |
+| BSD-2/3-Clause, ISC | none yet — needs a registry code | **Needs human review** (exit 3) — never relabel as `mit` |
 | CC-BY-NC-*, CC-BY-ND-* | `arr` | **No** |
 | No LICENSE file | `arr` | **No** — default = all rights reserved |
 | Unlicensed / proprietary | `arr` | **No** |
@@ -192,9 +200,14 @@ When a repo has no `license` field in the GitHub API response (`NOASSERTION`), t
 
 ## Valid license codes (output field)
 
-`cc0` | `cc-by-4.0` | `cc-by-sa-4.0` | `mit` | `arr`
+`cc0` | `cc-by-4.0` | `cc-by-sa-4.0` | `mit` | `apache-2.0` | `arr`
 
 Use `arr` ("all rights reserved") for anything ineligible. Never leave license blank.
+The `license` code must be the asset's **actual** license. If the upstream SPDX
+has no exact registry code, do not relabel it to a "close enough" code (the
+2026-06-12 anthropics/skills run shipped Apache-2.0 assets labeled `mit`) —
+stop and add the code to `lib/db/src/schema/licenses.ts` + this skill first,
+or wishlist the source.
 
 ## Quality bar
 
