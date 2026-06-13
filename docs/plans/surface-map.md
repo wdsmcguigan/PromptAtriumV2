@@ -21,6 +21,28 @@
 | 10 | Media-gen prompt surfaces (image/video prompt workflows) | enthusiasts | **ASPIRATIONAL** | snapshot-class assets via the same APIs; results in `asset_results` |
 | 11 | Hub-wrapper seeding (curated mirror of established hubs) | bootstrap strategy | **IN PROGRESS** | the harvest pipeline (PR-gated corpus → `import:seed` → v2 assets owned by `promptatrium`) |
 
+## The web app's three faces (surface #1, enumerated)
+
+Same SPA, same API, same asset store — three postures for three moments of
+use. They are UI modes, not products; a user drifts between them as they grow.
+
+| Face | Reference feel | Moment it serves | Status today |
+|------|----------------|------------------|--------------|
+| **Capture** | Google Keep | "save this prompt NOW, zero ceremony" — one-click/paste-and-go, organize later | **partial** — web add is a modal form, not one-click; mobile Lite's local-first save is the closest existing thing. The one-click promise is unbuilt and is the face's entire point. |
+| **Commons** | Instagram | browse, discover, share, star — the social/discovery front for beginners & enthusiasts | **LIVE** (community sharing, likes/favorites, trending) |
+| **Workshop** | Notion / Obsidian | power-user portal — organizing, navigating, and maintaining huge libraries; bulk ops, collections/stacks, versions, sync | **partial** (collections, bulk edit/import exist; v2 versioning/stacks not yet surfaced in UI) |
+
+Design implications worth holding onto:
+- **Capture is a write path and must stay frictionless** — its budget is one
+  interaction. Every field added to the save flow is a tax on the face that
+  feeds the other two.
+- **Commons is the water table's UI** — and the metric-monoculture monster
+  lives here: discovery must not become the whole app's definition of value
+  (curation counterweight, per the almanac).
+- **Workshop is where v2 earns its keep** — versions, stacks, handles, and
+  sync status surface here first; it shares its mental model with the CLI/MCP
+  pro surfaces (#3–#6).
+
 ## Serving map
 
 ```
