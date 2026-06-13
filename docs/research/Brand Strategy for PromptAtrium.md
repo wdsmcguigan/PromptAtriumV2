@@ -1,5 +1,10 @@
 # **Foundational Brand Ideology and Systematic Guidelines for PromptAtrium**
 
+> **Superseded (2026-06-13) by the canonical [`docs/brand/brand-voice-v1.md`](../brand/brand-voice-v1.md).**
+> Contributed the progressive-disclosure pillar, the professional-wedge GTM, and
+> the noun-ownership thesis. Note: its "rings" / arboreal vocabulary was *retired*
+> in the canonical doc under the almanac's no-trees rule. Retained as provenance.
+
 ## **Executive Context and Market Thesis**
 
 The artificial intelligence ecosystem in 2026 has entered a period of profound context scatter.1 Users across every echelon of technical sophistication are accumulating vital working materials—ranging from single-shot text prompts and system instructions to complex Model Context Protocol (MCP) server configurations and multi-turn agentic workflows.1 However, these high-value assets currently lack a stable, unified home.  

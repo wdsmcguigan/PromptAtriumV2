@@ -1,6 +1,10 @@
 # PromptAtrium Brand Strategy
 ### The Codified Fertilizer — v1.0, June 2026
 
+> **Superseded (2026-06-13) by the canonical [`docs/brand/brand-voice-v1.md`](../brand/brand-voice-v1.md).**
+> This draft is the *primary register source* for the canonical doc — retained as
+> research and provenance. For anything that ships, follow the canonical voice.
+
 ---
 
 ## 1. Brand Ideology / Manifesto

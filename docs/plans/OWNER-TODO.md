@@ -48,13 +48,7 @@ and permanent.** Then: dmca.copyright.gov → register ($6, card) → calendar
 reminder at +2y10m → make `dmca@promptatrium.com` a real monitored mailbox →
 apply the ToS patch in runbook §4.
 
-## 3. One decision blocking work (just tell the Steward)
-
-- [ ] **Brand voice** — two conflicting docs in `docs/research/`
-      (`PromptAtriumBrandStrategyv1.md` = restrained vs `Brand Strategy for
-      PromptAtrium.md` = grander). Read both, pick one; downstream copy waits.
-
-## 4. Low-urgency toggles
+## 3. Low-urgency toggles
 
 - [ ] Repo setting: **Settings → General → "Automatically delete head
       branches"** (turns the thing that saved harvest run #2 into policy).

@@ -3,6 +3,36 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-13 — Brand voice DECIDED & forged (branch `claude/brand-voice-documentation-wf6los`)
+
+The "pick one brand voice" Owner decision is **resolved**, not by picking but by
+synthesizing both research drafts into a canonical **`docs/brand/brand-voice-v1.md`**.
+Owner decisions locked this session: **restrained-cultivation register** +
+**one-continuum persona arc** (conscript→professional inside one product).
+
+- **Synthesis:** restrained "Codified Fertilizer" is the register source; the
+  "Foundational" draft contributed the progressive-disclosure pillar, the
+  professional-wedge GTM, and the noun-ownership thesis. Five pillars
+  (Permanence, Progressive disclosure, Receipts, Composability, Hospitality);
+  integrity folded into the litmus tests as the enforcement layer.
+- **Reconciled against project canon** — the key new value-add. Both drafts
+  violated the almanac's **no-trees rule** (arboreal words belong to git, not the
+  garden): "rings" and the "root/trunk/branch = high-credibility" gradient are
+  **retired**. Versions are plain "Version"; forking is "Fork"/"grow a cutting."
+- **Implementation debt flagged (§12):** user-facing **"branch"** must become
+  "Fork"/"cutting" — the code's `branchMutation` name stays (git owns the tree),
+  but the PromptCard/prompt-detail **labels** need an audit. `arr` assets show no
+  live Fork button. Handles (`@handle`) are the public name; license labels render
+  from codes. Lexicon grounded in real mechanics throughout.
+- **Honesty ledger (§13):** the doc only lets marketing claim what's built per
+  `surface-map.md` (stacks/versioning/CLI not yet user-visible — don't claim them
+  live).
+- Two research drafts now carry superseded-by banners pointing at the canonical
+  doc; OWNER-TODO brand-voice item deleted. Memory: `.agents/memory/brand-voice.md`.
+- **Owner follow-up:** none blocking. When copy/UI work begins, §12 is the
+  catch-up checklist; the rename-to-"The Atrium" question is logged as a
+  long-horizon tension in §16, not a v1 action.
+
 ## 2026-06-12 (late night) — Phase 2 MCP scaffold BUILT (branch `claude/adoring-ramanujan-ckwyvm`)
 
 Built per `docs/plans/phase-2-mcp-server.md` + appendix + Schema seams. Full
