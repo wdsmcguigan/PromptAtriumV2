@@ -3,6 +3,25 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-13 — Mission reframe: Replit exit is the goal; "deploy gate" dissolved
+
+- **Two foundational facts recorded from the Owner** (now in
+  `.agents/memory/replit-exit.md`, CLAUDE.md gotcha, OWNER-TODO item 1):
+  leaving Replit entirely is the core impetus of the whole endeavor, and
+  **this repo is NOT the live codebase** — production deploys from the
+  Replit-connected repo on a different GitHub account. Nothing merged here
+  reaches production users.
+- Consequences: the "deploy gate landmine" was built on a false premise (main
+  here can't ship ahead of its schema because main here doesn't ship), and we
+  **never mutate the Replit databases** — migration is clone → transform →
+  cutover. OWNER-TODO item 1 rewritten: pick new Postgres hosting, `pg_dump`
+  Replit prod (read-only), restore + run migrate:v2 / license SQL / backfill /
+  import:seed on the clone, Steward verifies. Cutover runbook comes after the
+  hosting decision.
+- Open exit inventory: storage bucket ownership (verify Replit-managed vs
+  owned GCS), new app hosting + deploy pipeline for this repo, domain/auth
+  redirect flips, Expo workflows/connectors enumeration.
+
 ## 2026-06-12 (late night) — Owner decisions: handles APPROVED, budget set; board clean
 
 - **PRs #13–#18 all MERGED** (operating rules, seed-audit required-check fix,
