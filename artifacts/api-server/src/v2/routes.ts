@@ -145,6 +145,28 @@ async function loadOwnedAsset(req: Request): Promise<Asset> {
 }
 
 // --------------------------------------------------------------------------
+// Identity
+// --------------------------------------------------------------------------
+
+// The caller's principal — chiefly so MCP/CLI clients learn their own `handle`
+// (the `{handle}` half of every `asset://{handle}/{slug}` URI they build).
+router.get(
+  "/me",
+  requireScope("read"),
+  asyncHandler(async (req, res) => {
+    const { principal, scopes, via } = req.v2!;
+    res.json({
+      principal: {
+        handle: principal.handle,
+        kind: principal.kind,
+      },
+      scopes,
+      via,
+    });
+  }),
+);
+
+// --------------------------------------------------------------------------
 // Kinds
 // --------------------------------------------------------------------------
 
@@ -205,7 +227,7 @@ router.get(
   requireScope("read"),
   asyncHandler(async (req, res) => {
     const query = parse(listAssetsQuerySchema, req.query);
-    const items = await store.listAssets(req.v2!.principal.id, {
+    const assetItems = await store.listAssets(req.v2!.principal.id, {
       kindId: query.kind,
       visibility: query.visibility,
       q: query.q,
@@ -213,6 +235,10 @@ router.get(
       limit: query.limit,
       offset: query.offset,
     });
+    // Every item is the caller's own, so the owner handle is the caller's —
+    // attach it so MCP can build asset:// URIs without a per-item lookup.
+    const ownerHandle = req.v2!.principal.handle;
+    const items = assetItems.map((asset) => ({ ...asset, ownerHandle }));
     res.json({ items, limit: query.limit, offset: query.offset });
   }),
 );
@@ -235,7 +261,8 @@ router.get(
     const headVersion = asset.headVersionId
       ? await store.getVersionById(asset.headVersionId)
       : null;
-    res.json({ ...asset, headVersion: headVersion ?? null });
+    const ownerHandle = await store.getOwnerHandle(asset.ownerId);
+    res.json({ ...asset, ownerHandle, headVersion: headVersion ?? null });
   }),
 );
 
@@ -301,6 +328,52 @@ router.get(
     const version = await store.getVersion(asset.id, versionNumber);
     if (!version) throw new StoreError(404, "Version not found");
     res.json(version);
+  }),
+);
+
+// --------------------------------------------------------------------------
+// Handle-addressed reads (asset://{handle}/{slug} — MCP/CLI; Phase 2 seam #1)
+// --------------------------------------------------------------------------
+
+async function loadReadableAssetByHandle(req: Request): Promise<Asset> {
+  const handle = parse(z.string().min(1).max(128), req.params["handle"]);
+  const slug = parse(z.string().min(1).max(128), req.params["slug"]);
+  const asset = await store.getAssetByHandleAndSlug(handle, slug);
+  // 404 (not 403) for assets the caller can't see: don't leak existence.
+  if (!asset || !store.canRead(asset, req.v2!.principal.id)) {
+    throw new StoreError(404, "Asset not found");
+  }
+  return asset;
+}
+
+// Latest (head) version of an asset addressed by handle/slug.
+router.get(
+  "/handles/:handle/assets/:slug",
+  requireScope("read"),
+  asyncHandler(async (req, res) => {
+    const asset = await loadReadableAssetByHandle(req);
+    const headVersion = asset.headVersionId
+      ? await store.getVersionById(asset.headVersionId)
+      : null;
+    const ownerHandle = await store.getOwnerHandle(asset.ownerId);
+    res.json({ ...asset, ownerHandle, headVersion: headVersion ?? null });
+  }),
+);
+
+// A pinned (integer) version of an asset addressed by handle/slug.
+router.get(
+  "/handles/:handle/assets/:slug/versions/:number",
+  requireScope("read"),
+  asyncHandler(async (req, res) => {
+    const asset = await loadReadableAssetByHandle(req);
+    const versionNumber = parse(
+      z.coerce.number().int().min(1),
+      req.params["number"],
+    );
+    const version = await store.getVersion(asset.id, versionNumber);
+    if (!version) throw new StoreError(404, "Version not found");
+    const ownerHandle = await store.getOwnerHandle(asset.ownerId);
+    res.json({ ...asset, ownerHandle, headVersion: version });
   }),
 );
 

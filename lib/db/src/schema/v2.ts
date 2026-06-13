@@ -41,9 +41,18 @@ export const principals = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     kind: text("kind").notNull().default("user"), // 'user' now; 'org'/'group' later
     userId: varchar("user_id"),
+    // URL-safe public address (`asset://{handle}/{slug}`, MCP, profile URLs).
+    // Required + unique; backfilled from users.username with generated
+    // fallbacks (migration 0003). Phase 2 seam #1 — see
+    // docs/plans/phase-2-mcp-server.md. Changes are possible but rare (assets
+    // are addressed through it); no rename flow in v1.
+    handle: text("handle").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("principals_user_id_idx").on(t.userId)],
+  (t) => [
+    uniqueIndex("principals_user_id_idx").on(t.userId),
+    uniqueIndex("principals_handle_idx").on(t.handle),
+  ],
 );
 
 // Kind registry: new asset kinds (harness config, eval suite, plugin, …)

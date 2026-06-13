@@ -22,6 +22,13 @@
       "when": 1781233985567,
       "tag": "0002_amend-kind-registry",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781302229512,
+      "tag": "0003_principal-handles",
+      "breakpoints": true
     }
   ]
 }

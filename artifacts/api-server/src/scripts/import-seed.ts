@@ -150,7 +150,10 @@ async function main() {
   } else {
     const [created] = await db
       .insert(principals)
-      .values({ kind: "curation", userId: null })
+      // handle is required (Phase 2 seam #1); the curation principal owns the
+      // public seed corpus, so it gets the stable `promptatrium` handle —
+      // `asset://promptatrium/<slug>`.
+      .values({ kind: "curation", userId: null, handle: "promptatrium" })
       .returning();
     curationId = created!.id;
     console.log(`Created curation principal: ${curationId}`);

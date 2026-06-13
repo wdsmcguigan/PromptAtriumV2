@@ -3,6 +3,41 @@
 > Rolling document — newest session at top. Any orchestrator session should be
 > able to boot from CLAUDE.md + `.agents/memory/MEMORY.md` + this file.
 
+## 2026-06-12 (late night) — Phase 2 MCP scaffold BUILT (branch `claude/adoring-ramanujan-ckwyvm`)
+
+Built per `docs/plans/phase-2-mcp-server.md` + appendix + Schema seams. Full
+workspace typecheck green; end-to-end smoke-tested with the real MCP SDK client
+over **both** transports. Details: `.agents/memory/phase-2-mcp-server.md`.
+
+- **Seam #1 resolved — `principals.handle` (required + unique).** Migration
+  `0003_principal-handles.sql` (hand-edited after `drizzle-kit generate`: add
+  nullable → backfill from `users.username` slug with `user-<short-id>`
+  fallbacks → window-function id-suffix dedup → SET NOT NULL + unique index).
+  **Validated on a scratch PG 16**: case-collisions (`Alice`/`alice`), null
+  username, slug-to-empty, diacritics, null-user_id curation principal — all
+  unique, zero nulls. Snapshot updated so future `generate` stays consistent.
+  All principal inserts now set a handle (auth / import-seed=`promptatrium` /
+  backfill). Seams #2 (int versions) & #3 (head = latest) honored as-is.
+- **v2 API:** `GET /api/v2/me` (caller learns its handle),
+  `GET /api/v2/handles/:handle/assets/:slug` (+ `/versions/:number`,
+  canRead-gated 404-not-403), `ownerHandle` on list/single responses.
+- **New package `artifacts/mcp-server` (`promptatrium-mcp`):** thin front-end
+  over `/api/v2` (never touches the DB → one code path for stdio + hosted).
+  `createMcpServer` (tools `list_assets`/`get_asset`, resources
+  `asset://`+`skill://` SEP-2640, prompt-kind→MCP prompts, `listChanged`);
+  stdio bin (PAT via env, stderr-only logs); Streamable HTTP
+  (`mountMcpServer`/`createMcpHttpApp`: single `/mcp`, per-session factory,
+  Origin→403, bearer→401+`WWW-Authenticate`, RFC 9728 stub). **SDK pinned v1
+  `@modelcontextprotocol/sdk@^1.29.0`; package uses zod v3 (SDK peer) — the one
+  spot that diverges from the repo's zod-v4 rule.** `server.json` checked in,
+  unpublished.
+- **Out of scope (per plan):** OAuth AS (Claude.ai's only path), write tools,
+  registry GA publish, per-tool compiled variants (plan 30). api-server does NOT
+  mount `/mcp` by default (keeps the SDK out of the server bundle).
+- **Remaining to productionize:** deploy gate (`migrate:v2` now also runs 0003)
+  → stand up the hosted endpoint → live-verify in Claude Code/Cursor → publish
+  the npm package + submit `server.json` once the official registry exits preview.
+
 ## 2026-06-12 (late night) — Owner decisions: handles APPROVED, budget set; board clean
 
 - **PRs #13–#18 all MERGED** (operating rules, seed-audit required-check fix,
