@@ -12,11 +12,15 @@ Load-bearing rules to remember before writing any user-facing string:
 - **The metaphor boundary** — "leaves for the conscript and creator; plain bark
   for the professional." Garden language NEVER in CLI/MCP/API/error messages or
   pro surfaces. The CLI is `pa pull`, never `pa harvest`.
-- **No-trees rule applies to brand voice too** (almanac law). Arboreal words —
-  *branch, trunk, root, ring* — are git's, not the garden's. This RETIRED both
-  drafts' "rings" version metaphor and their "root/trunk/branch = high-credibility"
-  gradient. Versions are plain **"Version"**; forking is **"Fork"** (pro) /
-  **"grow a cutting"** (Atrium).
+- **No-trees rule is SCOPED for brand (Owner carve-out, 2026-06-13).** It governs
+  *mechanism vocabulary* only — UI labels, nav, CLI/MCP/API, errors, canonical
+  action names. The **philosophy & visual/storytelling layer may evoke trees**
+  (the seedling→sky-reaching-Mandelbrot arc, branching fractal growth, rings as a
+  version-history *figure* in About/onboarding illustration). What stays banned as
+  a mechanism word: **"branch"** as the fork-action label — use **"Fork"** (pro) /
+  **"grow a cutting"** (Atrium), on clarity grounds (fork ≠ branch). Versions are
+  labeled plain **"Version"** in UI. The almanac no-trees entry now carries the
+  same carve-out.
 - **Four voice-killers:** acceleration-imperative ("supercharge/10x/unlock"),
   condescension-by-jargon, faux-whimsy ("let your prompts bloom"), epistemic
   puffery ("revolutionary"). One occurrence anywhere breaks positioning.

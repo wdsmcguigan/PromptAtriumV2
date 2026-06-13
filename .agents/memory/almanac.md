@@ -30,4 +30,10 @@ pollination — wait until they exist to do the carrying.)
   (`allowsCopy: false` in the registry).
 - **The no-trees rule** — arboreal vocabulary (branch, trunk, root) belongs
   to git in any repository. The garden speaks in shrubs, vines, fungi, and
-  beds; the only tree here is the one git planted.
+  beds; the only tree here is the one git planted. **Brand carve-out (Owner,
+  2026-06-13):** the rule governs *mechanism vocabulary* — UI labels, nav,
+  CLI/MCP/API, errors, and canonical action names (the fork action is
+  "Fork"/"cutting," never "branch"). The *brand-philosophy and
+  visual/storytelling* layer may evoke trees (the seedling→sky-reaching-Mandelbrot
+  arc, branching growth motifs, rings as a version-history figure). Scope lives in
+  `docs/brand/brand-voice-v1.md` §9.

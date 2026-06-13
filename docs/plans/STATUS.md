@@ -15,15 +15,18 @@ Owner decisions locked this session: **restrained-cultivation register** +
   professional-wedge GTM, and the noun-ownership thesis. Five pillars
   (Permanence, Progressive disclosure, Receipts, Composability, Hospitality);
   integrity folded into the litmus tests as the enforcement layer.
-- **Reconciled against project canon** — the key new value-add. Both drafts
-  violated the almanac's **no-trees rule** (arboreal words belong to git, not the
-  garden): "rings" and the "root/trunk/branch = high-credibility" gradient are
-  **retired**. Versions are plain "Version"; forking is "Fork"/"grow a cutting."
+- **Reconciled against project canon** — the key new value-add. The almanac's
+  **no-trees rule** is **scoped, not blanket** (Owner carve-out 2026-06-13): it
+  governs *mechanism vocabulary* (labels, nav, CLI/MCP/API, errors, action names),
+  while the **brand-philosophy & visual layer may evoke trees** (the
+  seedling→sky-reaching-Mandelbrot arc, branching fractal growth, rings as a
+  version-history *figure*). The almanac entry now carries the matching carve-out.
 - **Implementation debt flagged (§12):** user-facing **"branch"** must become
-  "Fork"/"cutting" — the code's `branchMutation` name stays (git owns the tree),
-  but the PromptCard/prompt-detail **labels** need an audit. `arr` assets show no
-  live Fork button. Handles (`@handle`) are the public name; license labels render
-  from codes. Lexicon grounded in real mechanics throughout.
+  "Fork"/"cutting" — on *clarity* grounds (fork ≠ branch), not the no-trees rule;
+  the code's `branchMutation` name stays. PromptCard/prompt-detail **labels** need
+  an audit; "rings" is fine as brand-story illustration but never a UI control.
+  `arr` assets show no live Fork button. Handles (`@handle`) are the public name;
+  license labels render from codes. Lexicon grounded in real mechanics throughout.
 - **Honesty ledger (§13):** the doc only lets marketing claim what's built per
   `surface-map.md` (stacks/versioning/CLI not yet user-visible — don't claim them
   live).

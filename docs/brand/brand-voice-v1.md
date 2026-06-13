@@ -181,7 +181,7 @@ v1 resolves it. Don't relitigate these:
 |---|---|---|
 | Restrained register vs. grander thesis-voice | **Restrained-cultivation.** | It's the harder register to break and it passes the anti-hype litmus tests both drafts share. |
 | Linear arc vs. parallel persona tracks | **One continuum.** | Matches progressive disclosure (Pillar 2) and the surface map's "three faces of one SPA." Outbound copy may *enter* by persona, but the story is one home. |
-| "Rings" / "branch" / "root" as brand vocabulary | **Retired.** Versions are plain "Version"; forking is "Fork" / "grow a cutting." | The almanac's **no-trees rule** is law: arboreal words (branch, trunk, root, *rings*) belong to git, not the garden. Both drafts violated this. See §9 and §12. |
+| "Rings" / "branch" / "root" as brand vocabulary | **Scoped, not retired.** Tree imagery is welcome in the *philosophy & visual/storytelling* layer (the manifesto arc, the branching fractal motif, rings as a figure for version history). It is **not** admitted as *mechanism vocabulary* — UI labels, nav, CLI/MCP/API, errors, canonical action names. Versions are labeled plain "Version" in UI; the fork action is "Fork" / "grow a cutting," never "branch." | The almanac's **no-trees rule** governs *mechanism* surfaces; git owns "branch" because the fork action is git-shaped and the collision confuses (fork ≠ branch). The Owner granted the brand-philosophy/visual layer leeway (2026-06-13). See §9, §12, §15. |
 | "Stack" collides with developer culture | **Keep "stack."** | The composability/layering implication is load-bearing and "setup" doesn't carry it. Acknowledge the choice in the dev-community launch. |
 | Editorial Atrium vs. algorithmic feed | **Curated front page, open publishing.** | Anyone may publish; what's *featured* is our call. Avoids the founder-curation bottleneck without surrendering the water table to a metric monoculture. |
 | Rename to "The Atrium" | **Not in v1.** Logged as a long-horizon tension. | The thesis is that we own the noun; "Prompt" anchors SEO and the install base today. Revisit only with evidence. |
@@ -303,7 +303,7 @@ grounded in an actual mechanism so copy and schema never drift apart.
 | **Asset** | Any single saved thing: prompt, system prompt, skill, rules file, workflow, MCP config. | `assets` table, `kind` column. | Agnostic — survives the death of the word "prompt." Canonical noun in nav, docs, and data model. "Prompt" is acceptable informal shorthand, never the canonical label. |
 | **The Stash** | The private personal library. | Assets with private visibility. | One syllable, possessive ("my stash"), implies quick capture without ceremony. Not: vault, library, workspace, greenhouse *(greenhouse is brand-layer only)*. |
 | **The Atrium** | The public gallery + discovery surface. Always capitalized, proper noun. | Public-visibility assets, shown with results. | Architectural; defined by light. Never "the public gallery," "your profile," or "the community feed." |
-| **Version** | An immutable historical state of an asset, captured automatically. | `asset_versions`, integer numbers (not semver), immutable. | Plain everywhere. **Not "rings"** — see the no-trees rule, §9/§12. |
+| **Version** | An immutable historical state of an asset, captured automatically. | `asset_versions`, integer numbers (not semver), immutable. | Labeled plain **"Version"** in UI / nav / CLI. *Tree-rings* may serve as a brand-story *figure* for it (the past preserved under the present) in illustration, onboarding, and About copy — never as a UI label. See §9, §15. |
 | **Stack** | A composition of assets that deploy together as one versioned unit. | Composition of assets (collection). *Partially built — §13.* | Keep it; the layering implication is load-bearing. "Garden bed" is brand-layer metaphor only — never in nav, CLI, or API. |
 | **Fork** / **grow a cutting** | Copy a public asset into your Stash, preserving lineage. | The copy-to-library action. Internal code: `branchMutation` *(code-only; do not surface "branch" in UI — §12).* | "Fork" is canonical in pro/CLI contexts (`pa fork`). "Grow a cutting" is the Atrium-surface variant — "cutting" carries the lineage implication and *resolves* as an action. |
 | **Star** | Endorsing / saving a public asset. | `stars` table, feeds the `events` water table. | Not "Like." "Like" is transient social-media validation; "Star" is wayfinding and durable quality, per GitHub convention. |
@@ -353,15 +353,24 @@ from the label alone?*
 - "Harvest your context" — doesn't resolve. ✗ use "Export" / "Download."
 
 ### The reconciled vocabulary gradient
-This corrects the research drafts, which both promoted **arboreal** words. Under
-the almanac's **no-trees rule**, tree vocabulary belongs to git, not the garden.
+
+**Two registers, one rule.** Tree imagery is welcome in the **philosophy &
+visual/storytelling** layer — the manifesto's "seedling to a sky-reaching
+Mandelbrot," the branching fractal growth motif, tree-rings as a figure for a
+version history where the past is preserved under the present. It is *not*
+admitted as **mechanism vocabulary**: canonical action names, UI labels, nav,
+CLI/MCP/API, or error copy. This is the almanac's no-trees rule, scoped to where
+it earns its keep — git owns "branch" *as a mechanism* because PromptAtrium's
+fork action is git-shaped and the collision genuinely confuses; the garden may
+still *evoke* trees in its poetry and its pictures.
 
 | Register | Terms |
 |---|---|
 | High credibility (consumer brand) | *evergreen, prune, cultivate, tend, grow, graft, cutting* |
 | Moderate | *garden, seed, plant, greenhouse, bloom (verb, sparing)* |
 | Consumer surfaces only, use carefully | *seedling, sprout, budding* |
-| **Forbidden — arboreal (git owns these)** | *branch, trunk, root, ring* |
+| **Philosophy & visual layer only** (manifesto, About, illustration, growth/lineage motifs) | *tree, branching, rings, root system, canopy, sky-reaching* — evocative, never a UI label |
+| **Forbidden as mechanism vocabulary** (labels, nav, CLI/MCP/API, errors) | *branch* (the action is "Fork" / "cutting"); any arboreal word used as a control name |
 | Avoid in pro/B2B copy entirely | *blossom, flourish, nurture, tender* |
 
 ---
@@ -475,13 +484,16 @@ Every piece of copy and every design choice must answer **yes** before it ships.
 For the information-systems layer. These are concrete reconciliations between this
 voice and what's currently in the repo; track them as follow-ups.
 
-- **Retire user-facing "branch."** The copy-to-library action is implemented as
-  `branchMutation` in `PromptCard` and prompt-detail (see
-  `.agents/memory/license-registry.md`). The *code name* is fine — git owns the
-  tree. But any **user-facing** "branch" label must read **"Fork"** (pro) or
-  **"Grow a cutting"** (Atrium). Audit button labels, tooltips, and toasts.
-- **Retire "rings" anywhere it reached UI.** Draft B's "View earlier rings"
-  violates the no-trees rule. Version UI says "Version" / "earlier version."
+- **Retire user-facing "branch" — on clarity grounds.** The copy-to-library
+  action is implemented as `branchMutation` in `PromptCard` and prompt-detail
+  (see `.agents/memory/license-registry.md`). The *code name* is fine. But any
+  **user-facing** "branch" label must read **"Fork"** (pro) or **"Grow a
+  cutting"** (Atrium): the action is git-shaped, and "branch" is the wrong git
+  word for it (fork ≠ branch). Audit button labels, tooltips, and toasts.
+- **"Rings" is brand-story only, never a UI label.** Draft B's "View earlier
+  rings" as a *control* is out — version UI says "Version" / "earlier version."
+  But rings-as-figure is welcome in About copy and onboarding/version-history
+  illustration (§9, §15); use it there freely.
 - **`arr` assets are specimens behind glass.** When `allowsCopy` is false, the
   Fork / "grow a cutting" affordance must be absent or disabled with plain copy
   ("This asset is All Rights Reserved — copying isn't permitted"), never a dead
@@ -587,7 +599,11 @@ visuals in register with this voice:
 - **The fractal is not the logo** (hard line). It lives in lineage/version
   visualizations, growth-stage iconography (progressively self-similar
   branching), and premium loading states. "Simple rules, emergent complexity" —
-  one asset, one save, one data model, from which every workflow grows.
+  one asset, one save, one data model, from which every workflow grows. **This is
+  the home of the tree-imagery latitude** (§9): branching growth, rings, the
+  seedling-to-canopy arc are *encouraged* here — the visual/philosophy layer is
+  exactly where the no-trees rule yields. The line it does not cross: none of it
+  becomes a control label or a CLI/API name.
 - **Type:** a botanical-character serif for display (one size per screen, max), a
   humanist sans for UI, monospace for all asset/code content — the monospace is
   the *voice of the asset itself*, so its rendering quality signals respect for
