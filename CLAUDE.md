@@ -51,7 +51,7 @@ session must be able to continue your work from these docs alone.
 - `artifacts/api-server/src/v2/` — v2 asset API mounted at `/api/v2` (session or PAT bearer auth); see `.agents/memory/v2-asset-api.md`
 - `lib/db/src/schema/licenses.ts` — canonical license registry (stable codes, `cc0` default); frontend imports as `@shared/licenses`; see `.agents/memory/license-registry.md`
 - `lib/api-zod/` — exported Zod validation schemas; `lib/api-client-react/` — React Query hooks; `lib/prompt-crud/` — shared prompt business logic (web + mobile)
-- `docs/plans/` — implementation plans (phase-1 schema, phase-2 MCP server, numbered task plans); `docs/plans/STATUS.md` — rolling project status & open threads
+- `docs/plans/` — implementation plans (phase-1 schema, phase-2 MCP server, numbered task plans); `docs/plans/STATUS.md` — rolling project status & open threads; `docs/plans/surface-map.md` — canonical inventory of every client surface and how it's served
 - `docs/research/` — research memos (MCP survey, GTM playbook, licensing, context formats, market/brand)
 - `artifacts/prompt-atrium/src/` — React frontend (pages, components, hooks)
 - `artifacts/prompt-atrium/vite.config.ts` — Vite config; `@shared` alias → `lib/db/src/schema`
