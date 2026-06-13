@@ -42,6 +42,11 @@ apply the ToS patch in runbook §4.
 - [ ] **Brand voice** — two conflicting docs in `docs/research/`
       (`PromptAtriumBrandStrategyv1.md` = restrained vs `Brand Strategy for
       PromptAtrium.md` = grander). Read both, pick one; downstream copy waits.
+      Newer inputs for the cauldron: `.agents/memory/almanac.md` (the earned
+      vocabulary — whichever voice wins must be able to say "water table"
+      without embarrassment) and `docs/plans/surface-map.md` §three faces
+      (the voice must stretch from Keep-grade Capture to Obsidian-grade
+      Workshop without changing character).
 
 ## 4. Low-urgency toggles
 
