@@ -80,5 +80,5 @@ PromptAtrium is "the home for your AI working set" — a library and community f
 - **Zod v4** — import from `zod/v4`, never bare `zod`.
 - **WebGL errors in headless preview** — Three.js particle system fails without a GPU. Expected in sandboxed dev environments; does not affect production.
 - **Health checks** — `GET /api/health` probes the DB (readiness); `GET /api/healthz` is liveness only. Both are registered before the session middleware so probes never create sessions.
-- **Deploy gate (PR #6 era)** — before deploying a build containing the v2/license work: run `migrate:v2` and `psql -f lib/db/sql/31-license-codes.sql` on dev (verify counts), then prod. The schema and frontend assume both have run. Remove this line once done.
+- **This repo is NOT the live codebase** — the production app deploys from the Replit-connected repo on a different GitHub account, and the whole endeavor exists to exit Replit. Never mutate the live Replit databases; any DB this code targets gets the migrations (`migrate:v2` + `31-license-codes.sql`) on a *clone or new instance*. See `.agents/memory/replit-exit.md`.
 - **License values are stable codes** — `cc0 | cc-by-4.0 | cc-by-sa-4.0 | mit | arr`, never display strings. Validate/normalize via `@shared/licenses`.

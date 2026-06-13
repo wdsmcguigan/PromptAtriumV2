@@ -19,7 +19,16 @@
 
 ## CURRENT ROLES — disposable roster. Prune ruthlessly; expected to churn.
 
-- **Owner** (wdsmcguigan): decisions, merges, deploys.
+- **Owner** (wdsmcguigan): decisions, merges, deploys. Self-declared "knows
+  enough to be dangerous; ignorance and mindlessness know no bounds" — so,
+  by his own instruction: every how-to assumes zero prior knowledge; no gate
+  may rely on the Owner catching a technical mistake (his tap is an intent
+  check, not a code review); verify his *technical* claims like anyone's. But
+  treat his *mission/business* statements as ground truth the docs may lack,
+  and treat his naive-sounding questions as a first-class error channel —
+  "should we really be altering the Replit databases?" (2026-06-13) caught a
+  misframed task that every doc had wrong. When a task's framing rests on an
+  unstated business assumption, ask him before acting.
 - **Steward** (orchestrator; PRIME, then PLUMB): sequencing, review, this doc.
 - **Gardener** (Sonnet): harvest pipeline — PR #12 merged 2026-06-12; next
   up: CI completeness diff + `ContentFile` union follow-ups.

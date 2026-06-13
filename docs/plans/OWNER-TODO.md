@@ -5,39 +5,28 @@
 > keeps the history). Ordered by urgency. Auto-imported into session context
 > via CLAUDE.md.
 
-## 1. Deploy gate for PR #6 (desktop, ~15 min) — the live landmine
+## 1. Replit exit, step 1: pick Postgres hosting + hand the Steward a prod snapshot
 
-Production code past PR #6 assumes these have run. **Dev first, verify, then prod. Never `db:push`.**
+*(Replaces the old "deploy gate" item — that framing assumed this repo deploys
+to the live app. It doesn't: the live app deploys from the Replit-connected
+repo on your other GitHub account, and **we never mutate the Replit databases**.
+See `.agents/memory/replit-exit.md`.)*
 
-```bash
-# 0. Sanity snapshot (run BEFORE and AFTER step 2):
-psql "$DATABASE_URL" -c "SELECT license, count(*) FROM prompts GROUP BY license ORDER BY 2 DESC;"
-
-# 1. v2 tables (additive only; legacy tables untouched):
-pnpm --filter @workspace/db run migrate:v2
-
-# 2. License codes (normalizes display strings → codes, locks the column):
-psql "$DATABASE_URL" -f lib/db/sql/31-license-codes.sql
-```
-
-Repeat with prod `DATABASE_URL`. Use the SQL **from current main** (the CHECK
-constraint includes `apache-2.0`). Afterwards, optionally:
-
-```bash
-pnpm --filter @workspace/api-server run backfill:v2   # idempotent legacy→v2
-pnpm --filter @workspace/api-server run import:seed   # 52-asset seed corpus → v2
-```
-
-⚠️ `import:seed` creates the curation principal and 52 **public** v2 assets in
-that DB. The legacy frontend doesn't surface v2 assets yet, so user impact is
-nil — but it's a deliberate step, not part of the gate.
-
-**How to run it:** clone main locally, put the dev/prod `DATABASE_URL` in a
-local `.env` (or export it), and open a local Claude Code session in the repo —
-say "walk me through OWNER-TODO item 1" and it can run every command itself
-with your approval per step. Nothing here is Replit-specific: the commands
-just need `psql` + `pnpm` and a connection string that's reachable from your
-machine. Approve the dev run, check the counts, then approve prod.
+1. **Decide**: managed Postgres for the new stack — Neon / Supabase / Railway
+   shortlist. Ask the Steward for a tradeoff brief, or just pick Neon if you
+   want the default.
+2. **Snapshot** (desktop, read-only, live app unaffected):
+   ```bash
+   pg_dump "$REPLIT_PROD_DATABASE_URL" -Fc -f promptatrium-prod.dump
+   ```
+3. **Restore** into the new instance (`pg_restore -d "$NEW_DATABASE_URL" promptatrium-prod.dump`),
+   then run the old gate steps **there** — `migrate:v2`,
+   `psql -f lib/db/sql/31-license-codes.sql`, `backfill:v2`, `import:seed` —
+   and verify license counts before/after. A local Claude Code session can
+   drive every step with your approval ("walk me through OWNER-TODO item 1").
+4. Cutover (final dump → deploy → domain) is a later task with its own
+   runbook, written once hosting is chosen. Until then Replit stays the
+   untouched system of record. **Never `db:push` anywhere.**
 
 ## 2. DMCA designated agent (desktop, ~15 min + one decision)
 
